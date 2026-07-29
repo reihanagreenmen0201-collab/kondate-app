@@ -781,6 +781,19 @@
     white-space:pre-wrap;
     margin:0;
   }
+  .recipe-detail-last-cooked{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:14px;
+    color:var(--indigo);
+    margin:0;
+  }
+  .recipe-detail-last-cooked.none{
+    font-family:"Noto Sans JP", sans-serif;
+    font-weight:500;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
   .recipe-detail-actions{
     flex-wrap:wrap;
   }
@@ -1834,6 +1847,28 @@
     font-size:12.5px;
     color:var(--ink-soft);
     line-height:1.6;
+  }
+  .record-again-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    margin-top:12px;
+    background:transparent;
+    border:1px solid var(--indigo);
+    border-radius:999px;
+    padding:7px 16px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--indigo);
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .record-again-btn:hover{
+    background:var(--indigo);
+    color:#FBF8F0;
   }
   .add-record-btn{
     display:inline-flex;
@@ -3040,6 +3075,11 @@
       <p class="recipe-detail-steps" id="recipeDetailSteps"></p>
     </div>
 
+    <div class="recipe-detail-section">
+      <div class="recipe-detail-section-title">🕒 前回作った日</div>
+      <p class="recipe-detail-last-cooked" id="recipeDetailLastCooked"></p>
+    </div>
+
     <div class="shopping-panel-footer recipe-detail-actions" id="recipeDetailActions">
       <button type="button" class="fridge-result-fav-btn" id="recipeDetailFavBtn">⭐ お気に入り</button>
       <button type="button" class="fridge-result-choose-btn" id="recipeDetailTodayBtn">🍚 今日の献立にする</button>
@@ -3842,6 +3882,21 @@
     return `${m}/${d}（${WEEKDAY_JA[dateObj.getDay()]}）`;
   }
 
+  function formatDateSlash(dateStr){
+    const [y, m, d] = dateStr.split('-').map(Number);
+    return `${y}/${m}/${d}`;
+  }
+
+  // Looks at the same cooking-records history the "作った記録" page uses,
+  // and finds the most recent date this dish was logged in the given course.
+  function getLastCookedDate(dishName, course){
+    const records = loadCookingRecords().filter(r =>
+      r[course] && r[course].name === dishName
+    );
+    if (records.length === 0) return null;
+    return records.reduce((latest, r) => (r.date > latest ? r.date : latest), records[0].date);
+  }
+
   function dishEmoji(name, course){
     if (course === 'side') return '🥗';
     if (course === 'soup') return '🍲';
@@ -3910,6 +3965,9 @@
 
   function showFridgeSearchPage(){
     revealPage(fridgeSearchPage);
+    Object.keys(fridgeChecked).forEach(key => { delete fridgeChecked[key]; });
+    fridgeCategories.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+    fridgeResults.innerHTML = '';
   }
 
   function showSeasonalPage(){
@@ -3968,8 +4026,24 @@
   const fridgeSearchBtn = document.getElementById('fridgeSearchBtn');
   const fridgeResults = document.getElementById('fridgeResults');
 
+  // Some fridge checkboxes are a specific cut (豚バラ/豚こま/牛こま) while the
+  // recipe data just uses the generic ingredient (豚肉/牛肉). This maps a
+  // checked cut onto the generic name so it still matches those recipes.
+  const FRIDGE_CUT_TO_RECIPE_INGREDIENT = {
+    "豚こま": "豚肉",
+    "豚バラ": "豚肉",
+    "牛こま": "牛肉"
+  };
+
   // Keyed by ingredient name; the search below reads straight from this map.
   const fridgeChecked = {};
+
+  function isIngredientChecked(recipeIngredientName){
+    if (fridgeChecked[recipeIngredientName]) return true;
+    return Object.entries(FRIDGE_CUT_TO_RECIPE_INGREDIENT).some(([cut, generic]) =>
+      generic === recipeIngredientName && fridgeChecked[cut]
+    );
+  }
 
   fridgeCategories.addEventListener('change', (e) => {
     const checkbox = e.target.closest('input[type="checkbox"]');
@@ -3989,9 +4063,9 @@
     Object.entries(DISH_DATA).forEach(([category, courses]) => {
       Object.entries(courses).forEach(([course, dishes]) => {
         dishes.forEach(dish => {
-          const have = dish.ingredients.filter(i => fridgeChecked[i.name]);
+          const have = dish.ingredients.filter(i => isIngredientChecked(i.name));
           if (have.length === 0) return;
-          const missing = dish.ingredients.filter(i => !fridgeChecked[i.name]);
+          const missing = dish.ingredients.filter(i => !isIngredientChecked(i.name));
           const entry = { dish, category, course, have, missing };
           if (fridgeFavoritesOnlyMode && !isDishFavorited(entry)) return;
           matches.push(entry);
@@ -4367,6 +4441,7 @@
   const recipeDetailTags = document.getElementById('recipeDetailTags');
   const recipeDetailIngredients = document.getElementById('recipeDetailIngredients');
   const recipeDetailSteps = document.getElementById('recipeDetailSteps');
+  const recipeDetailLastCooked = document.getElementById('recipeDetailLastCooked');
   const recipeDetailFavBtn = document.getElementById('recipeDetailFavBtn');
   const recipeDetailTodayBtn = document.getElementById('recipeDetailTodayBtn');
   const recipeDetailEditBtn = document.getElementById('recipeDetailEditBtn');
@@ -4667,6 +4742,15 @@
       ? dish.steps
       : '作り方はまだ登録されていません。';
 
+    const lastCookedDate = getLastCookedDate(dish.name, course);
+    if (lastCookedDate){
+      recipeDetailLastCooked.textContent = formatDateSlash(lastCookedDate);
+      recipeDetailLastCooked.classList.remove('none');
+    } else {
+      recipeDetailLastCooked.textContent = 'まだ作った記録がありません';
+      recipeDetailLastCooked.classList.add('none');
+    }
+
     const isCustom = !!dish.isCustom;
     recipeDetailEditBtn.style.display = 'inline-flex';
     recipeDetailDeleteBtn.style.display = isCustom ? 'inline-flex' : 'none';
@@ -4948,6 +5032,7 @@
         <div class="record-dish-line">${dishEmoji(r.side.name,'side')} ${r.side.name}</div>
         <div class="record-dish-line">${dishEmoji(r.soup.name,'soup')} ${r.soup.name}</div>
         ${r.note ? `<div class="record-note">💬 ${r.note}</div>` : ''}
+        <button type="button" class="record-again-btn" data-id="${r.id}">🔄 もう一度作る</button>
       </div>
     `).join('');
   }
@@ -5003,12 +5088,47 @@
   }
 
   cookingRecordsList.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('.record-again-btn')) return;
     const group = e.target.closest('.record-date-group');
     if (!group) return;
     startLongPress(Number(group.dataset.id));
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => {
     cookingRecordsList.addEventListener(evt, clearLongPress);
+  });
+
+  // Finds the full recipe (with ingredients) behind a record's saved name,
+  // searching every genre/course since the record itself doesn't store one.
+  function findDishByNameAndCourse(name, course){
+    for (const category of Object.keys(DISH_DATA)){
+      const dish = DISH_DATA[category][course].find(d => d.name === name);
+      if (dish) return { dish, category };
+    }
+    return null;
+  }
+
+  cookingRecordsList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.record-again-btn');
+    if (!btn) return;
+    const record = loadCookingRecords().find(r => r.id === Number(btn.dataset.id));
+    if (!record) return;
+
+    const mainFound = findDishByNameAndCourse(record.main.name, 'main');
+    const sideFound = findDishByNameAndCourse(record.side.name, 'side');
+    const soupFound = findDishByNameAndCourse(record.soup.name, 'soup');
+    const category = (mainFound || sideFound || soupFound || {}).category || currentCategory;
+
+    const menu = {
+      category,
+      main: mainFound ? mainFound.dish : { name: record.main.name, ingredients: [] },
+      side: sideFound ? sideFound.dish : { name: record.side.name, ingredients: [] },
+      soup: soupFound ? soupFound.dish : { name: record.soup.name, ingredients: [] }
+    };
+    const fortunePool = GENERAL_COMMENTS.concat(CATEGORY_COMMENTS[category] || []);
+    menu.fortune = pick(fortunePool);
+
+    saveTodayMenu(menu);
+    showToast('今日の献立に追加しました！');
   });
 
   deleteConfirmYesBtn.addEventListener('click', () => {
