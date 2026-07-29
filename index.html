@@ -2053,14 +2053,22 @@
 
   .delete-confirm-panel{
     max-width:340px;
-    padding:26px 24px 22px;
+    padding:0 0 4px;
   }
   .delete-confirm-text{
     text-align:center;
     font-family:"Shippori Mincho", serif;
     font-size:15px;
     color:var(--ink);
+    margin:20px 0 4px;
+    padding:0 24px;
+  }
+  .delete-confirm-subtext{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
     margin:0 0 4px;
+    padding:0 24px;
   }
   .delete-confirm-yes{
     background:var(--shu) !important;
@@ -2928,11 +2936,18 @@
       <h2 id="addDishModalTitle">＋ 新しい料理を追加</h2>
       <button class="favorites-close-btn" id="addDishCloseBtn" type="button" aria-label="閉じる">×</button>
     </div>
-    <div class="materials-dish-name" id="addDishCourseNote"></div>
     <div class="manual-record-form">
       <div class="manual-record-field">
         <label for="addDishCategorySelect">ジャンル</label>
         <select id="addDishCategorySelect"></select>
+      </div>
+      <div class="manual-record-field">
+        <label for="addDishCourseSelect">カテゴリー</label>
+        <select id="addDishCourseSelect">
+          <option value="main">主菜</option>
+          <option value="side">副菜</option>
+          <option value="soup">汁物</option>
+        </select>
       </div>
       <div class="manual-record-field">
         <label for="addDishNameInput">料理名</label>
@@ -2949,7 +2964,7 @@
       </div>
     </div>
     <div class="shopping-panel-footer">
-      <button class="manual-save-btn" id="addDishSaveBtn" type="button">保存</button>
+      <button class="manual-save-btn" id="addDishSaveBtn" type="button">レシピを追加</button>
       <button class="shopping-close-text-btn" id="addDishCancelBtn" type="button">キャンセル</button>
     </div>
   </div>
@@ -2983,11 +2998,15 @@
 </div>
 
 <div class="favorites-overlay" id="recipeDeleteConfirmOverlay">
-  <div class="favorites-panel delete-confirm-panel" role="dialog" aria-label="レシピの削除確認">
-    <p class="delete-confirm-text">このマイレシピを削除しますか？</p>
+  <div class="favorites-panel delete-confirm-panel" role="dialog" aria-label="レシピを削除">
+    <div class="favorites-panel-header">
+      <h2>🗑️ レシピを削除</h2>
+    </div>
+    <p class="delete-confirm-text" id="recipeDeleteConfirmName"></p>
+    <p class="delete-confirm-subtext">削除したレシピは元に戻せません。</p>
     <div class="shopping-panel-footer">
-      <button class="shopping-copy-btn delete-confirm-yes" id="recipeDeleteConfirmYesBtn" type="button">削除</button>
       <button class="shopping-close-text-btn" id="recipeDeleteConfirmNoBtn" type="button">キャンセル</button>
+      <button class="shopping-copy-btn delete-confirm-yes" id="recipeDeleteConfirmYesBtn" type="button">削除する</button>
     </div>
   </div>
 </div>
@@ -3153,6 +3172,72 @@
       ],
     },
   };
+
+  // Every built-in dish gets a stable id (based on its fixed position in the
+  // DISH_DATA literal, which never changes) so personal edits to standard
+  // recipes can be tracked and re-applied on every load, the same way
+  // my-recipes already are.
+  function assignBuiltInIds(){
+    let counter = 0;
+    Object.values(DISH_DATA).forEach(courses => {
+      Object.values(courses).forEach(dishes => {
+        dishes.forEach(dish => {
+          if (!dish.id) dish.id = `builtin-${counter++}`;
+        });
+      });
+    });
+  }
+  assignBuiltInIds();
+
+  // Personal edits to a built-in recipe (name/ingredients/steps, and
+  // optionally a new category/course if the user moved it) are stored here,
+  // keyed by the dish's stable id, and replayed on top of the built-in data
+  // on every load — the base recipe itself is never modified.
+  const BUILTIN_OVERRIDES_KEY = 'menuGachaBuiltinOverrides';
+
+  function loadBuiltinOverrides(){
+    try{
+      return JSON.parse(localStorage.getItem(BUILTIN_OVERRIDES_KEY) || '[]');
+    }catch(e){
+      return [];
+    }
+  }
+
+  function saveBuiltinOverrides(list){
+    try{
+      localStorage.setItem(BUILTIN_OVERRIDES_KEY, JSON.stringify(list));
+    }catch(e){
+      // storage unavailable; fail silently
+    }
+  }
+
+  function findDishLocation(id){
+    for (const category of Object.keys(DISH_DATA)){
+      for (const course of Object.keys(DISH_DATA[category])){
+        const arr = DISH_DATA[category][course];
+        const idx = arr.findIndex(d => d.id === id);
+        if (idx !== -1) return { category, course, idx, arr };
+      }
+    }
+    return null;
+  }
+
+  function applyBuiltinOverrides(){
+    loadBuiltinOverrides().forEach(ov => {
+      const loc = findDishLocation(ov.id);
+      if (!loc) return;
+      loc.arr.splice(loc.idx, 1);
+      const targetList = DISH_DATA[ov.category] && DISH_DATA[ov.category][ov.course];
+      if (!targetList) return;
+      targetList.push({
+        id: ov.id,
+        name: ov.name,
+        ingredients: ov.ingredients,
+        steps: ov.steps
+      });
+    });
+  }
+  applyBuiltinOverrides();
 
   // User-added dishes are stored separately (with their target category and
   // course) and merged in here on every load, so they behave exactly like
@@ -4197,6 +4282,7 @@
   const recipeDetailEditBtn = document.getElementById('recipeDetailEditBtn');
   const recipeDetailDeleteBtn = document.getElementById('recipeDetailDeleteBtn');
   const recipeDeleteConfirmOverlay = document.getElementById('recipeDeleteConfirmOverlay');
+  const recipeDeleteConfirmName = document.getElementById('recipeDeleteConfirmName');
   const recipeDeleteConfirmYesBtn = document.getElementById('recipeDeleteConfirmYesBtn');
   const recipeDeleteConfirmNoBtn = document.getElementById('recipeDeleteConfirmNoBtn');
 
@@ -4473,7 +4559,7 @@
       : '作り方はまだ登録されていません。';
 
     const isCustom = !!dish.isCustom;
-    recipeDetailEditBtn.style.display = isCustom ? 'inline-flex' : 'none';
+    recipeDetailEditBtn.style.display = 'inline-flex';
     recipeDetailDeleteBtn.style.display = isCustom ? 'inline-flex' : 'none';
 
     recipeDetailOverlay.classList.add('show');
@@ -4514,6 +4600,7 @@
   recipeDetailDeleteBtn.addEventListener('click', () => {
     if (!currentRecipeEntry) return;
     pendingRecipeDelete = currentRecipeEntry;
+    recipeDeleteConfirmName.textContent = `『${currentRecipeEntry.dish.name}』を削除しますか？`;
     recipeDeleteConfirmOverlay.classList.add('show');
   });
 
@@ -4530,7 +4617,7 @@
       pendingRecipeDelete = null;
       recipeDeleteConfirmOverlay.classList.remove('show');
       closeRecipeDetail();
-      renderRecipeBookList(recipeSearchInput.value);
+      showRecipeBookPage();
       showToast('マイレシピを削除しました');
     }
   });
@@ -4912,13 +4999,13 @@
     renderRecordsPage();
   });
 
-  /* --- Add a custom dish, triggered from the main/side/soup dropdowns --- */
+  /* --- Add / edit a dish (used for new my-recipes and for editing any recipe) --- */
   const addDishOverlay = document.getElementById('addDishOverlay');
   const addDishCloseBtn = document.getElementById('addDishCloseBtn');
   const addDishCancelBtn = document.getElementById('addDishCancelBtn');
   const addDishModalTitle = document.getElementById('addDishModalTitle');
-  const addDishCourseNote = document.getElementById('addDishCourseNote');
   const addDishCategorySelect = document.getElementById('addDishCategorySelect');
+  const addDishCourseSelect = document.getElementById('addDishCourseSelect');
   const addDishNameInput = document.getElementById('addDishNameInput');
   const addDishIngredients = document.getElementById('addDishIngredients');
   const addIngredientRowBtn = document.getElementById('addIngredientRowBtn');
@@ -4929,7 +5016,7 @@
 
   let addDishTargetCourse = null; // 'main' | 'side' | 'soup'
   let addDishSource = null; // 'manualSelect' | 'addMenuPage' | 'recipeBookEdit'
-  let editingDishRef = null; // { category, course, id } when editing an existing my-recipe
+  let editingDishRef = null; // { id, isCustom } when editing an existing recipe (standard or my-recipe)
   const dishSelectByCourse = { main: manualMainSelect, side: manualSideSelect, soup: manualSoupSelect };
   const COURSE_LABEL_JA = { main: '主菜', side: '副菜', soup: '汁物' };
 
@@ -4960,9 +5047,11 @@
     addDishSource = source;
     editingDishRef = null;
     addDishModalTitle.textContent = '＋ 新しい料理を追加';
-    addDishCourseNote.textContent = `${COURSE_LABEL_JA[course]}として追加`;
+    addDishSaveBtn.textContent = 'レシピを追加';
     addDishCategorySelect.disabled = false;
     addDishCategorySelect.value = category;
+    addDishCourseSelect.disabled = true;
+    addDishCourseSelect.value = course;
     addDishNameInput.value = '';
     addDishIngredients.innerHTML = '';
     addIngredientRow();
@@ -4972,13 +5061,14 @@
 
   function openEditDishModal(entry){
     const { dish, category, course } = entry;
-    addDishTargetCourse = course;
     addDishSource = 'recipeBookEdit';
-    editingDishRef = { category, course, id: dish.id };
+    editingDishRef = { id: dish.id, isCustom: !!dish.isCustom };
     addDishModalTitle.textContent = '✏️ レシピを編集';
-    addDishCourseNote.textContent = `${COURSE_LABEL_JA[course]}を編集`;
-    addDishCategorySelect.disabled = true;
+    addDishSaveBtn.textContent = 'レシピを保存';
+    addDishCategorySelect.disabled = false;
     addDishCategorySelect.value = category;
+    addDishCourseSelect.disabled = false;
+    addDishCourseSelect.value = course;
     addDishNameInput.value = dish.name;
     addDishIngredients.innerHTML = '';
     dish.ingredients.forEach(ing => {
@@ -5002,6 +5092,7 @@
     addDishSource = null;
     editingDishRef = null;
     addDishCategorySelect.disabled = false;
+    addDishCourseSelect.disabled = false;
   }
 
   Object.entries(dishSelectByCourse).forEach(([course, selectEl]) => {
@@ -5054,30 +5145,35 @@
     }
 
     const steps = addDishStepsInput.value.trim();
-    const course = addDishTargetCourse;
+    const course = addDishCourseSelect.value;
+    const category = addDishCategorySelect.value;
     const source = addDishSource;
 
     if (editingDishRef){
-      const { category, course: origCourse, id } = editingDishRef;
-      const courseList = DISH_DATA[category][origCourse];
-      const target = courseList.find(d => d.id === id);
-      if (target){
-        target.name = name;
-        target.ingredients = ingredients;
-        target.steps = steps;
+      const { id, isCustom } = editingDishRef;
+      const loc = findDishLocation(id);
+      if (loc) loc.arr.splice(loc.idx, 1);
+
+      const updatedDish = { id, name, ingredients, steps };
+      if (isCustom) updatedDish.isCustom = true;
+      DISH_DATA[category][course].push(updatedDish);
+
+      if (isCustom){
+        const customList = loadCustomDishes().filter(e => e.dish.id !== id);
+        customList.push({ category, course, dish: updatedDish });
+        saveCustomDishes(customList);
+      } else {
+        const overrides = loadBuiltinOverrides().filter(o => o.id !== id);
+        overrides.push({ id, category, course, name, ingredients, steps });
+        saveBuiltinOverrides(overrides);
       }
-      const customList = loadCustomDishes();
-      const customEntry = customList.find(e => e.dish.id === id);
-      if (customEntry) customEntry.dish = target;
-      saveCustomDishes(customList);
 
       closeAddDishModal(false);
-      renderRecipeBookList(recipeSearchInput.value);
-      showToast('レシピを更新しました！');
+      showRecipeBookPage();
+      showToast('レシピを保存しました！');
       return;
     }
 
-    const category = addDishCategorySelect.value;
     const newDish = {
       id: `custom-${Date.now()}`,
       name,
