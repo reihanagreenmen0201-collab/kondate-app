@@ -106,6 +106,118 @@
   }
 
   /* --- Home entry hub --- */
+  /* --- Today's menu banner --- */
+  .today-menu-banner{
+    background:
+      linear-gradient(135deg, rgba(184,146,90,0.10), rgba(184,146,90,0.02)),
+      #FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-radius:8px;
+    margin-bottom:22px;
+    box-shadow:0 3px 12px rgba(43,42,40,0.06);
+    overflow:hidden;
+  }
+  .today-menu-banner-header{
+    display:flex;
+    align-items:center;
+    width:100%;
+    background:transparent;
+    border:none;
+    flex-wrap:nowrap;
+    gap:9px;
+    padding:12px 16px;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .today-menu-banner-title{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--indigo);
+    white-space:nowrap;
+  }
+  .today-menu-banner-badge{
+    flex-shrink:0;
+    margin-left:auto;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--gold);
+    border:1px solid var(--gold);
+    border-radius:999px;
+    padding:3px 11px;
+    white-space:nowrap;
+  }
+  .today-menu-chevron{
+    flex-shrink:0;
+    width:14px;
+    height:14px;
+    color:var(--ink-soft);
+    transition:transform .25s ease;
+  }
+  .today-menu-banner-header[aria-expanded="true"] .today-menu-chevron{
+    transform:rotate(90deg);
+  }
+
+  .today-menu-banner-body{
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    transition:max-height .3s cubic-bezier(.2,.8,.2,1), opacity .25s ease;
+  }
+  .today-menu-banner-body.open{
+    max-height:220px;
+    opacity:1;
+  }
+  .today-menu-banner-dishes{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    padding:0 16px;
+    margin-bottom:12px;
+  }
+  .today-menu-row{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    font-size:13px;
+    color:var(--ink);
+  }
+  .today-menu-role{
+    flex-shrink:0;
+    font-size:10.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    letter-spacing:0.04em;
+    width:32px;
+  }
+  .today-menu-name{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+  }
+  .today-menu-cook-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    margin:0 16px 14px;
+    background:transparent;
+    border:1px solid var(--shu);
+    border-radius:999px;
+    padding:8px 18px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--shu);
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .today-menu-cook-btn:hover{
+    background:var(--shu);
+    color:#FBF8F0;
+  }
+
   .home-hero{
     text-align:center;
     margin-bottom:8px;
@@ -416,6 +528,225 @@
     cursor:default;
     background:transparent;
     color:var(--indigo);
+  }
+
+  /* --- Recipe book --- */
+  .recipe-search-bar{
+    position:relative;
+    margin-top:26px;
+  }
+  .recipe-search-input{
+    display:block;
+    width:100%;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    background:#FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-radius:999px;
+    padding:11px 46px 11px 18px;
+  }
+  .recipe-search-input::placeholder{
+    color:var(--ink-soft);
+  }
+  .recipe-filter-icon-btn{
+    position:absolute;
+    top:50%;
+    right:6px;
+    transform:translateY(-50%);
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:none;
+    border-radius:50%;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .recipe-filter-icon-btn svg{
+    width:16px;
+    height:16px;
+  }
+  .recipe-filter-icon-btn:hover{
+    background:rgba(184,146,90,0.12);
+    color:var(--indigo);
+  }
+  .recipe-filter-badge{
+    position:absolute;
+    top:1px;
+    right:1px;
+    min-width:15px;
+    height:15px;
+    padding:0 3px;
+    border-radius:999px;
+    background:var(--shu);
+    color:#FBF8F0;
+    font-size:9.5px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+  }
+
+  .recipe-filter-groups{
+    margin-top:6px;
+    padding:14px 22px 6px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .recipe-filter-group-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-bottom:7px;
+  }
+  .recipe-filter-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .recipe-filter-chip{
+    background:#FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-radius:999px;
+    padding:6px 15px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .recipe-filter-chip:hover{
+    border-color:var(--gold);
+  }
+  .filter-chip-count{
+    font-size:10.5px;
+    font-weight:500;
+    opacity:0.68;
+    margin-left:3px;
+  }
+  .recipe-filter-chip.active{
+    background:var(--indigo);
+    border-color:var(--indigo);
+    color:#FBF8F0;
+  }
+  #otherFilterChips .recipe-filter-chip.active{
+    background:var(--shu);
+    border-color:var(--shu);
+  }
+
+  .recipe-result-count{
+    margin-top:22px;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    transition:opacity .2s ease;
+  }
+
+  .recipe-book-list{
+    margin-top:12px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .recipe-book-list.fade{
+    animation:pageFadeIn .25s ease;
+  }
+  .recipe-no-results{
+    text-align:center;
+    padding:44px 16px;
+    color:var(--ink-soft);
+  }
+  .recipe-no-results-icon{
+    display:block;
+    font-size:30px;
+    margin-bottom:10px;
+    opacity:0.7;
+  }
+  .recipe-no-results-text{
+    font-size:13px;
+  }
+
+  .recipe-card{
+    background:#FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-left:4px solid var(--indigo);
+    border-radius:2px;
+    padding:16px 18px 18px;
+  }
+  .recipe-card-top{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:4px;
+  }
+  .recipe-card-name-wrap{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .recipe-card-name{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:16px;
+    color:var(--ink);
+  }
+  .my-recipe-label{
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:0.03em;
+    color:var(--shu);
+    border:1px solid var(--shu);
+    border-radius:999px;
+    padding:2px 8px;
+    white-space:nowrap;
+  }
+  .recipe-card-ingredients{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin:8px 0 12px;
+    line-height:1.6;
+  }
+
+  .recipe-detail-section{
+    margin-top:16px;
+    padding:0 22px;
+  }
+  .recipe-detail-section-title{
+    font-size:11.5px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .recipe-detail-steps{
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.9;
+    white-space:pre-wrap;
+    margin:0;
+  }
+  .recipe-detail-actions{
+    flex-wrap:wrap;
+  }
+  .recipe-detail-delete-btn{
+    color:var(--shu);
+    border-color:var(--shu);
+  }
+  .recipe-detail-delete-btn:hover{
+    background:var(--shu);
+    color:#FBF8F0;
   }
 
   /* --- Seasonal ingredient cards --- */
@@ -788,6 +1119,36 @@
     font-size:11px;
     color:var(--ink-soft);
     letter-spacing:0.08em;
+  }
+
+  .site-footer-nav{
+    margin-top:100px;
+    padding-top:24px;
+    padding-bottom:16px;
+    border-top:1px solid rgba(43,42,40,0.07);
+    text-align:center;
+    line-height:2.1;
+  }
+  .site-footer-link{
+    background:transparent;
+    border:none;
+    padding:2px 3px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:11px;
+    color:var(--ink-soft);
+    cursor:pointer;
+    opacity:0.85;
+    transition:color .15s ease, opacity .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .site-footer-link:hover{
+    color:var(--indigo);
+    opacity:1;
+  }
+  .site-footer-dot{
+    color:var(--paper-dark);
+    font-size:11px;
+    margin:0 1px;
   }
 
   .fortune{
@@ -1899,6 +2260,14 @@
         </svg>
         作った記録
       </button>
+      <button class="side-menu-item" id="menuGoRecipeBookBtn" type="button">
+        <svg class="side-menu-item-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4,4.6 H10 V16.4 H4 a1,1 0 0 1 -1,-1 V5.6 a1,1 0 0 1 1,-1 Z"/>
+          <path d="M16,4.6 H10 V16.4 H16 a1,1 0 0 0 1,-1 V5.6 a1,1 0 0 0 -1,-1 Z"/>
+          <path d="M4.8,7.4 H8.4 M4.8,10 H8.4 M11.6,7.4 H15.2 M11.6,10 H15.2"/>
+        </svg>
+        ごはん図鑑
+      </button>
       <button class="side-menu-item" id="menuGoAddMenuBtn" type="button">
         <svg class="side-menu-item-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="10" cy="10" r="7"/>
@@ -1955,6 +2324,20 @@
 </svg>
 
 <div class="stage" id="homePage">
+  <div class="today-menu-banner" id="todayMenuBanner" style="display:none;">
+    <button type="button" class="today-menu-banner-header" id="todayMenuBannerToggle" aria-expanded="false" aria-controls="todayMenuBannerBody">
+      <span class="today-menu-banner-title">🍚 今日の献立</span>
+      <span class="today-menu-banner-badge">今日作る予定</span>
+      <svg class="today-menu-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7,5 L13,10 L7,15"/>
+      </svg>
+    </button>
+    <div class="today-menu-banner-body" id="todayMenuBannerBody">
+      <div class="today-menu-banner-dishes" id="todayMenuBannerDishes"></div>
+      <button type="button" class="today-menu-cook-btn" id="todayMenuCookBtn">🍳 今日作った！</button>
+    </div>
+  </div>
+
   <header class="home-hero">
     <div class="eyebrow">HOME</div>
     <h1>おうちごはん</h1>
@@ -1987,6 +2370,22 @@
   </div>
 
   <footer>気分に合わせて選んでみてください</footer>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
 </div>
 
 <div class="stage records-page" id="omakasePage" style="display:none;">
@@ -2093,6 +2492,22 @@
   </div>
 
   <footer>何度でも押して、決め直せます</footer>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
 </div>
 
 <div class="stage records-page" id="recordsPage" style="display:none;">
@@ -2130,6 +2545,22 @@
     <h2 class="records-section-title">📊 今月作った回数</h2>
     <div class="records-ranking" id="cookingRanking"></div>
   </div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
 </div>
 
 <div class="stage records-page" id="addMenuPage" style="display:none;">
@@ -2159,6 +2590,22 @@
       <span class="add-menu-card-label">汁物を追加</span>
     </button>
   </div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
 </div>
 
 <div class="stage records-page" id="fridgeSearchPage" style="display:none;">
@@ -2221,6 +2668,22 @@
   </div>
 
   <div class="fridge-results" id="fridgeResults"></div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
 </div>
 
 <div class="stage records-page" id="seasonalPage" style="display:none;">
@@ -2239,6 +2702,22 @@
   <div class="seasonal-ingredient-grid" id="seasonalIngredientGrid"></div>
 
   <div class="fridge-results" id="seasonalResults"></div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
 </div>
 
 <div class="stage records-page" id="pantryPage" style="display:none;">
@@ -2291,6 +2770,110 @@
   <div class="fridge-search-wrap">
     <button type="button" class="fridge-search-btn" id="pantrySaveBtn">保存</button>
   </div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+  </nav>
+</div>
+
+<div class="stage records-page" id="recipeBookPage" style="display:none;">
+  <div class="top-nav">
+    <button class="fav-nav-btn" id="recipeBookBackHomeBtn" type="button">
+      <span class="fav-nav-icon">←</span> ホームに戻る
+    </button>
+    <button class="fav-nav-btn" id="recipeBookAddBtn" type="button">
+      <span class="fav-nav-icon">＋</span> レシピを追加
+    </button>
+  </div>
+
+  <header class="records-header">
+    <div class="eyebrow">RECIPE BOOK</div>
+    <h1 class="records-title">📖 ごはん図鑑</h1>
+    <p class="sub">アプリに登録されているレシピを、まとめて見てみましょう。</p>
+  </header>
+
+  <div class="recipe-search-bar">
+    <input type="text" class="recipe-search-input" id="recipeSearchInput" placeholder="料理名で検索">
+    <button type="button" class="recipe-filter-icon-btn" id="recipeFilterOpenBtn" aria-label="絞り込み">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3.5,5 H16.5 L11.5,10.8 V15.5 L8.5,17 V10.8 Z"/>
+      </svg>
+      <span class="recipe-filter-badge" id="recipeFilterBadge" style="display:none;">0</span>
+    </button>
+  </div>
+
+  <div class="recipe-result-count" id="recipeResultCount"></div>
+
+  <div class="recipe-book-list" id="recipeBookList"></div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
+</div>
+
+<div class="favorites-overlay" id="recipeFilterOverlay">
+  <div class="favorites-panel" role="dialog" aria-label="絞り込み">
+    <div class="favorites-panel-header">
+      <h2>絞り込み</h2>
+      <button class="favorites-close-btn" id="recipeFilterCloseBtn" type="button" aria-label="閉じる">×</button>
+    </div>
+
+    <div class="recipe-filter-groups">
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">カテゴリー</div>
+        <div class="recipe-filter-chips" id="courseFilterChips">
+          <button type="button" class="recipe-filter-chip active" data-course="all"><span class="filter-chip-label">すべて</span></button>
+          <button type="button" class="recipe-filter-chip" data-course="main"><span class="filter-chip-label">主菜</span></button>
+          <button type="button" class="recipe-filter-chip" data-course="side"><span class="filter-chip-label">副菜</span></button>
+          <button type="button" class="recipe-filter-chip" data-course="soup"><span class="filter-chip-label">汁物</span></button>
+        </div>
+      </div>
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">ジャンル</div>
+        <div class="recipe-filter-chips" id="genreFilterChips">
+          <button type="button" class="recipe-filter-chip" data-genre="和食"><span class="filter-chip-label">和食</span></button>
+          <button type="button" class="recipe-filter-chip" data-genre="洋食"><span class="filter-chip-label">洋食</span></button>
+          <button type="button" class="recipe-filter-chip" data-genre="中華"><span class="filter-chip-label">中華</span></button>
+        </div>
+      </div>
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">その他</div>
+        <div class="recipe-filter-chips" id="otherFilterChips">
+          <button type="button" class="recipe-filter-chip" data-other="favorite"><span class="filter-chip-label">⭐ お気に入り</span></button>
+          <button type="button" class="recipe-filter-chip" data-other="myrecipe"><span class="filter-chip-label">👩 マイレシピ</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="shopping-panel-footer">
+      <button type="button" class="manual-save-btn" id="recipeFilterApplyBtn">適用</button>
+      <button type="button" class="shopping-close-text-btn" id="recipeFilterResetBtn">リセット</button>
+    </div>
+  </div>
 </div>
 
 <div class="favorites-overlay" id="deleteConfirmOverlay">
@@ -2342,7 +2925,7 @@
 <div class="favorites-overlay" id="addDishOverlay">
   <div class="favorites-panel" role="dialog" aria-label="新しい料理を追加">
     <div class="favorites-panel-header">
-      <h2>＋ 新しい料理を追加</h2>
+      <h2 id="addDishModalTitle">＋ 新しい料理を追加</h2>
       <button class="favorites-close-btn" id="addDishCloseBtn" type="button" aria-label="閉じる">×</button>
     </div>
     <div class="materials-dish-name" id="addDishCourseNote"></div>
@@ -2360,10 +2943,51 @@
         <div class="add-dish-ingredients" id="addDishIngredients"></div>
         <button type="button" class="add-ingredient-row-btn" id="addIngredientRowBtn">＋ 材料を追加</button>
       </div>
+      <div class="manual-record-field">
+        <label for="addDishStepsInput">作り方（任意）</label>
+        <textarea id="addDishStepsInput" placeholder="例：1. 鶏むね肉を一口大に切る&#10;2. 野菜と炒める&#10;3. 調味料を加えて煮絡める"></textarea>
+      </div>
     </div>
     <div class="shopping-panel-footer">
       <button class="manual-save-btn" id="addDishSaveBtn" type="button">保存</button>
       <button class="shopping-close-text-btn" id="addDishCancelBtn" type="button">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<div class="favorites-overlay" id="recipeDetailOverlay">
+  <div class="favorites-panel" role="dialog" aria-label="レシピ詳細">
+    <div class="favorites-panel-header">
+      <h2 id="recipeDetailName">料理名</h2>
+      <button class="favorites-close-btn" id="recipeDetailCloseBtn" type="button" aria-label="閉じる">×</button>
+    </div>
+    <div class="materials-dish-name" id="recipeDetailTags"></div>
+
+    <div class="recipe-detail-section">
+      <div class="recipe-detail-section-title">材料</div>
+      <div class="shopping-list" id="recipeDetailIngredients"></div>
+    </div>
+
+    <div class="recipe-detail-section">
+      <div class="recipe-detail-section-title">作り方</div>
+      <p class="recipe-detail-steps" id="recipeDetailSteps"></p>
+    </div>
+
+    <div class="shopping-panel-footer recipe-detail-actions" id="recipeDetailActions">
+      <button type="button" class="fridge-result-fav-btn" id="recipeDetailFavBtn">⭐ お気に入り</button>
+      <button type="button" class="fridge-result-choose-btn" id="recipeDetailTodayBtn">🍚 今日の献立にする</button>
+      <button type="button" class="shopping-close-text-btn" id="recipeDetailEditBtn" style="display:none;">✏️ 編集</button>
+      <button type="button" class="shopping-close-text-btn recipe-detail-delete-btn" id="recipeDetailDeleteBtn" style="display:none;">🗑️ 削除</button>
+    </div>
+  </div>
+</div>
+
+<div class="favorites-overlay" id="recipeDeleteConfirmOverlay">
+  <div class="favorites-panel delete-confirm-panel" role="dialog" aria-label="レシピの削除確認">
+    <p class="delete-confirm-text">このマイレシピを削除しますか？</p>
+    <div class="shopping-panel-footer">
+      <button class="shopping-copy-btn delete-confirm-yes" id="recipeDeleteConfirmYesBtn" type="button">削除</button>
+      <button class="shopping-close-text-btn" id="recipeDeleteConfirmNoBtn" type="button">キャンセル</button>
     </div>
   </div>
 </div>
@@ -2759,23 +3383,24 @@
     `).join('');
   }
 
-  function saveCurrentMenuToFavorites(){
-    if (!currentMenu) return;
+  function saveCurrentMenuToFavorites(menuToSave){
+    const menu = menuToSave || currentMenu;
+    if (!menu) return;
     const list = loadFavorites();
     const alreadySaved = list.some(item =>
-      item.category === currentMenu.category &&
-      item.main.name === currentMenu.main.name &&
-      item.side.name === currentMenu.side.name &&
-      item.soup.name === currentMenu.soup.name
+      item.category === menu.category &&
+      item.main.name === menu.main.name &&
+      item.side.name === menu.side.name &&
+      item.soup.name === menu.soup.name
     );
     if (!alreadySaved){
       list.push({
         id: Date.now(),
-        category: currentMenu.category,
-        main: currentMenu.main,
-        side: currentMenu.side,
-        soup: currentMenu.soup,
-        fortune: currentMenu.fortune,
+        category: menu.category,
+        main: menu.main,
+        side: menu.side,
+        soup: menu.soup,
+        fortune: menu.fortune,
         savedAt: new Date().toLocaleDateString('ja-JP')
       });
       saveFavorites(list);
@@ -2993,7 +3618,8 @@
   const fridgeSearchPage = document.getElementById('fridgeSearchPage');
   const seasonalPage = document.getElementById('seasonalPage');
   const pantryPage = document.getElementById('pantryPage');
-  const ALL_PAGES = [homePage, omakasePage, recordsPage, addMenuPage, fridgeSearchPage, seasonalPage, pantryPage];
+  const recipeBookPage = document.getElementById('recipeBookPage');
+  const ALL_PAGES = [homePage, omakasePage, recordsPage, addMenuPage, fridgeSearchPage, seasonalPage, pantryPage, recipeBookPage];
   const recordsNavBtn = document.getElementById('recordsNavBtn');
   const omakaseBackHomeBtn = document.getElementById('omakaseBackHomeBtn');
   const backHomeBtn = document.getElementById('backHomeBtn');
@@ -3001,6 +3627,8 @@
   const fridgeBackHomeBtn = document.getElementById('fridgeBackHomeBtn');
   const seasonalBackHomeBtn = document.getElementById('seasonalBackHomeBtn');
   const pantryBackHomeBtn = document.getElementById('pantryBackHomeBtn');
+  const recipeBookBackHomeBtn = document.getElementById('recipeBookBackHomeBtn');
+  const recipeBookAddBtn = document.getElementById('recipeBookAddBtn');
   const entryOmakaseCard = document.getElementById('entryOmakaseCard');
   const entryFridgeCard = document.getElementById('entryFridgeCard');
   const entrySeasonalCard = document.getElementById('entrySeasonalCard');
@@ -3096,6 +3724,7 @@
 
   function showHome(){
     revealPage(homePage);
+    renderTodayMenuBanner();
   }
 
   function showOmakase(){
@@ -3129,6 +3758,17 @@
     revealPage(pantryPage);
   }
 
+  function showRecipeBookPage(){
+    revealPage(recipeBookPage);
+    recipeSearchInput.value = '';
+    recipeFilters.courses.clear();
+    recipeFilters.genres.clear();
+    recipeFilters.onlyFavorite = false;
+    recipeFilters.onlyMyRecipe = false;
+    updateFilterChipsUI();
+    renderRecipeBookList('');
+  }
+
   entryOmakaseCard.addEventListener('click', showOmakase);
   entryFridgeCard.addEventListener('click', showFridgeSearchPage);
   entrySeasonalCard.addEventListener('click', showSeasonalPage);
@@ -3140,6 +3780,25 @@
   fridgeBackHomeBtn.addEventListener('click', showHome);
   seasonalBackHomeBtn.addEventListener('click', showHome);
   pantryBackHomeBtn.addEventListener('click', showHome);
+  recipeBookBackHomeBtn.addEventListener('click', showHome);
+  recipeBookAddBtn.addEventListener('click', showAddMenuPage);
+
+  const siteFooterPageMap = {
+    home: showHome,
+    omakase: showOmakase,
+    fridge: showFridgeSearchPage,
+    seasonal: showSeasonalPage,
+    recipeBook: showRecipeBookPage,
+    records: showRecords,
+    addMenu: showAddMenuPage,
+    pantry: showPantryPage
+  };
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('.site-footer-link');
+    if (!link) return;
+    const go = siteFooterPageMap[link.dataset.page];
+    if (go) go();
+  });
 
   /* --- Fridge search page --- */
   const fridgeCategories = document.querySelector('.fridge-categories');
@@ -3354,7 +4013,7 @@
 
         <div class="fridge-result-actions">
           <button type="button" class="fridge-result-fav-btn" data-index="${i}">♡ お気に入り</button>
-          <button type="button" class="fridge-result-choose-btn" data-index="${i}">この献立を選ぶ</button>
+          <button type="button" class="fridge-result-choose-btn" data-index="${i}">🍚 今日の献立にする</button>
         </div>
       </div>
     `).join('');
@@ -3389,6 +4048,84 @@
     applyMenu(menu, false);
     showOmakase();
   }
+
+  /* --- Today's menu (home banner) --- */
+  const TODAY_MENU_KEY = 'menuGachaTodayMenu';
+  const todayMenuBanner = document.getElementById('todayMenuBanner');
+  const todayMenuBannerToggle = document.getElementById('todayMenuBannerToggle');
+  const todayMenuBannerBody = document.getElementById('todayMenuBannerBody');
+  const todayMenuBannerDishes = document.getElementById('todayMenuBannerDishes');
+  const todayMenuCookBtn = document.getElementById('todayMenuCookBtn');
+
+  function loadTodayMenu(){
+    try{
+      return JSON.parse(localStorage.getItem(TODAY_MENU_KEY) || 'null');
+    }catch(e){
+      return null;
+    }
+  }
+
+  function saveTodayMenu(menu){
+    try{
+      localStorage.setItem(TODAY_MENU_KEY, JSON.stringify(menu));
+    }catch(e){
+      // storage unavailable; fail silently
+    }
+  }
+
+  function clearTodayMenu(){
+    try{
+      localStorage.removeItem(TODAY_MENU_KEY);
+    }catch(e){
+      // storage unavailable; fail silently
+    }
+  }
+
+  function renderTodayMenuBanner(){
+    const menu = loadTodayMenu();
+    if (!menu){
+      todayMenuBanner.style.display = 'none';
+      return;
+    }
+    todayMenuBannerDishes.innerHTML = `
+      <div class="today-menu-row"><span class="today-menu-role">主菜</span><span class="today-menu-name">${menu.main.name}</span></div>
+      <div class="today-menu-row"><span class="today-menu-role">副菜</span><span class="today-menu-name">${menu.side.name}</span></div>
+      <div class="today-menu-row"><span class="today-menu-role">汁物</span><span class="today-menu-name">${menu.soup.name}</span></div>
+    `;
+    // always start collapsed so the banner stays out of the way by default
+    todayMenuBannerBody.classList.remove('open');
+    todayMenuBannerToggle.setAttribute('aria-expanded', 'false');
+    todayMenuBanner.style.display = 'block';
+  }
+
+  todayMenuBannerToggle.addEventListener('click', () => {
+    const isOpen = todayMenuBannerBody.classList.toggle('open');
+    todayMenuBannerToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  function setAsTodayMenu(match){
+    const menu = buildMenuAroundDish(match.dish, match.course, match.category);
+    saveTodayMenu(menu);
+    showToast('今日の献立にしました！');
+    showHome();
+  }
+
+  todayMenuCookBtn.addEventListener('click', () => {
+    const menu = loadTodayMenu();
+    if (!menu) return;
+    const list = loadCookingRecords();
+    list.push({
+      id: Date.now(),
+      date: todayDateStr(),
+      main: { name: menu.main.name },
+      side: { name: menu.side.name },
+      soup: { name: menu.soup.name }
+    });
+    saveCookingRecords(list);
+    clearTodayMenu();
+    renderTodayMenuBanner();
+    showToast('作った記録に保存しました！');
+  });
 
   function renderSeasonalPage(){
     const season = getCurrentSeason();
@@ -3428,7 +4165,7 @@
     const chooseBtn = e.target.closest('.fridge-result-choose-btn');
     if (chooseBtn){
       const match = seasonalMatches[Number(chooseBtn.dataset.index)];
-      if (match) selectSeasonalDish(match);
+      if (match) setAsTodayMenu(match);
       return;
     }
 
@@ -3446,12 +4183,377 @@
     }
   });
 
+  /* --- Recipe book ("ごはん図鑑") --- */
+  const recipeSearchInput = document.getElementById('recipeSearchInput');
+  const recipeBookList = document.getElementById('recipeBookList');
+  const recipeDetailOverlay = document.getElementById('recipeDetailOverlay');
+  const recipeDetailCloseBtn = document.getElementById('recipeDetailCloseBtn');
+  const recipeDetailName = document.getElementById('recipeDetailName');
+  const recipeDetailTags = document.getElementById('recipeDetailTags');
+  const recipeDetailIngredients = document.getElementById('recipeDetailIngredients');
+  const recipeDetailSteps = document.getElementById('recipeDetailSteps');
+  const recipeDetailFavBtn = document.getElementById('recipeDetailFavBtn');
+  const recipeDetailTodayBtn = document.getElementById('recipeDetailTodayBtn');
+  const recipeDetailEditBtn = document.getElementById('recipeDetailEditBtn');
+  const recipeDetailDeleteBtn = document.getElementById('recipeDetailDeleteBtn');
+  const recipeDeleteConfirmOverlay = document.getElementById('recipeDeleteConfirmOverlay');
+  const recipeDeleteConfirmYesBtn = document.getElementById('recipeDeleteConfirmYesBtn');
+  const recipeDeleteConfirmNoBtn = document.getElementById('recipeDeleteConfirmNoBtn');
+
+  let recipeIndex = [];
+  let currentRecipeEntry = null;
+  let pendingRecipeDelete = null;
+
+  // Every dish in DISH_DATA, tagged with where it lives — this is the single
+  // source the search box, cards, and detail modal all read from.
+  function buildRecipeIndex(){
+    const index = [];
+    Object.entries(DISH_DATA).forEach(([category, courses]) => {
+      Object.entries(courses).forEach(([course, dishes]) => {
+        dishes.forEach(dish => {
+          index.push({ dish, category, course });
+        });
+      });
+    });
+    return index;
+  }
+
+  const courseFilterChips = document.getElementById('courseFilterChips');
+  const genreFilterChips = document.getElementById('genreFilterChips');
+  const otherFilterChips = document.getElementById('otherFilterChips');
+  const recipeResultCount = document.getElementById('recipeResultCount');
+  const recipeFilterOpenBtn = document.getElementById('recipeFilterOpenBtn');
+  const recipeFilterOverlay = document.getElementById('recipeFilterOverlay');
+  const recipeFilterCloseBtn = document.getElementById('recipeFilterCloseBtn');
+  const recipeFilterApplyBtn = document.getElementById('recipeFilterApplyBtn');
+  const recipeFilterResetBtn = document.getElementById('recipeFilterResetBtn');
+  const recipeFilterBadge = document.getElementById('recipeFilterBadge');
+
+  const recipeFilters = {
+    courses: new Set(),   // empty = "すべて"
+    genres: new Set(),    // empty = all genres
+    onlyFavorite: false,
+    onlyMyRecipe: false
+  };
+
+  function isDishFavorited(entry){
+    return loadFavorites().some(f =>
+      f.category === entry.category &&
+      f[entry.course] &&
+      f[entry.course].name === entry.dish.name
+    );
+  }
+
+  function updateFilterBadge(){
+    const count = recipeFilters.courses.size + recipeFilters.genres.size +
+      (recipeFilters.onlyFavorite ? 1 : 0) + (recipeFilters.onlyMyRecipe ? 1 : 0);
+    recipeFilterBadge.textContent = count;
+    recipeFilterBadge.style.display = count > 0 ? 'flex' : 'none';
+  }
+
+  function passesFilters(entry, q, skip){
+    skip = skip || {};
+    const matchesSearch = !q || entry.dish.name.includes(q);
+    const matchesCourse = skip.course || recipeFilters.courses.size === 0 || recipeFilters.courses.has(entry.course);
+    const matchesGenre = skip.genre || recipeFilters.genres.size === 0 || recipeFilters.genres.has(entry.category);
+    const matchesFavorite = skip.favorite || !recipeFilters.onlyFavorite || isDishFavorited(entry);
+    const matchesMyRecipe = skip.myrecipe || !recipeFilters.onlyMyRecipe || !!entry.dish.isCustom;
+    return matchesSearch && matchesCourse && matchesGenre && matchesFavorite && matchesMyRecipe;
+  }
+
+  function setChipCount(chip, count){
+    let countEl = chip.querySelector('.filter-chip-count');
+    if (!countEl){
+      countEl = document.createElement('span');
+      countEl.className = 'filter-chip-count';
+      chip.appendChild(countEl);
+    }
+    countEl.textContent = `（${count}）`;
+  }
+
+  function updateFilterCounts(query){
+    const fullIndex = buildRecipeIndex();
+    const q = (query || '').trim();
+
+    const forCourse = fullIndex.filter(e => passesFilters(e, q, { course: true }));
+    setChipCount(courseFilterChips.querySelector('[data-course="all"]'), forCourse.length);
+    ['main', 'side', 'soup'].forEach(course => {
+      setChipCount(
+        courseFilterChips.querySelector(`[data-course="${course}"]`),
+        forCourse.filter(e => e.course === course).length
+      );
+    });
+
+    const forGenre = fullIndex.filter(e => passesFilters(e, q, { genre: true }));
+    ['和食', '洋食', '中華'].forEach(genre => {
+      setChipCount(
+        genreFilterChips.querySelector(`[data-genre="${genre}"]`),
+        forGenre.filter(e => e.category === genre).length
+      );
+    });
+
+    const forFavorite = fullIndex.filter(e => passesFilters(e, q, { favorite: true }));
+    setChipCount(
+      otherFilterChips.querySelector('[data-other="favorite"]'),
+      forFavorite.filter(e => isDishFavorited(e)).length
+    );
+    const forMyRecipe = fullIndex.filter(e => passesFilters(e, q, { myrecipe: true }));
+    setChipCount(
+      otherFilterChips.querySelector('[data-other="myrecipe"]'),
+      forMyRecipe.filter(e => !!e.dish.isCustom).length
+    );
+  }
+
+  function updateFilterChipsUI(){
+    courseFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      const isAll = chip.dataset.course === 'all';
+      const active = isAll ? recipeFilters.courses.size === 0 : recipeFilters.courses.has(chip.dataset.course);
+      chip.classList.toggle('active', active);
+    });
+    genreFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      chip.classList.toggle('active', recipeFilters.genres.has(chip.dataset.genre));
+    });
+    otherFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      const active = chip.dataset.other === 'favorite' ? recipeFilters.onlyFavorite : recipeFilters.onlyMyRecipe;
+      chip.classList.toggle('active', active);
+    });
+    updateFilterBadge();
+    updateFilterCounts(recipeSearchInput.value);
+  }
+
+  recipeFilterOpenBtn.addEventListener('click', () => {
+    recipeFilterOverlay.classList.add('show');
+  });
+  recipeFilterCloseBtn.addEventListener('click', () => {
+    recipeFilterOverlay.classList.remove('show');
+  });
+  recipeFilterOverlay.addEventListener('click', (e) => {
+    if (e.target === recipeFilterOverlay){
+      recipeFilterOverlay.classList.remove('show');
+    }
+  });
+  recipeFilterApplyBtn.addEventListener('click', () => {
+    // filters already apply live as they're toggled; this just confirms and closes
+    recipeFilterOverlay.classList.remove('show');
+  });
+  recipeFilterResetBtn.addEventListener('click', () => {
+    recipeFilters.courses.clear();
+    recipeFilters.genres.clear();
+    recipeFilters.onlyFavorite = false;
+    recipeFilters.onlyMyRecipe = false;
+    updateFilterChipsUI();
+    renderRecipeBookList(recipeSearchInput.value);
+  });
+
+  courseFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    if (chip.dataset.course === 'all'){
+      recipeFilters.courses.clear();
+    } else {
+      if (recipeFilters.courses.has(chip.dataset.course)){
+        recipeFilters.courses.delete(chip.dataset.course);
+      } else {
+        recipeFilters.courses.add(chip.dataset.course);
+      }
+    }
+    updateFilterChipsUI();
+    renderRecipeBookList(recipeSearchInput.value);
+  });
+
+  genreFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    const genre = chip.dataset.genre;
+    if (recipeFilters.genres.has(genre)){
+      recipeFilters.genres.delete(genre);
+    } else {
+      recipeFilters.genres.add(genre);
+    }
+    updateFilterChipsUI();
+    renderRecipeBookList(recipeSearchInput.value);
+  });
+
+  otherFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    if (chip.dataset.other === 'favorite'){
+      recipeFilters.onlyFavorite = !recipeFilters.onlyFavorite;
+    } else {
+      recipeFilters.onlyMyRecipe = !recipeFilters.onlyMyRecipe;
+    }
+    updateFilterChipsUI();
+    renderRecipeBookList(recipeSearchInput.value);
+  });
+
+  function renderRecipeBookList(query){
+    const fullIndex = buildRecipeIndex();
+    const q = (query || '').trim();
+
+    const filtered = fullIndex.filter(entry => {
+      const matchesSearch = !q || entry.dish.name.includes(q);
+      const matchesCourse = recipeFilters.courses.size === 0 || recipeFilters.courses.has(entry.course);
+      const matchesGenre = recipeFilters.genres.size === 0 || recipeFilters.genres.has(entry.category);
+      const matchesFavorite = !recipeFilters.onlyFavorite || isDishFavorited(entry);
+      const matchesMyRecipe = !recipeFilters.onlyMyRecipe || !!entry.dish.isCustom;
+      return matchesSearch && matchesCourse && matchesGenre && matchesFavorite && matchesMyRecipe;
+    });
+
+    recipeResultCount.textContent = `${filtered.length}件のレシピ`;
+
+    if (filtered.length === 0){
+      recipeBookList.innerHTML = `
+        <div class="recipe-no-results">
+          <span class="recipe-no-results-icon">🍚</span>
+          <span class="recipe-no-results-text">条件に合うレシピが見つかりませんでした</span>
+        </div>
+      `;
+      recipeIndex = [];
+      return;
+    }
+
+    recipeBookList.classList.remove('fade');
+    void recipeBookList.offsetWidth;
+    recipeBookList.classList.add('fade');
+
+    recipeBookList.innerHTML = filtered.map((entry, i) => {
+      const previewNames = entry.dish.ingredients.slice(0, 4).map(ing => ing.name).join('・');
+      return `
+        <div class="recipe-card">
+          <div class="recipe-card-top">
+            <span class="recipe-card-name-wrap">
+              <span class="recipe-card-name">${entry.dish.name}</span>
+              ${entry.dish.isCustom ? '<span class="my-recipe-label">マイレシピ</span>' : ''}
+            </span>
+            <span class="fridge-result-tags">
+              <span class="fridge-result-tag category">${entry.category}</span>
+              <span class="fridge-result-tag course">${COURSE_LABEL_JA[entry.course]}</span>
+            </span>
+          </div>
+          <div class="recipe-card-ingredients">${previewNames}</div>
+          <button type="button" class="material-btn recipe-detail-open-btn" data-index="${i}">詳細を見る</button>
+        </div>
+      `;
+    }).join('');
+
+    // keep the filtered set around so card clicks can look themselves up by index
+    recipeIndex = filtered;
+  }
+
+  recipeSearchInput.addEventListener('input', () => {
+    renderRecipeBookList(recipeSearchInput.value);
+    updateFilterCounts(recipeSearchInput.value);
+  });
+
+  recipeBookList.addEventListener('click', (e) => {
+    const btn = e.target.closest('.recipe-detail-open-btn');
+    if (!btn) return;
+    const entry = recipeIndex[Number(btn.dataset.index)];
+    if (entry) openRecipeDetail(entry);
+  });
+
+  function openRecipeDetail(entry){
+    currentRecipeEntry = entry;
+    const { dish, category, course } = entry;
+
+    recipeDetailName.textContent = dish.name;
+    recipeDetailTags.innerHTML = `
+      <span class="fridge-result-tag category">${category}</span>
+      <span class="fridge-result-tag course">${COURSE_LABEL_JA[course]}</span>
+      ${dish.isCustom ? '<span class="my-recipe-label">マイレシピ</span>' : ''}
+    `;
+    recipeDetailIngredients.innerHTML = dish.ingredients.map(i => `
+      <div class="material-item">
+        <span class="material-name">${i.name}</span>
+        <span class="material-amount">${i.amount}</span>
+      </div>
+    `).join('');
+    recipeDetailSteps.textContent = dish.steps && dish.steps.trim()
+      ? dish.steps
+      : '作り方はまだ登録されていません。';
+
+    const isCustom = !!dish.isCustom;
+    recipeDetailEditBtn.style.display = isCustom ? 'inline-flex' : 'none';
+    recipeDetailDeleteBtn.style.display = isCustom ? 'inline-flex' : 'none';
+
+    recipeDetailOverlay.classList.add('show');
+  }
+
+  function closeRecipeDetail(){
+    recipeDetailOverlay.classList.remove('show');
+  }
+
+  recipeDetailCloseBtn.addEventListener('click', closeRecipeDetail);
+  recipeDetailOverlay.addEventListener('click', (e) => {
+    if (e.target === recipeDetailOverlay) closeRecipeDetail();
+  });
+
+  recipeDetailFavBtn.addEventListener('click', () => {
+    if (!currentRecipeEntry) return;
+    const { dish, category, course } = currentRecipeEntry;
+    const menu = buildMenuAroundDish(dish, course, category);
+    saveCurrentMenuToFavorites(menu);
+    showToast('お気に入りに登録しました！');
+  });
+
+  recipeDetailTodayBtn.addEventListener('click', () => {
+    if (!currentRecipeEntry) return;
+    const { dish, category, course } = currentRecipeEntry;
+    const menu = buildMenuAroundDish(dish, course, category);
+    saveTodayMenu(menu);
+    showToast('今日の献立にしました！');
+    closeRecipeDetail();
+  });
+
+  recipeDetailEditBtn.addEventListener('click', () => {
+    if (!currentRecipeEntry) return;
+    closeRecipeDetail();
+    openEditDishModal(currentRecipeEntry);
+  });
+
+  recipeDetailDeleteBtn.addEventListener('click', () => {
+    if (!currentRecipeEntry) return;
+    pendingRecipeDelete = currentRecipeEntry;
+    recipeDeleteConfirmOverlay.classList.add('show');
+  });
+
+  recipeDeleteConfirmYesBtn.addEventListener('click', () => {
+    if (pendingRecipeDelete){
+      const { dish, category, course } = pendingRecipeDelete;
+      const courseList = DISH_DATA[category][course];
+      const idx = courseList.findIndex(d => d.id === dish.id);
+      if (idx !== -1) courseList.splice(idx, 1);
+
+      const customList = loadCustomDishes().filter(entry => entry.dish.id !== dish.id);
+      saveCustomDishes(customList);
+
+      pendingRecipeDelete = null;
+      recipeDeleteConfirmOverlay.classList.remove('show');
+      closeRecipeDetail();
+      renderRecipeBookList(recipeSearchInput.value);
+      showToast('マイレシピを削除しました');
+    }
+  });
+
+  recipeDeleteConfirmNoBtn.addEventListener('click', () => {
+    pendingRecipeDelete = null;
+    recipeDeleteConfirmOverlay.classList.remove('show');
+  });
+
+  recipeDeleteConfirmOverlay.addEventListener('click', (e) => {
+    if (e.target === recipeDeleteConfirmOverlay){
+      pendingRecipeDelete = null;
+      recipeDeleteConfirmOverlay.classList.remove('show');
+    }
+  });
+
   /* --- Hamburger side menu --- */
   const hamburgerBtn = document.getElementById('hamburgerBtn');
   const sideMenuOverlay = document.getElementById('sideMenuOverlay');
   const sideMenuCloseBtn = document.getElementById('sideMenuCloseBtn');
   const menuGoHomeBtn = document.getElementById('menuGoHomeBtn');
   const menuGoRecordsBtn = document.getElementById('menuGoRecordsBtn');
+  const menuGoRecipeBookBtn = document.getElementById('menuGoRecipeBookBtn');
   const menuGoAddMenuBtn = document.getElementById('menuGoAddMenuBtn');
   const menuSettingsToggle = document.getElementById('menuSettingsToggle');
   const menuSettingsSubmenu = document.getElementById('menuSettingsSubmenu');
@@ -3479,6 +4581,10 @@
   menuGoRecordsBtn.addEventListener('click', () => {
     closeSideMenu();
     showRecords();
+  });
+  menuGoRecipeBookBtn.addEventListener('click', () => {
+    closeSideMenu();
+    showRecipeBookPage();
   });
   menuGoAddMenuBtn.addEventListener('click', () => {
     closeSideMenu();
@@ -3810,17 +4916,20 @@
   const addDishOverlay = document.getElementById('addDishOverlay');
   const addDishCloseBtn = document.getElementById('addDishCloseBtn');
   const addDishCancelBtn = document.getElementById('addDishCancelBtn');
+  const addDishModalTitle = document.getElementById('addDishModalTitle');
   const addDishCourseNote = document.getElementById('addDishCourseNote');
   const addDishCategorySelect = document.getElementById('addDishCategorySelect');
   const addDishNameInput = document.getElementById('addDishNameInput');
   const addDishIngredients = document.getElementById('addDishIngredients');
   const addIngredientRowBtn = document.getElementById('addIngredientRowBtn');
+  const addDishStepsInput = document.getElementById('addDishStepsInput');
   const addDishSaveBtn = document.getElementById('addDishSaveBtn');
 
   fillSelect(addDishCategorySelect, Object.keys(DISH_DATA));
 
   let addDishTargetCourse = null; // 'main' | 'side' | 'soup'
-  let addDishSource = null; // 'manualSelect' | 'addMenuPage'
+  let addDishSource = null; // 'manualSelect' | 'addMenuPage' | 'recipeBookEdit'
+  let editingDishRef = null; // { category, course, id } when editing an existing my-recipe
   const dishSelectByCourse = { main: manualMainSelect, side: manualSideSelect, soup: manualSoupSelect };
   const COURSE_LABEL_JA = { main: '主菜', side: '副菜', soup: '汁物' };
 
@@ -3849,11 +4958,37 @@
   function openAddDishModal(course, category, source){
     addDishTargetCourse = course;
     addDishSource = source;
+    editingDishRef = null;
+    addDishModalTitle.textContent = '＋ 新しい料理を追加';
     addDishCourseNote.textContent = `${COURSE_LABEL_JA[course]}として追加`;
+    addDishCategorySelect.disabled = false;
     addDishCategorySelect.value = category;
     addDishNameInput.value = '';
     addDishIngredients.innerHTML = '';
     addIngredientRow();
+    addDishStepsInput.value = '';
+    addDishOverlay.classList.add('show');
+  }
+
+  function openEditDishModal(entry){
+    const { dish, category, course } = entry;
+    addDishTargetCourse = course;
+    addDishSource = 'recipeBookEdit';
+    editingDishRef = { category, course, id: dish.id };
+    addDishModalTitle.textContent = '✏️ レシピを編集';
+    addDishCourseNote.textContent = `${COURSE_LABEL_JA[course]}を編集`;
+    addDishCategorySelect.disabled = true;
+    addDishCategorySelect.value = category;
+    addDishNameInput.value = dish.name;
+    addDishIngredients.innerHTML = '';
+    dish.ingredients.forEach(ing => {
+      addIngredientRow();
+      const row = addDishIngredients.lastElementChild;
+      row.querySelector('.ingredient-name-input').value = ing.name;
+      row.querySelector('.ingredient-amount-input').value = ing.amount;
+    });
+    if (addDishIngredients.children.length === 0) addIngredientRow();
+    addDishStepsInput.value = dish.steps || '';
     addDishOverlay.classList.add('show');
   }
 
@@ -3865,6 +5000,8 @@
     }
     addDishTargetCourse = null;
     addDishSource = null;
+    editingDishRef = null;
+    addDishCategorySelect.disabled = false;
   }
 
   Object.entries(dishSelectByCourse).forEach(([course, selectEl]) => {
@@ -3916,13 +5053,36 @@
       return;
     }
 
-    const category = addDishCategorySelect.value;
+    const steps = addDishStepsInput.value.trim();
     const course = addDishTargetCourse;
     const source = addDishSource;
+
+    if (editingDishRef){
+      const { category, course: origCourse, id } = editingDishRef;
+      const courseList = DISH_DATA[category][origCourse];
+      const target = courseList.find(d => d.id === id);
+      if (target){
+        target.name = name;
+        target.ingredients = ingredients;
+        target.steps = steps;
+      }
+      const customList = loadCustomDishes();
+      const customEntry = customList.find(e => e.dish.id === id);
+      if (customEntry) customEntry.dish = target;
+      saveCustomDishes(customList);
+
+      closeAddDishModal(false);
+      renderRecipeBookList(recipeSearchInput.value);
+      showToast('レシピを更新しました！');
+      return;
+    }
+
+    const category = addDishCategorySelect.value;
     const newDish = {
       id: `custom-${Date.now()}`,
       name,
       ingredients,
+      steps,
       isCustom: true
     };
 
@@ -3949,6 +5109,8 @@
       showToast(`${COURSE_LABEL_JA[course]}を追加しました！`);
     }
   });
+
+  renderTodayMenuBanner();
 </script>
 
 </body>
