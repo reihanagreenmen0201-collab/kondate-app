@@ -530,6 +530,50 @@
     color:var(--indigo);
   }
 
+  /* --- Favorites-only toggle (おまかせ / 冷蔵庫検索) --- */
+  .favorites-only-wrap{
+    display:flex;
+    justify-content:center;
+    margin-top:16px;
+  }
+  .favorites-only-toggle{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:transparent;
+    border:1px solid var(--paper-dark);
+    border-radius:999px;
+    padding:7px 16px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .favorites-only-toggle:hover{
+    border-color:var(--gold);
+  }
+  .favorites-only-toggle.active{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:#FBF8F0;
+  }
+
+  /* --- Recipe card favorite mark --- */
+  .recipe-card-fav-mark{
+    color:var(--gold);
+    margin-right:4px;
+  }
+
+  /* --- Detail modal favorite button toggled state --- */
+  .fridge-result-fav-btn.active{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:#FBF8F0;
+  }
+
   /* --- Recipe book --- */
   .recipe-search-bar{
     position:relative;
@@ -2422,6 +2466,10 @@
     <button class="category-btn" type="button" data-category="中華" aria-pressed="false">中華</button>
   </div>
 
+  <div class="favorites-only-wrap">
+    <button type="button" class="favorites-only-toggle" id="favoritesOnlyToggle" aria-pressed="false">⭐ お気に入りだけから選ぶ</button>
+  </div>
+
   <div class="stamp-wrap">
     <svg class="mini-sakura" viewBox="0 0 24 42" style="width:9.6px; height:16.8px; opacity:0.47; transform:translate(-50%,-50%) translate(-89.2px,27.5px) rotate(182.8deg);" aria-hidden="true">
       <path d="M12,42 C5,36 0,27 0,17 C0,8 5,2 10,0 L12,4 L14,0 C19,2 24,8 24,17 C24,27 19,36 12,42 Z"/>
@@ -2669,6 +2717,10 @@
         <label class="fridge-item"><input type="checkbox" data-ingredient="チーズ"><span>チーズ</span></label>
       </div>
     </div>
+  </div>
+
+  <div class="favorites-only-wrap">
+    <button type="button" class="favorites-only-toggle" id="fridgeFavoritesOnlyToggle" aria-pressed="false">⭐ お気に入りだけで探す</button>
   </div>
 
   <div class="fridge-search-wrap">
@@ -3379,10 +3431,29 @@
     resetMenuActionButtons();
   }
 
+  let favoritesOnlyMode = false;
+
   function decideMenu(){
     stampBtn.classList.remove('stamping');
     void stampBtn.offsetWidth;
     stampBtn.classList.add('stamping');
+
+    if (favoritesOnlyMode){
+      const favs = loadFavorites().filter(f => f.category === currentCategory);
+      if (favs.length === 0){
+        showToast('このジャンルのお気に入りはまだありません');
+        return;
+      }
+      const chosen = pick(favs);
+      applyMenu({
+        category: chosen.category,
+        main: chosen.main,
+        side: chosen.side,
+        soup: chosen.soup,
+        fortune: chosen.fortune
+      }, true);
+      return;
+    }
 
     const mainChoice = pick(DISH_DATA[currentCategory].main);
     const sideChoice = pick(DISH_DATA[currentCategory].side);
@@ -3412,6 +3483,13 @@
   });
 
   stampBtn.addEventListener('click', decideMenu);
+
+  const favoritesOnlyToggle = document.getElementById('favoritesOnlyToggle');
+  favoritesOnlyToggle.addEventListener('click', () => {
+    favoritesOnlyMode = !favoritesOnlyMode;
+    favoritesOnlyToggle.classList.toggle('active', favoritesOnlyMode);
+    favoritesOnlyToggle.setAttribute('aria-pressed', favoritesOnlyMode ? 'true' : 'false');
+  });
 
   /* --- Favorites --- */
   const FAVORITES_KEY = 'menuGachaFavorites';
@@ -3901,6 +3979,8 @@
 
   let fridgeMatches = [];
 
+  let fridgeFavoritesOnlyMode = false;
+
   function searchDishesByFridge(){
     const selected = Object.keys(fridgeChecked).filter(name => fridgeChecked[name]);
     const matches = [];
@@ -3912,7 +3992,9 @@
           const have = dish.ingredients.filter(i => fridgeChecked[i.name]);
           if (have.length === 0) return;
           const missing = dish.ingredients.filter(i => !fridgeChecked[i.name]);
-          matches.push({ dish, category, course, have, missing });
+          const entry = { dish, category, course, have, missing };
+          if (fridgeFavoritesOnlyMode && !isDishFavorited(entry)) return;
+          matches.push(entry);
         });
       });
     });
@@ -3971,6 +4053,14 @@
   }
 
   fridgeSearchBtn.addEventListener('click', renderFridgeResults);
+
+  const fridgeFavoritesOnlyToggle = document.getElementById('fridgeFavoritesOnlyToggle');
+  fridgeFavoritesOnlyToggle.addEventListener('click', () => {
+    fridgeFavoritesOnlyMode = !fridgeFavoritesOnlyMode;
+    fridgeFavoritesOnlyToggle.classList.toggle('active', fridgeFavoritesOnlyMode);
+    fridgeFavoritesOnlyToggle.setAttribute('aria-pressed', fridgeFavoritesOnlyMode ? 'true' : 'false');
+    renderFridgeResults();
+  });
 
   fridgeResults.addEventListener('click', (e) => {
     const materialBtn = e.target.closest('.fridge-result-material-btn');
@@ -4330,6 +4420,24 @@
     );
   }
 
+  // Adds or removes this dish from favorites and returns the new state.
+  // Used everywhere a favorite can be toggled, so favorite status stays a
+  // single source of truth across the whole app.
+  function toggleDishFavorite(entry){
+    const { dish, category, course } = entry;
+    if (isDishFavorited(entry)){
+      const list = loadFavorites().filter(f =>
+        !(f.category === category && f[course] && f[course].name === dish.name)
+      );
+      saveFavorites(list);
+      updateFavNavCount();
+      return false;
+    }
+    const menu = buildMenuAroundDish(dish, course, category);
+    saveCurrentMenuToFavorites(menu);
+    return true;
+  }
+
   function updateFilterBadge(){
     const count = recipeFilters.courses.size + recipeFilters.genres.size +
       (recipeFilters.onlyFavorite ? 1 : 0) + (recipeFilters.onlyMyRecipe ? 1 : 0);
@@ -4508,6 +4616,7 @@
         <div class="recipe-card">
           <div class="recipe-card-top">
             <span class="recipe-card-name-wrap">
+              ${isDishFavorited(entry) ? '<span class="recipe-card-fav-mark">⭐</span>' : ''}
               <span class="recipe-card-name">${entry.dish.name}</span>
               ${entry.dish.isCustom ? '<span class="my-recipe-label">マイレシピ</span>' : ''}
             </span>
@@ -4562,7 +4671,16 @@
     recipeDetailEditBtn.style.display = 'inline-flex';
     recipeDetailDeleteBtn.style.display = isCustom ? 'inline-flex' : 'none';
 
+    updateRecipeDetailFavButton();
+
     recipeDetailOverlay.classList.add('show');
+  }
+
+  function updateRecipeDetailFavButton(){
+    if (!currentRecipeEntry) return;
+    const fav = isDishFavorited(currentRecipeEntry);
+    recipeDetailFavBtn.classList.toggle('active', fav);
+    recipeDetailFavBtn.textContent = fav ? '⭐ お気に入り済み' : '⭐ お気に入り';
   }
 
   function closeRecipeDetail(){
@@ -4576,10 +4694,10 @@
 
   recipeDetailFavBtn.addEventListener('click', () => {
     if (!currentRecipeEntry) return;
-    const { dish, category, course } = currentRecipeEntry;
-    const menu = buildMenuAroundDish(dish, course, category);
-    saveCurrentMenuToFavorites(menu);
-    showToast('お気に入りに登録しました！');
+    const nowFav = toggleDishFavorite(currentRecipeEntry);
+    updateRecipeDetailFavButton();
+    renderRecipeBookList(recipeSearchInput.value);
+    showToast(nowFav ? 'お気に入りに登録しました！' : 'お気に入りを解除しました');
   });
 
   recipeDetailTodayBtn.addEventListener('click', () => {
