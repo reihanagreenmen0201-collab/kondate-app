@@ -17,6 +17,7 @@
     --indigo-soft:#3A567C;
     --shu:#C43D2E;
     --shu-dark:#9E2E22;
+    --wine:#7A2E3A;
     --gold:#B8925A;
     --green:#5C7A56;
   }
@@ -324,6 +325,147 @@
     font-size:13.5px;
     color:var(--ink-soft);
     line-height:1.9;
+    margin:0;
+  }
+
+  /* --- News / announcements page --- */
+  .news-current-version{
+    margin-top:28px;
+    text-align:center;
+    background:
+      radial-gradient(circle at 20% 0%, rgba(184,146,90,0.10), transparent 55%),
+      #FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-radius:8px;
+    padding:18px 20px;
+  }
+  .news-current-version-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .news-current-version-number{
+    font-family:"Shippori Mincho", serif;
+    font-weight:800;
+    font-size:24px;
+    color:var(--indigo);
+  }
+
+  .news-list{
+    margin-top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .news-card{
+    background:#FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-left:4px solid var(--paper-dark);
+    border-radius:2px;
+    padding:18px 20px 20px;
+  }
+  .news-card.latest{
+    border-left-color:var(--shu);
+    box-shadow:0 4px 14px rgba(196,61,46,0.08);
+  }
+  .news-badge-latest{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    font-size:11px;
+    font-weight:700;
+    color:#3E7A3E;
+    background:rgba(62,122,62,0.10);
+    border-radius:999px;
+    padding:3px 11px;
+    margin-bottom:10px;
+  }
+  .news-card-top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .news-version-title{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:16.5px;
+    color:var(--ink);
+  }
+  .news-date{
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .news-section-label{
+    font-size:12px;
+    font-weight:700;
+    color:var(--indigo-soft);
+    margin:10px 0 6px;
+  }
+  .news-items{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .news-items li{
+    font-size:13.5px;
+    color:var(--ink);
+    line-height:1.7;
+    padding-left:1.1em;
+    position:relative;
+  }
+  .news-items li::before{
+    content:"・";
+    position:absolute;
+    left:0;
+    color:var(--gold);
+  }
+
+  .news-upcoming{
+    margin-top:30px;
+    padding:18px 20px 20px;
+    background:#FBF8F0;
+    border:1px dashed var(--paper-dark);
+    border-radius:8px;
+  }
+  .news-upcoming-title{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:14.5px;
+    color:var(--indigo);
+    margin-bottom:10px;
+  }
+  .news-upcoming-list{
+    list-style:none;
+    margin:0 0 10px;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .news-upcoming-list li{
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.7;
+    padding-left:1.1em;
+    position:relative;
+  }
+  .news-upcoming-list li::before{
+    content:"・";
+    position:absolute;
+    left:0;
+    color:var(--gold);
+  }
+  .news-upcoming-disclaimer{
+    font-size:11.5px;
+    color:var(--ink-soft);
     margin:0;
   }
 
@@ -1412,6 +1554,19 @@
     flex-shrink:0;
   }
 
+  .new-badge{
+    margin-left:auto;
+    font-size:9.5px;
+    font-weight:700;
+    letter-spacing:0.04em;
+    color:var(--wine);
+    border:1px solid var(--wine);
+    border-radius:3px;
+    padding:2px 6px;
+    line-height:1.3;
+    white-space:nowrap;
+  }
+
   .side-menu-parent{
     justify-content:flex-start;
     position:relative;
@@ -2355,6 +2510,14 @@
         </svg>
         ごはん図鑑
       </button>
+      <button class="side-menu-item" id="menuGoNewsBtn" type="button">
+        <svg class="side-menu-item-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4,3.6 H16 V16.4 H6.5 L4,14.2 Z"/>
+          <path d="M7,7 H13 M7,9.8 H13 M7,12.6 H10.5"/>
+        </svg>
+        お知らせ
+        <span class="new-badge" id="menuNewsNewBadge" style="display:none;">NEW!!</span>
+      </button>
       <button class="side-menu-item" id="menuGoAddMenuBtn" type="button">
         <svg class="side-menu-item-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="10" cy="10" r="7"/>
@@ -2472,6 +2635,8 @@
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -2598,6 +2763,8 @@
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -2651,6 +2818,8 @@
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -2696,6 +2865,8 @@
     <button type="button" class="site-footer-link" data-page="records">作った記録</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -2778,6 +2949,8 @@
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -2812,6 +2985,8 @@
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -2880,6 +3055,53 @@
     <button type="button" class="site-footer-link" data-page="records">作った記録</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
+  </nav>
+</div>
+
+<div class="stage records-page" id="newsPage" style="display:none;">
+  <div class="top-nav">
+    <button class="fav-nav-btn" id="newsBackHomeBtn" type="button">
+      <span class="fav-nav-icon">←</span> ホームに戻る
+    </button>
+  </div>
+
+  <header class="records-header">
+    <div class="eyebrow">WHAT'S NEW</div>
+    <h1 class="records-title">📰 お知らせ</h1>
+    <p class="sub">おうちごはんのアップデート情報をお届けします。</p>
+  </header>
+
+  <div class="news-current-version">
+    <div class="news-current-version-label">現在のバージョン</div>
+    <div class="news-current-version-number" id="newsCurrentVersion"></div>
+  </div>
+
+  <div class="news-list" id="newsList"></div>
+
+  <div class="news-upcoming">
+    <div class="news-upcoming-title">💬 次回アップデート予定</div>
+    <ul class="news-upcoming-list" id="newsUpcomingList"></ul>
+    <p class="news-upcoming-disclaimer">※予定は変更になる場合があります。</p>
+  </div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
   </nav>
 </div>
 
@@ -2927,6 +3149,8 @@
     <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
     <span class="site-footer-dot">・</span>
     <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="news">お知らせ</button>
   </nav>
 </div>
 
@@ -3822,7 +4046,8 @@
   const seasonalPage = document.getElementById('seasonalPage');
   const pantryPage = document.getElementById('pantryPage');
   const recipeBookPage = document.getElementById('recipeBookPage');
-  const ALL_PAGES = [homePage, omakasePage, recordsPage, addMenuPage, fridgeSearchPage, seasonalPage, pantryPage, recipeBookPage];
+  const newsPage = document.getElementById('newsPage');
+  const ALL_PAGES = [homePage, omakasePage, recordsPage, addMenuPage, fridgeSearchPage, seasonalPage, pantryPage, recipeBookPage, newsPage];
   const recordsNavBtn = document.getElementById('recordsNavBtn');
   const omakaseBackHomeBtn = document.getElementById('omakaseBackHomeBtn');
   const backHomeBtn = document.getElementById('backHomeBtn');
@@ -3832,6 +4057,7 @@
   const pantryBackHomeBtn = document.getElementById('pantryBackHomeBtn');
   const recipeBookBackHomeBtn = document.getElementById('recipeBookBackHomeBtn');
   const recipeBookAddBtn = document.getElementById('recipeBookAddBtn');
+  const newsBackHomeBtn = document.getElementById('newsBackHomeBtn');
   const entryOmakaseCard = document.getElementById('entryOmakaseCard');
   const entryFridgeCard = document.getElementById('entryFridgeCard');
   const entrySeasonalCard = document.getElementById('entrySeasonalCard');
@@ -3990,6 +4216,11 @@
     renderRecipeBookList('');
   }
 
+  function showNewsPage(){
+    revealPage(newsPage);
+    renderNewsPage();
+  }
+
   entryOmakaseCard.addEventListener('click', showOmakase);
   entryFridgeCard.addEventListener('click', showFridgeSearchPage);
   entrySeasonalCard.addEventListener('click', showSeasonalPage);
@@ -3997,6 +4228,7 @@
   recordsNavBtn.addEventListener('click', showRecords);
   omakaseBackHomeBtn.addEventListener('click', showHome);
   backHomeBtn.addEventListener('click', showHome);
+  newsBackHomeBtn.addEventListener('click', showHome);
   addMenuBackHomeBtn.addEventListener('click', showHome);
   fridgeBackHomeBtn.addEventListener('click', showHome);
   seasonalBackHomeBtn.addEventListener('click', showHome);
@@ -4012,7 +4244,8 @@
     recipeBook: showRecipeBookPage,
     records: showRecords,
     addMenu: showAddMenuPage,
-    pantry: showPantryPage
+    pantry: showPantryPage,
+    news: showNewsPage
   };
   document.addEventListener('click', (e) => {
     const link = e.target.closest('.site-footer-link');
@@ -4843,6 +5076,7 @@
   const menuGoHomeBtn = document.getElementById('menuGoHomeBtn');
   const menuGoRecordsBtn = document.getElementById('menuGoRecordsBtn');
   const menuGoRecipeBookBtn = document.getElementById('menuGoRecipeBookBtn');
+  const menuGoNewsBtn = document.getElementById('menuGoNewsBtn');
   const menuGoAddMenuBtn = document.getElementById('menuGoAddMenuBtn');
   const menuSettingsToggle = document.getElementById('menuSettingsToggle');
   const menuSettingsSubmenu = document.getElementById('menuSettingsSubmenu');
@@ -4874,6 +5108,10 @@
   menuGoRecipeBookBtn.addEventListener('click', () => {
     closeSideMenu();
     showRecipeBookPage();
+  });
+  menuGoNewsBtn.addEventListener('click', () => {
+    closeSideMenu();
+    showNewsPage();
   });
   menuGoAddMenuBtn.addEventListener('click', () => {
     closeSideMenu();
@@ -4927,6 +5165,80 @@
 
   // populate on load so the page reflects previously-saved settings right away
   fillPantryCheckboxes();
+
+  /* --- News / announcements --- */
+  // Newest entry goes first. Adding a future update is just adding one more
+  // object to the front of this array — the "🟢 最新" badge and the
+  // "現在のバージョン" display both follow automatically from index 0.
+  const APP_VERSION_HISTORY = [
+    {
+      version: '1.3',
+      icon: '🎉',
+      date: '2026/07/30',
+      isNew: true,
+      sectionLabel: '✨ 新機能',
+      items: ['前回作った日表示', '🔄 もう一度作る', '🛒 買い物リスト連携', '冷蔵庫検索の食材マッチング修正']
+    },
+    {
+      version: '1.2',
+      icon: '⭐',
+      date: '2026/07/29',
+      isNew: false,
+      items: ['お気に入り機能改善', 'お気に入り状態のトグル対応', '図鑑一覧にお気に入り表示', 'お気に入り機能をアプリ全体へ反映']
+    },
+    {
+      version: '1.1',
+      icon: '✏️',
+      date: '2026/07/29',
+      isNew: false,
+      items: ['レシピ編集機能追加', 'レシピ削除機能追加', '削除確認ダイアログ追加']
+    },
+    {
+      version: '1.0',
+      icon: '🚀',
+      label: 'Release Ver.1.0',
+      date: '2026/07/29',
+      isNew: false,
+      items: ['初回リリース', '今日の献立', 'ごはん図鑑', '冷蔵庫検索', '買い物リスト']
+    }
+  ];
+
+  const UPCOMING_FEATURES = ['作った記録の機能強化', '設定画面の追加'];
+
+  const newsCurrentVersion = document.getElementById('newsCurrentVersion');
+  const newsList = document.getElementById('newsList');
+  const newsUpcomingList = document.getElementById('newsUpcomingList');
+
+  function renderNewsPage(){
+    newsCurrentVersion.textContent = `Ver.${APP_VERSION_HISTORY[0].version}`;
+
+    newsList.innerHTML = APP_VERSION_HISTORY.map((entry, i) => {
+      const isLatest = i === 0;
+      const title = entry.label ? `${entry.icon} ${entry.label}` : `${entry.icon} Ver.${entry.version}`;
+      const itemsHtml = entry.items.map(item => `<li>${item}</li>`).join('');
+      return `
+        <div class="news-card${isLatest ? ' latest' : ''}">
+          ${entry.isNew ? '<span class="new-badge news-card-new-badge">NEW!!</span>' : ''}
+          ${isLatest ? '<div class="news-badge-latest">🟢 最新</div>' : ''}
+          <div class="news-card-top">
+            <span class="news-version-title">${title}</span>
+            <span class="news-date">📅 ${entry.date}</span>
+          </div>
+          ${entry.sectionLabel ? `<div class="news-section-label">${entry.sectionLabel}</div>` : ''}
+          <ul class="news-items">${itemsHtml}</ul>
+        </div>
+      `;
+    }).join('');
+
+    newsUpcomingList.innerHTML = UPCOMING_FEATURES.map(item => `<li>${item}</li>`).join('');
+  }
+
+  function updateNewsMenuBadge(){
+    const hasNew = APP_VERSION_HISTORY.some(entry => entry.isNew);
+    menuNewsNewBadge.style.display = hasNew ? 'inline-block' : 'none';
+  }
+  const menuNewsNewBadge = document.getElementById('menuNewsNewBadge');
+  updateNewsMenuBadge();
 
   function renderRecordsPage(){
     renderCalendar();
