@@ -427,6 +427,17 @@
     left:0;
     color:var(--gold);
   }
+  .news-message{
+    margin-top:14px;
+    padding:14px 16px;
+    background:rgba(184,146,90,0.07);
+    border-left:3px solid var(--gold);
+    border-radius:2px;
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.9;
+    white-space:pre-line;
+  }
 
   .news-upcoming{
     margin-top:30px;
@@ -5172,10 +5183,19 @@
   // "現在のバージョン" display both follow automatically from index 0.
   const APP_VERSION_HISTORY = [
     {
+      version: '1.4',
+      icon: '📰',
+      date: '2026/07/31',
+      isNew: true,
+      sectionLabel: '✨ 新機能',
+      items: ['お知らせページを追加'],
+      message: '📰 お知らせページを追加しました。\nこのページでは、今後のアップデート情報や新機能、改善内容をご案内します。\nこれまでのアップデート内容についても、下記にまとめて掲載していますので、ぜひご覧ください。\n今後もアプリをより使いやすくするため、継続的にアップデートを行っていきます。'
+    },
+    {
       version: '1.3',
       icon: '🎉',
       date: '2026/07/30',
-      isNew: true,
+      isNew: false,
       sectionLabel: '✨ 新機能',
       items: ['前回作った日表示', '🔄 もう一度作る', '🛒 買い物リスト連携', '冷蔵庫検索の食材マッチング修正']
     },
@@ -5226,6 +5246,7 @@
           </div>
           ${entry.sectionLabel ? `<div class="news-section-label">${entry.sectionLabel}</div>` : ''}
           <ul class="news-items">${itemsHtml}</ul>
+          ${entry.message ? `<div class="news-message">${entry.message}</div>` : ''}
         </div>
       `;
     }).join('');
