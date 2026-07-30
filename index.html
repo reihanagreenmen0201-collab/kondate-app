@@ -888,6 +888,55 @@
     transition:opacity .2s ease;
   }
 
+  .active-filter-summary{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:18px;
+    padding:12px 14px;
+    background:rgba(58,86,124,0.05);
+    border:1px solid rgba(58,86,124,0.14);
+    border-radius:10px;
+  }
+  .active-filter-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    flex:1;
+    min-width:0;
+  }
+  .active-filter-chip{
+    display:inline-flex;
+    align-items:center;
+    font-size:11px;
+    font-weight:700;
+    color:#FBF8F0;
+    background:var(--indigo);
+    border-radius:999px;
+    padding:4px 11px;
+    white-space:nowrap;
+  }
+  .active-filter-clear-btn{
+    flex-shrink:0;
+    background:transparent;
+    border:1px solid var(--shu);
+    color:var(--shu);
+    border-radius:999px;
+    padding:5px 13px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:11.5px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:background .15s ease, color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .active-filter-clear-btn:hover{
+    background:var(--shu);
+    color:#FBF8F0;
+  }
+
   .recipe-book-list{
     margin-top:12px;
     display:flex;
@@ -910,6 +959,13 @@
   }
   .recipe-no-results-text{
     font-size:13px;
+  }
+  .recipe-no-results-subtext{
+    display:block;
+    margin-top:8px;
+    font-size:12px;
+    color:var(--ink-soft);
+    line-height:1.8;
   }
 
   .recipe-card{
@@ -3357,6 +3413,11 @@
     </button>
   </div>
 
+  <div class="active-filter-summary" id="activeFilterSummary" style="display:none;">
+    <div class="active-filter-chips" id="activeFilterChips"></div>
+    <button type="button" class="active-filter-clear-btn" id="activeFilterClearBtn">条件をクリア</button>
+  </div>
+
   <div class="recipe-result-count" id="recipeResultCount"></div>
 
   <div class="recipe-book-list" id="recipeBookList"></div>
@@ -3410,6 +3471,26 @@
         <div class="recipe-filter-chips" id="otherFilterChips">
           <button type="button" class="recipe-filter-chip" data-other="favorite"><span class="filter-chip-label">⭐ お気に入り</span></button>
           <button type="button" class="recipe-filter-chip" data-other="myrecipe"><span class="filter-chip-label">👩 マイレシピ</span></button>
+        </div>
+      </div>
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">🏷️ タグ</div>
+        <div class="recipe-filter-chips" id="tagFilterChips">
+          <button type="button" class="recipe-filter-chip" data-tag="時短"><span class="filter-chip-label">時短</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="節約"><span class="filter-chip-label">節約</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="ダイエット"><span class="filter-chip-label">ダイエット</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="子ども向け"><span class="filter-chip-label">子ども向け</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="作り置き"><span class="filter-chip-label">作り置き</span></button>
+        </div>
+      </div>
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">⏰ 調理時間</div>
+        <div class="recipe-filter-chips" id="cookTimeFilterChips">
+          <button type="button" class="recipe-filter-chip active" data-cooktime="all"><span class="filter-chip-label">すべて</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="15"><span class="filter-chip-label">15分以内</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="20"><span class="filter-chip-label">20分以内</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="30"><span class="filter-chip-label">30分以内</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="60"><span class="filter-chip-label">60分以内</span></button>
         </div>
       </div>
     </div>
@@ -4529,10 +4610,7 @@
   function showRecipeBookPage(){
     revealPage(recipeBookPage);
     recipeSearchInput.value = '';
-    recipeFilters.courses.clear();
-    recipeFilters.genres.clear();
-    recipeFilters.onlyFavorite = false;
-    recipeFilters.onlyMyRecipe = false;
+    resetRecipeFilters();
     updateFilterChipsUI();
     renderRecipeBookList('');
   }
@@ -5036,6 +5114,8 @@
   const courseFilterChips = document.getElementById('courseFilterChips');
   const genreFilterChips = document.getElementById('genreFilterChips');
   const otherFilterChips = document.getElementById('otherFilterChips');
+  const tagFilterChips = document.getElementById('tagFilterChips');
+  const cookTimeFilterChips = document.getElementById('cookTimeFilterChips');
   const recipeResultCount = document.getElementById('recipeResultCount');
   const recipeFilterOpenBtn = document.getElementById('recipeFilterOpenBtn');
   const recipeFilterOverlay = document.getElementById('recipeFilterOverlay');
@@ -5043,13 +5123,60 @@
   const recipeFilterApplyBtn = document.getElementById('recipeFilterApplyBtn');
   const recipeFilterResetBtn = document.getElementById('recipeFilterResetBtn');
   const recipeFilterBadge = document.getElementById('recipeFilterBadge');
+  const activeFilterSummary = document.getElementById('activeFilterSummary');
+  const activeFilterChips = document.getElementById('activeFilterChips');
+  const activeFilterClearBtn = document.getElementById('activeFilterClearBtn');
 
   const recipeFilters = {
     courses: new Set(),   // empty = "すべて"
     genres: new Set(),    // empty = all genres
     onlyFavorite: false,
-    onlyMyRecipe: false
+    onlyMyRecipe: false,
+    tags: new Set(),        // empty = no tag filter; multiple = OR match
+    cookTimeMax: null       // null = "すべて"; otherwise a number (15/20/30/60)
   };
+
+  // Single place that knows how to clear every filter dimension, so the
+  // three reset entry points (opening the page fresh, the popup's リセット
+  // button, and the 条件をクリア button) can never drift out of sync.
+  function resetRecipeFilters(){
+    recipeFilters.courses.clear();
+    recipeFilters.genres.clear();
+    recipeFilters.onlyFavorite = false;
+    recipeFilters.onlyMyRecipe = false;
+    recipeFilters.tags.clear();
+    recipeFilters.cookTimeMax = null;
+  }
+
+  // Small human-readable summary of whatever is currently narrowing the
+  // list, so a family member doesn't have to reopen the popup just to see
+  // (or clear) what's applied.
+  function renderActiveFilterSummary(){
+    const chips = [];
+    const q = recipeSearchInput.value.trim();
+    if (q) chips.push(`🔍 ${q}`);
+    recipeFilters.courses.forEach(c => chips.push(`🍖 ${COURSE_LABEL_JA[c]}`));
+    recipeFilters.genres.forEach(g => chips.push(`🥢 ${g}`));
+    if (recipeFilters.onlyFavorite) chips.push('⭐ お気に入り');
+    if (recipeFilters.onlyMyRecipe) chips.push('👩 マイレシピ');
+    recipeFilters.tags.forEach(t => chips.push(`🏷️ ${t}`));
+    if (recipeFilters.cookTimeMax != null) chips.push(`⏰${recipeFilters.cookTimeMax}分以内`);
+
+    if (chips.length === 0){
+      activeFilterSummary.style.display = 'none';
+      activeFilterChips.innerHTML = '';
+      return;
+    }
+    activeFilterChips.innerHTML = chips.map(c => `<span class="active-filter-chip">${c}</span>`).join('');
+    activeFilterSummary.style.display = 'flex';
+  }
+
+  activeFilterClearBtn.addEventListener('click', () => {
+    recipeSearchInput.value = '';
+    resetRecipeFilters();
+    updateFilterChipsUI();
+    renderRecipeBookList('');
+  });
 
   function isDishFavorited(entry){
     return loadFavorites().some(f =>
@@ -5079,9 +5206,17 @@
 
   function updateFilterBadge(){
     const count = recipeFilters.courses.size + recipeFilters.genres.size +
-      (recipeFilters.onlyFavorite ? 1 : 0) + (recipeFilters.onlyMyRecipe ? 1 : 0);
+      (recipeFilters.onlyFavorite ? 1 : 0) + (recipeFilters.onlyMyRecipe ? 1 : 0) +
+      recipeFilters.tags.size + (recipeFilters.cookTimeMax != null ? 1 : 0);
     recipeFilterBadge.textContent = count;
     recipeFilterBadge.style.display = count > 0 ? 'flex' : 'none';
+  }
+
+  function matchesCookTimeFilter(entry, maxMinutes){
+    if (maxMinutes == null) return true; // "すべて"
+    const val = entry.dish.cookTime;
+    if (!val || val === '60+') return false;
+    return Number(val) <= maxMinutes;
   }
 
   function passesFilters(entry, q, skip){
@@ -5091,7 +5226,10 @@
     const matchesGenre = skip.genre || recipeFilters.genres.size === 0 || recipeFilters.genres.has(entry.category);
     const matchesFavorite = skip.favorite || !recipeFilters.onlyFavorite || isDishFavorited(entry);
     const matchesMyRecipe = skip.myrecipe || !recipeFilters.onlyMyRecipe || !!entry.dish.isCustom;
-    return matchesSearch && matchesCourse && matchesGenre && matchesFavorite && matchesMyRecipe;
+    const matchesTags = skip.tags || recipeFilters.tags.size === 0 ||
+      (entry.dish.tags || []).some(t => recipeFilters.tags.has(t));
+    const matchesCookTime = skip.cookTime || matchesCookTimeFilter(entry, recipeFilters.cookTimeMax);
+    return matchesSearch && matchesCourse && matchesGenre && matchesFavorite && matchesMyRecipe && matchesTags && matchesCookTime;
   }
 
   function setChipCount(chip, count){
@@ -5135,6 +5273,18 @@
       otherFilterChips.querySelector('[data-other="myrecipe"]'),
       forMyRecipe.filter(e => !!e.dish.isCustom).length
     );
+
+    const forCookTime = fullIndex.filter(e => passesFilters(e, q, { cookTime: true }));
+    setChipCount(
+      cookTimeFilterChips.querySelector('[data-cooktime="all"]'),
+      forCookTime.length
+    );
+    [15, 20, 30, 60].forEach(minutes => {
+      setChipCount(
+        cookTimeFilterChips.querySelector(`[data-cooktime="${minutes}"]`),
+        forCookTime.filter(e => matchesCookTimeFilter(e, minutes)).length
+      );
+    });
   }
 
   function updateFilterChipsUI(){
@@ -5148,6 +5298,14 @@
     });
     otherFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
       const active = chip.dataset.other === 'favorite' ? recipeFilters.onlyFavorite : recipeFilters.onlyMyRecipe;
+      chip.classList.toggle('active', active);
+    });
+    tagFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      chip.classList.toggle('active', recipeFilters.tags.has(chip.dataset.tag));
+    });
+    cookTimeFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      const isAll = chip.dataset.cooktime === 'all';
+      const active = isAll ? recipeFilters.cookTimeMax == null : recipeFilters.cookTimeMax === Number(chip.dataset.cooktime);
       chip.classList.toggle('active', active);
     });
     updateFilterBadge();
@@ -5170,10 +5328,7 @@
     recipeFilterOverlay.classList.remove('show');
   });
   recipeFilterResetBtn.addEventListener('click', () => {
-    recipeFilters.courses.clear();
-    recipeFilters.genres.clear();
-    recipeFilters.onlyFavorite = false;
-    recipeFilters.onlyMyRecipe = false;
+    resetRecipeFilters();
     updateFilterChipsUI();
     renderRecipeBookList(recipeSearchInput.value);
   });
@@ -5219,29 +5374,77 @@
     renderRecipeBookList(recipeSearchInput.value);
   });
 
+  tagFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    const tag = chip.dataset.tag;
+    if (recipeFilters.tags.has(tag)){
+      recipeFilters.tags.delete(tag);
+    } else {
+      recipeFilters.tags.add(tag);
+    }
+    updateFilterChipsUI();
+    renderRecipeBookList(recipeSearchInput.value);
+  });
+
+  cookTimeFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    if (chip.dataset.cooktime === 'all'){
+      recipeFilters.cookTimeMax = null;
+    } else {
+      const minutes = Number(chip.dataset.cooktime);
+      recipeFilters.cookTimeMax = recipeFilters.cookTimeMax === minutes ? null : minutes;
+    }
+    updateFilterChipsUI();
+    renderRecipeBookList(recipeSearchInput.value);
+  });
+
+  // Case/whitespace-insensitive matching against both the dish name and its
+  // ingredient names, so "cheese", "Cheese", and " チーズ " all behave the
+  // same. Kept as small standalone helpers so this scales cleanly if search
+  // ever needs to cover more fields later.
+  function normalizeSearchText(str){
+    return (str || '').trim().toLowerCase();
+  }
+
+  function matchesRecipeSearch(dish, normalizedQuery){
+    if (!normalizedQuery) return true;
+    if (dish.name.toLowerCase().includes(normalizedQuery)) return true;
+    return dish.ingredients.some(i => i.name.toLowerCase().includes(normalizedQuery));
+  }
+
   function renderRecipeBookList(query){
     const fullIndex = buildRecipeIndex();
-    const q = (query || '').trim();
+    const q = normalizeSearchText(query);
 
     const filtered = fullIndex.filter(entry => {
-      const matchesSearch = !q || entry.dish.name.includes(q);
+      const matchesSearch = matchesRecipeSearch(entry.dish, q);
       const matchesCourse = recipeFilters.courses.size === 0 || recipeFilters.courses.has(entry.course);
       const matchesGenre = recipeFilters.genres.size === 0 || recipeFilters.genres.has(entry.category);
       const matchesFavorite = !recipeFilters.onlyFavorite || isDishFavorited(entry);
       const matchesMyRecipe = !recipeFilters.onlyMyRecipe || !!entry.dish.isCustom;
-      return matchesSearch && matchesCourse && matchesGenre && matchesFavorite && matchesMyRecipe;
+      const matchesTags = recipeFilters.tags.size === 0 ||
+        (entry.dish.tags || []).some(t => recipeFilters.tags.has(t));
+      const matchesCookTime = matchesCookTimeFilter(entry, recipeFilters.cookTimeMax);
+      return matchesSearch && matchesCourse && matchesGenre && matchesFavorite && matchesMyRecipe && matchesTags && matchesCookTime;
     });
 
     recipeResultCount.textContent = `${filtered.length}件のレシピ`;
 
     if (filtered.length === 0){
+      recipeBookList.classList.remove('fade');
+      void recipeBookList.offsetWidth;
+      recipeBookList.classList.add('fade');
       recipeBookList.innerHTML = `
         <div class="recipe-no-results">
           <span class="recipe-no-results-icon">🍚</span>
-          <span class="recipe-no-results-text">条件に合うレシピが見つかりませんでした</span>
+          <span class="recipe-no-results-text">条件に合うレシピが見つかりませんでした。</span>
+          <span class="recipe-no-results-subtext">検索条件やフィルターを変更して、<br>もう一度お試しください。</span>
         </div>
       `;
       recipeIndex = [];
+      renderActiveFilterSummary();
       return;
     }
 
@@ -5279,6 +5482,7 @@
 
     // keep the filtered set around so card clicks can look themselves up by index
     recipeIndex = filtered;
+    renderActiveFilterSummary();
   }
 
   recipeSearchInput.addEventListener('input', () => {
@@ -5536,10 +5740,24 @@
   // "現在のバージョン" display both follow automatically from index 0.
   const APP_VERSION_HISTORY = [
     {
+      version: '1.8',
+      icon: '🔍',
+      date: '2026/08/03',
+      isNew: true,
+      sectionLabel: '✨ 新機能・改善',
+      items: [
+        'ごはん図鑑にタグフィルターを追加',
+        'ごはん図鑑に調理時間フィルターを追加（該当件数表示つき）',
+        '検索対象を材料名にも拡大、表記ゆれ（空白・大文字小文字）に対応',
+        '現在の検索条件をチップで表示し、ワンタップでまとめてクリアできるように改善',
+        '検索結果切り替え時のフェードアニメーションを追加'
+      ]
+    },
+    {
       version: '1.7',
       icon: '🏷️',
       date: '2026/08/02',
-      isNew: true,
+      isNew: false,
       sectionLabel: '✨ 新機能',
       items: ['レシピへのタグ登録・表示に対応']
     },
