@@ -502,6 +502,39 @@
     grid-template-columns:repeat(2, 1fr);
     gap:10px 14px;
   }
+  .dish-tag-checkboxes{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:10px 14px;
+  }
+
+  /* --- Tag chips (display) --- */
+  .dish-tag-chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+  }
+  .dish-tag-chip{
+    display:inline-flex;
+    align-items:center;
+    font-size:11px;
+    font-weight:700;
+    color:var(--indigo-soft);
+    background:rgba(58,86,124,0.08);
+    border:1px solid rgba(58,86,124,0.18);
+    border-radius:999px;
+    padding:3px 10px;
+    white-space:nowrap;
+  }
+  .dish-tag-chip.more{
+    color:var(--ink-soft);
+    background:rgba(43,42,40,0.05);
+    border-color:var(--paper-dark);
+  }
+  .recipe-detail-tag-chips{
+    padding:10px 22px 0;
+  }
+
   .fridge-item{
     display:flex;
     align-items:center;
@@ -586,6 +619,12 @@
     justify-content:space-between;
     gap:12px;
     margin-bottom:6px;
+  }
+  .fridge-result-name-row{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
   }
   .fridge-result-name{
     font-family:"Shippori Mincho", serif;
@@ -880,6 +919,15 @@
     border-radius:2px;
     padding:16px 18px 18px;
   }
+  .recipe-card-body-row{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+  }
+  .recipe-card-content{
+    flex:1;
+    min-width:0;
+  }
   .recipe-card-top{
     display:flex;
     align-items:flex-start;
@@ -914,6 +962,12 @@
     color:var(--ink-soft);
     margin:8px 0 12px;
     line-height:1.6;
+  }
+  .recipe-card-cooktime{
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--gold);
+    margin:-6px 0 12px;
   }
 
   .recipe-detail-section{
@@ -1739,6 +1793,13 @@
     font-size:15px;
     color:var(--indigo);
   }
+  .recipe-detail-cooktime{
+    padding:12px 22px 0;
+    font-size:13px;
+    font-weight:700;
+    color:var(--gold);
+    letter-spacing:0.02em;
+  }
   .material-item{
     display:flex;
     align-items:baseline;
@@ -2181,6 +2242,154 @@
     color:var(--shu);
   }
 
+  /* --- Recipe photo (add/edit form) --- */
+  .dish-photo-field{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .dish-photo-file-input{
+    display:none;
+  }
+
+  .dish-photo-add-placeholder{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    width:100%;
+    min-height:150px;
+    background:#FBF8F0;
+    border:1.5px dashed var(--paper-dark);
+    border-radius:12px;
+    cursor:pointer;
+    padding:20px;
+    transition:border-color .18s ease, background .18s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dish-photo-add-placeholder:hover,
+  .dish-photo-add-placeholder:active{
+    border-color:var(--gold);
+    background:rgba(184,146,90,0.06);
+  }
+  .dish-photo-add-icon{
+    font-size:28px;
+    opacity:0.75;
+    line-height:1;
+  }
+  .dish-photo-add-label{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:15px;
+    color:var(--indigo);
+  }
+  .dish-photo-add-sublabel{
+    font-size:11.5px;
+    color:var(--ink-soft);
+  }
+
+  .dish-photo-preview-large{
+    width:100%;
+    aspect-ratio:4/3;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid var(--paper-dark);
+    background:#FBF8F0;
+  }
+  .dish-photo-preview-large img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+  }
+  .dish-photo-preview-actions{
+    display:flex;
+    gap:10px;
+    margin-top:10px;
+  }
+  .dish-photo-change-btn,
+  .dish-photo-delete-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:11px 14px;
+    border-radius:999px;
+    font-family:"Noto Sans JP", sans-serif;
+    font-size:12.5px;
+    font-weight:700;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dish-photo-change-btn{
+    background:transparent;
+    border:1px solid var(--indigo);
+    color:var(--indigo);
+    transition:background .15s ease, color .15s ease;
+  }
+  .dish-photo-change-btn:hover{
+    background:var(--indigo);
+    color:#FBF8F0;
+  }
+  .dish-photo-delete-btn{
+    background:transparent;
+    border:1px solid var(--shu);
+    color:var(--shu);
+    transition:background .15s ease, color .15s ease;
+  }
+  .dish-photo-delete-btn:hover{
+    background:var(--shu);
+    color:#FBF8F0;
+  }
+
+  /* --- Recipe photo (detail modal) --- */
+  .recipe-detail-photo{
+    width:calc(100% - 44px);
+    aspect-ratio:16/9;
+    border-radius:10px;
+    overflow:hidden;
+    margin:22px 22px 16px;
+    background:#FBF8F0;
+    border:1px solid var(--paper-dark);
+  }
+  .recipe-detail-photo img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+  }
+
+  /* --- Thumbnails in list/card views --- */
+  .dish-thumb{
+    flex-shrink:0;
+    width:56px;
+    height:56px;
+    border-radius:8px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(184,146,90,0.16), rgba(184,146,90,0.05));
+    border:1px solid var(--paper-dark);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .dish-thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center;
+    display:block;
+  }
+  .dish-thumb-placeholder{
+    font-size:22px;
+    opacity:0.55;
+    line-height:1;
+  }
+
   .records-section-title{
     font-family:"Shippori Mincho", serif;
     font-size:16px;
@@ -2393,6 +2602,12 @@
     justify-content:space-between;
     gap:10px;
     margin-bottom:8px;
+  }
+  .favorite-item-name-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    min-width:0;
   }
   .favorite-item-category{
     font-family:"Shippori Mincho", serif;
@@ -3276,6 +3491,51 @@
         <input type="text" id="addDishNameInput" placeholder="例：鶏むね肉のみぞれ煮">
       </div>
       <div class="manual-record-field">
+        <label>📷 写真を追加（任意）</label>
+        <div class="dish-photo-field">
+          <button type="button" class="dish-photo-add-placeholder" id="addDishPhotoAddPlaceholder">
+            <span class="dish-photo-add-icon">📷</span>
+            <span class="dish-photo-add-label" id="addDishPhotoAddLabel">＋ 写真を選択</span>
+            <span class="dish-photo-add-sublabel">カメラ / フォトライブラリから選べます</span>
+          </button>
+          <div class="dish-photo-preview-wrap" id="addDishPhotoPreviewWrap" style="display:none;">
+            <div class="dish-photo-preview-large">
+              <img id="addDishPhotoPreviewImg" alt="">
+            </div>
+            <div class="dish-photo-preview-actions">
+              <button type="button" class="dish-photo-change-btn" id="addDishPhotoChangeBtn">🔄 写真を変更</button>
+              <button type="button" class="dish-photo-delete-btn" id="addDishPhotoRemoveBtn">🗑️ 写真を削除</button>
+            </div>
+          </div>
+          <input type="file" accept="image/*" id="addDishPhotoInput" class="dish-photo-file-input">
+        </div>
+      </div>
+      <div class="manual-record-field">
+        <label for="addDishCookTimeSelect">⏰ 調理時間</label>
+        <select id="addDishCookTimeSelect">
+          <option value="">未設定</option>
+          <option value="5">5分</option>
+          <option value="10">10分</option>
+          <option value="15">15分</option>
+          <option value="20">20分</option>
+          <option value="25">25分</option>
+          <option value="30">30分</option>
+          <option value="40">40分</option>
+          <option value="50">50分</option>
+          <option value="60+">60分以上</option>
+        </select>
+      </div>
+      <div class="manual-record-field">
+        <label>🏷️ タグ（任意・複数選択可）</label>
+        <div class="dish-tag-checkboxes" id="addDishTagCheckboxes">
+          <label class="fridge-item"><input type="checkbox" value="時短"><span>時短</span></label>
+          <label class="fridge-item"><input type="checkbox" value="節約"><span>節約</span></label>
+          <label class="fridge-item"><input type="checkbox" value="ダイエット"><span>ダイエット</span></label>
+          <label class="fridge-item"><input type="checkbox" value="子ども向け"><span>子ども向け</span></label>
+          <label class="fridge-item"><input type="checkbox" value="作り置き"><span>作り置き</span></label>
+        </div>
+      </div>
+      <div class="manual-record-field">
         <label>材料</label>
         <div class="add-dish-ingredients" id="addDishIngredients"></div>
         <button type="button" class="add-ingredient-row-btn" id="addIngredientRowBtn">＋ 材料を追加</button>
@@ -3294,10 +3554,15 @@
 
 <div class="favorites-overlay" id="recipeDetailOverlay">
   <div class="favorites-panel" role="dialog" aria-label="レシピ詳細">
+    <div class="recipe-detail-photo" id="recipeDetailPhoto" style="display:none;">
+      <img id="recipeDetailPhotoImg" alt="">
+    </div>
     <div class="favorites-panel-header">
       <h2 id="recipeDetailName">料理名</h2>
       <button class="favorites-close-btn" id="recipeDetailCloseBtn" type="button" aria-label="閉じる">×</button>
     </div>
+    <div class="recipe-detail-cooktime" id="recipeDetailCookTime" style="display:none;"></div>
+    <div class="dish-tag-chips recipe-detail-tag-chips" id="recipeDetailTagChips" style="display:none;"></div>
     <div class="materials-dish-name" id="recipeDetailTags"></div>
 
     <div class="recipe-detail-section">
@@ -3560,7 +3825,10 @@
         id: ov.id,
         name: ov.name,
         ingredients: ov.ingredients,
-        steps: ov.steps
+        steps: ov.steps,
+        photo: ov.photo || null,
+        cookTime: ov.cookTime || '',
+        tags: ov.tags || []
       });
     });
   }
@@ -3805,7 +4073,10 @@
     favoritesList.innerHTML = list.slice().reverse().map(item => `
       <div class="favorite-item" data-id="${item.id}">
         <div class="favorite-item-top">
-          <span class="favorite-item-category">${item.category}</span>
+          <div class="favorite-item-name-row">
+            ${dishThumbHtml(item.main)}
+            <span class="favorite-item-category">${item.category}</span>
+          </div>
           <span class="favorite-item-date">${item.savedAt}</span>
         </div>
         <div class="favorite-item-dishes">
@@ -4148,6 +4419,45 @@
     return '🍖';
   }
 
+  // Shared thumbnail markup for every list/card view (図鑑・検索結果・お気に入り
+  // など). Falls back to a simple rice-bowl icon when no photo is saved, so
+  // this works unchanged for existing recipes that predate the photo feature.
+  function dishThumbHtml(dish){
+    if (dish && dish.photo){
+      return `<div class="dish-thumb"><img src="${dish.photo}" alt=""></div>`;
+    }
+    return '<div class="dish-thumb"><span class="dish-thumb-placeholder">🍚</span></div>';
+  }
+
+  // Turns a stored cookTime value ("5".."50", "60+", or "" / undefined) into
+  // display text, or null when there's nothing to show. Centralizing this
+  // means every view (card, detail, future ones) stays in sync automatically.
+  function formatCookTime(value){
+    if (!value) return null;
+    return value === '60+' ? '60分以上' : `${value}分`;
+  }
+
+  function cookTimeLineHtml(value){
+    const text = formatCookTime(value);
+    return text ? `<div class="recipe-card-cooktime">⏰ ${text}</div>` : '';
+  }
+
+  // Renders just the <span> chips (no wrapper), so callers that already have
+  // their own wrapper element (e.g. the detail modal) can reuse this too.
+  function tagChipSpans(tags, limit){
+    if (!tags || tags.length === 0) return '';
+    const shown = limit ? tags.slice(0, limit) : tags;
+    const extra = limit && tags.length > limit ? tags.length - limit : 0;
+    let html = shown.map(t => `<span class="dish-tag-chip">🏷️ ${t}</span>`).join('');
+    if (extra > 0) html += `<span class="dish-tag-chip more">+${extra}</span>`;
+    return html;
+  }
+
+  function tagChipsHtml(tags, limit){
+    const spans = tagChipSpans(tags, limit);
+    return spans ? `<div class="dish-tag-chips">${spans}</div>` : '';
+  }
+
   cookRecordBtn.addEventListener('click', () => {
     if (!currentMenu || cookRecordBtn.disabled) return;
     const list = loadCookingRecords();
@@ -4340,7 +4650,10 @@
       return `
         <div class="fridge-result-card">
           <div class="fridge-result-top">
-            <span class="fridge-result-name">${m.dish.name}</span>
+            <div class="fridge-result-name-row">
+              ${dishThumbHtml(m.dish)}
+              <span class="fridge-result-name">${m.dish.name}</span>
+            </div>
             <span class="fridge-result-tags">
               <span class="fridge-result-tag category">${m.category}</span>
               <span class="fridge-result-tag course">${COURSE_LABEL_JA[m.course]}</span>
@@ -4496,7 +4809,10 @@
     const cardsHtml = seasonalMatches.map((m, i) => `
       <div class="fridge-result-card">
         <div class="fridge-result-top">
-          <span class="fridge-result-name">${m.dish.name}</span>
+          <div class="fridge-result-name-row">
+            ${dishThumbHtml(m.dish)}
+            <span class="fridge-result-name">${m.dish.name}</span>
+          </div>
           <span class="fridge-result-tags">
             <span class="fridge-result-tag category">${m.category}</span>
             <span class="fridge-result-tag course">${COURSE_LABEL_JA[m.course]}</span>
@@ -4681,7 +4997,11 @@
   const recipeBookList = document.getElementById('recipeBookList');
   const recipeDetailOverlay = document.getElementById('recipeDetailOverlay');
   const recipeDetailCloseBtn = document.getElementById('recipeDetailCloseBtn');
+  const recipeDetailPhoto = document.getElementById('recipeDetailPhoto');
+  const recipeDetailPhotoImg = document.getElementById('recipeDetailPhotoImg');
   const recipeDetailName = document.getElementById('recipeDetailName');
+  const recipeDetailCookTime = document.getElementById('recipeDetailCookTime');
+  const recipeDetailTagChips = document.getElementById('recipeDetailTagChips');
   const recipeDetailTags = document.getElementById('recipeDetailTags');
   const recipeDetailIngredients = document.getElementById('recipeDetailIngredients');
   const recipeDetailSteps = document.getElementById('recipeDetailSteps');
@@ -4933,19 +5253,26 @@
       const previewNames = entry.dish.ingredients.slice(0, 4).map(ing => ing.name).join('・');
       return `
         <div class="recipe-card">
-          <div class="recipe-card-top">
-            <span class="recipe-card-name-wrap">
-              ${isDishFavorited(entry) ? '<span class="recipe-card-fav-mark">⭐</span>' : ''}
-              <span class="recipe-card-name">${entry.dish.name}</span>
-              ${entry.dish.isCustom ? '<span class="my-recipe-label">マイレシピ</span>' : ''}
-            </span>
-            <span class="fridge-result-tags">
-              <span class="fridge-result-tag category">${entry.category}</span>
-              <span class="fridge-result-tag course">${COURSE_LABEL_JA[entry.course]}</span>
-            </span>
+          <div class="recipe-card-body-row">
+            ${dishThumbHtml(entry.dish)}
+            <div class="recipe-card-content">
+              <div class="recipe-card-top">
+                <span class="recipe-card-name-wrap">
+                  ${isDishFavorited(entry) ? '<span class="recipe-card-fav-mark">⭐</span>' : ''}
+                  <span class="recipe-card-name">${entry.dish.name}</span>
+                  ${entry.dish.isCustom ? '<span class="my-recipe-label">マイレシピ</span>' : ''}
+                </span>
+                <span class="fridge-result-tags">
+                  <span class="fridge-result-tag category">${entry.category}</span>
+                  <span class="fridge-result-tag course">${COURSE_LABEL_JA[entry.course]}</span>
+                </span>
+              </div>
+              <div class="recipe-card-ingredients">${previewNames}</div>
+              ${cookTimeLineHtml(entry.dish.cookTime)}
+              ${tagChipsHtml(entry.dish.tags)}
+              <button type="button" class="material-btn recipe-detail-open-btn" data-index="${i}">詳細を見る</button>
+            </div>
           </div>
-          <div class="recipe-card-ingredients">${previewNames}</div>
-          <button type="button" class="material-btn recipe-detail-open-btn" data-index="${i}">詳細を見る</button>
         </div>
       `;
     }).join('');
@@ -4970,7 +5297,33 @@
     currentRecipeEntry = entry;
     const { dish, category, course } = entry;
 
+    if (dish.photo){
+      recipeDetailPhotoImg.src = dish.photo;
+      recipeDetailPhoto.style.display = 'block';
+    } else {
+      recipeDetailPhotoImg.src = '';
+      recipeDetailPhoto.style.display = 'none';
+    }
+
     recipeDetailName.textContent = dish.name;
+
+    const cookTimeText = formatCookTime(dish.cookTime);
+    if (cookTimeText){
+      recipeDetailCookTime.textContent = `⏰ ${cookTimeText}`;
+      recipeDetailCookTime.style.display = 'block';
+    } else {
+      recipeDetailCookTime.style.display = 'none';
+    }
+
+    const tagSpans = tagChipSpans(dish.tags);
+    if (tagSpans){
+      recipeDetailTagChips.innerHTML = tagSpans;
+      recipeDetailTagChips.style.display = 'flex';
+    } else {
+      recipeDetailTagChips.innerHTML = '';
+      recipeDetailTagChips.style.display = 'none';
+    }
+
     recipeDetailTags.innerHTML = `
       <span class="fridge-result-tag category">${category}</span>
       <span class="fridge-result-tag course">${COURSE_LABEL_JA[course]}</span>
@@ -5183,10 +5536,34 @@
   // "現在のバージョン" display both follow automatically from index 0.
   const APP_VERSION_HISTORY = [
     {
+      version: '1.7',
+      icon: '🏷️',
+      date: '2026/08/02',
+      isNew: true,
+      sectionLabel: '✨ 新機能',
+      items: ['レシピへのタグ登録・表示に対応']
+    },
+    {
+      version: '1.6',
+      icon: '⏰',
+      date: '2026/08/01',
+      isNew: false,
+      sectionLabel: '✨ 新機能',
+      items: ['調理時間の登録・表示に対応']
+    },
+    {
+      version: '1.5',
+      icon: '📷',
+      date: '2026/07/31',
+      isNew: false,
+      sectionLabel: '✨ 新機能',
+      items: ['マイレシピへの写真登録・表示に対応']
+    },
+    {
       version: '1.4',
       icon: '📰',
       date: '2026/07/31',
-      isNew: true,
+      isNew: false,
       sectionLabel: '✨ 新機能',
       items: ['お知らせページを追加'],
       message: '📰 お知らせページを追加しました。\nこのページでは、今後のアップデート情報や新機能、改善内容をご案内します。\nこれまでのアップデート内容についても、下記にまとめて掲載していますので、ぜひご覧ください。\n今後もアプリをより使いやすくするため、継続的にアップデートを行っていきます。'
@@ -5581,7 +5958,72 @@
   const addDishIngredients = document.getElementById('addDishIngredients');
   const addIngredientRowBtn = document.getElementById('addIngredientRowBtn');
   const addDishStepsInput = document.getElementById('addDishStepsInput');
+  const addDishCookTimeSelect = document.getElementById('addDishCookTimeSelect');
+  const addDishTagCheckboxes = document.getElementById('addDishTagCheckboxes');
+  const addDishPhotoAddPlaceholder = document.getElementById('addDishPhotoAddPlaceholder');
+  const addDishPhotoAddLabel = document.getElementById('addDishPhotoAddLabel');
+  const addDishPhotoPreviewWrap = document.getElementById('addDishPhotoPreviewWrap');
+  const addDishPhotoPreviewImg = document.getElementById('addDishPhotoPreviewImg');
+  const addDishPhotoChangeBtn = document.getElementById('addDishPhotoChangeBtn');
+  const addDishPhotoRemoveBtn = document.getElementById('addDishPhotoRemoveBtn');
+  const addDishPhotoInput = document.getElementById('addDishPhotoInput');
   const addDishSaveBtn = document.getElementById('addDishSaveBtn');
+  let addDishPhotoData = null;
+
+  // Resizes/compresses an uploaded photo before it ever touches storage, so
+  // a full-resolution phone photo never bloats localStorage or slows the app.
+  const DISH_PHOTO_MAX_DIMENSION = 900;
+  const DISH_PHOTO_JPEG_QUALITY = 0.72;
+
+  function processDishPhotoFile(file, callback){
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > height && width > DISH_PHOTO_MAX_DIMENSION){
+          height = Math.round(height * (DISH_PHOTO_MAX_DIMENSION / width));
+          width = DISH_PHOTO_MAX_DIMENSION;
+        } else if (height > DISH_PHOTO_MAX_DIMENSION){
+          width = Math.round(width * (DISH_PHOTO_MAX_DIMENSION / height));
+          height = DISH_PHOTO_MAX_DIMENSION;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        callback(canvas.toDataURL('image/jpeg', DISH_PHOTO_JPEG_QUALITY));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function setAddDishPhoto(dataUrl){
+    addDishPhotoData = dataUrl;
+    if (dataUrl){
+      addDishPhotoPreviewImg.src = dataUrl;
+      addDishPhotoPreviewWrap.style.display = 'block';
+      addDishPhotoAddPlaceholder.style.display = 'none';
+    } else {
+      addDishPhotoPreviewImg.src = '';
+      addDishPhotoPreviewWrap.style.display = 'none';
+      addDishPhotoAddPlaceholder.style.display = 'flex';
+    }
+  }
+
+  addDishPhotoAddPlaceholder.addEventListener('click', () => addDishPhotoInput.click());
+  addDishPhotoChangeBtn.addEventListener('click', () => addDishPhotoInput.click());
+
+  addDishPhotoInput.addEventListener('change', () => {
+    const file = addDishPhotoInput.files && addDishPhotoInput.files[0];
+    if (!file) return;
+    processDishPhotoFile(file, (dataUrl) => setAddDishPhoto(dataUrl));
+    addDishPhotoInput.value = '';
+  });
+
+  addDishPhotoRemoveBtn.addEventListener('click', () => setAddDishPhoto(null));
+
 
   fillSelect(addDishCategorySelect, Object.keys(DISH_DATA));
 
@@ -5627,6 +6069,10 @@
     addDishIngredients.innerHTML = '';
     addIngredientRow();
     addDishStepsInput.value = '';
+    addDishCookTimeSelect.value = '';
+    addDishTagCheckboxes.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.checked = false; });
+    addDishPhotoAddLabel.textContent = '＋ 写真を選択';
+    setAddDishPhoto(null);
     addDishOverlay.classList.add('show');
   }
 
@@ -5650,6 +6096,13 @@
     });
     if (addDishIngredients.children.length === 0) addIngredientRow();
     addDishStepsInput.value = dish.steps || '';
+    addDishCookTimeSelect.value = dish.cookTime || '';
+    const dishTags = dish.tags || [];
+    addDishTagCheckboxes.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.checked = dishTags.includes(cb.value);
+    });
+    addDishPhotoAddLabel.textContent = '＋ 写真を追加';
+    setAddDishPhoto(dish.photo || null);
     addDishOverlay.classList.add('show');
   }
 
@@ -5716,6 +6169,8 @@
     }
 
     const steps = addDishStepsInput.value.trim();
+    const cookTime = addDishCookTimeSelect.value;
+    const tags = Array.from(addDishTagCheckboxes.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
     const course = addDishCourseSelect.value;
     const category = addDishCategorySelect.value;
     const source = addDishSource;
@@ -5725,7 +6180,7 @@
       const loc = findDishLocation(id);
       if (loc) loc.arr.splice(loc.idx, 1);
 
-      const updatedDish = { id, name, ingredients, steps };
+      const updatedDish = { id, name, ingredients, steps, photo: addDishPhotoData, cookTime, tags };
       if (isCustom) updatedDish.isCustom = true;
       DISH_DATA[category][course].push(updatedDish);
 
@@ -5735,7 +6190,7 @@
         saveCustomDishes(customList);
       } else {
         const overrides = loadBuiltinOverrides().filter(o => o.id !== id);
-        overrides.push({ id, category, course, name, ingredients, steps });
+        overrides.push({ id, category, course, name, ingredients, steps, photo: addDishPhotoData, cookTime, tags });
         saveBuiltinOverrides(overrides);
       }
 
@@ -5750,6 +6205,9 @@
       name,
       ingredients,
       steps,
+      photo: addDishPhotoData,
+      cookTime,
+      tags,
       isCustom: true
     };
 
