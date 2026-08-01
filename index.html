@@ -328,6 +328,43 @@
     margin:0;
   }
 
+  /* --- Data backup page --- */
+  .backup-info-box{
+    margin-top:28px;
+    padding:18px 20px;
+    background:#FBF8F0;
+    border:1px solid var(--paper-dark);
+    border-radius:8px;
+  }
+  .backup-info-title{
+    font-family:"Shippori Mincho", serif;
+    font-weight:700;
+    font-size:13.5px;
+    color:var(--indigo);
+    margin-bottom:10px;
+  }
+  .backup-info-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .backup-info-list li{
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.6;
+    padding-left:1.1em;
+    position:relative;
+  }
+  .backup-info-list li::before{
+    content:"・";
+    position:absolute;
+    left:0;
+    color:var(--gold);
+  }
+
   /* --- News / announcements page --- */
   .news-current-version{
     margin-top:28px;
@@ -836,6 +873,17 @@
     flex-direction:column;
     gap:16px;
   }
+  .omakase-filter-empty-message{
+    margin:14px 22px 0;
+    padding:12px 14px;
+    background:rgba(196,61,46,0.06);
+    border:1px solid rgba(196,61,46,0.18);
+    border-radius:8px;
+    font-size:12.5px;
+    color:var(--shu-dark);
+    line-height:1.8;
+    text-align:center;
+  }
   .recipe-filter-group-label{
     font-size:11px;
     font-weight:700;
@@ -1168,12 +1216,61 @@
   }
 
   /* --- Category tabs --- */
+  .category-tabs-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin:26px 0 6px;
+    flex-wrap:wrap;
+  }
   .category-tabs{
     display:flex;
     justify-content:center;
     gap:10px;
-    margin:26px 0 6px;
     flex-wrap:wrap;
+  }
+
+  .omakase-filter-icon-btn{
+    position:relative;
+    flex-shrink:0;
+    width:32px;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:1px solid var(--paper-dark);
+    border-radius:50%;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:border-color .15s ease, color .15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .omakase-filter-icon-btn svg{
+    width:15px;
+    height:15px;
+  }
+  .omakase-filter-icon-btn:hover{
+    border-color:var(--gold);
+    color:var(--indigo);
+  }
+  .omakase-filter-badge{
+    position:absolute;
+    top:-3px;
+    right:-3px;
+    min-width:15px;
+    height:15px;
+    padding:0 3px;
+    border-radius:999px;
+    background:var(--shu);
+    color:#FBF8F0;
+    font-size:9.5px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
   }
 
   .category-btn{
@@ -2828,6 +2925,13 @@
           </svg>
           常備品設定
         </button>
+        <button class="side-menu-subitem" id="menuGoBackupBtn" type="button">
+          <svg class="side-menu-subitem-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10,3.4 V12.6 M10,12.6 L6.6,9.2 M10,12.6 L13.4,9.2"/>
+            <path d="M4,13.4 V15.6 a1,1 0 0 0 1,1 H15 a1,1 0 0 0 1,-1 V13.4"/>
+          </svg>
+          データバックアップ
+        </button>
       </div>
     </nav>
   </div>
@@ -2942,10 +3046,19 @@
     <p class="sub">今日のごはんはこの中から。</p>
   </header>
 
-  <div class="category-tabs" role="group" aria-label="献立のジャンルを選ぶ">
-    <button class="category-btn active" type="button" data-category="和食" aria-pressed="true">和食</button>
-    <button class="category-btn" type="button" data-category="洋食" aria-pressed="false">洋食</button>
-    <button class="category-btn" type="button" data-category="中華" aria-pressed="false">中華</button>
+  <div class="category-tabs-row">
+    <div class="category-tabs" role="group" aria-label="献立のジャンルを選ぶ">
+      <button class="category-btn active" type="button" data-category="全て" aria-pressed="true">全て</button>
+      <button class="category-btn" type="button" data-category="和食" aria-pressed="false">和食</button>
+      <button class="category-btn" type="button" data-category="洋食" aria-pressed="false">洋食</button>
+      <button class="category-btn" type="button" data-category="中華" aria-pressed="false">中華</button>
+    </div>
+    <button type="button" class="omakase-filter-icon-btn" id="omakaseFilterOpenBtn" aria-label="絞り込み">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3.5,5 H16.5 L11.5,10.8 V15.5 L8.5,17 V10.8 Z"/>
+      </svg>
+      <span class="omakase-filter-badge" id="omakaseFilterBadge" style="display:none;">0</span>
+    </button>
   </div>
 
   <div class="favorites-only-wrap">
@@ -2990,7 +3103,7 @@
         <span class="slip-index">MAIN</span>
       </div>
       <div class="slip-dish placeholder" id="dishMain">判子を押すと決まります</div>
-      <button class="material-btn" type="button" data-course="main">📋 材料を見る</button>
+      <button class="material-btn omakase-detail-btn" type="button" data-course="main">詳細を見る</button>
     </div>
 
     <div class="slip" data-role="side" id="slipSide">
@@ -2999,7 +3112,7 @@
         <span class="slip-index">SIDE</span>
       </div>
       <div class="slip-dish placeholder" id="dishSide">判子を押すと決まります</div>
-      <button class="material-btn" type="button" data-course="side">📋 材料を見る</button>
+      <button class="material-btn omakase-detail-btn" type="button" data-course="side">詳細を見る</button>
     </div>
 
     <div class="slip" data-role="soup" id="slipSoup">
@@ -3008,7 +3121,7 @@
         <span class="slip-index">SOUP</span>
       </div>
       <div class="slip-dish placeholder" id="dishSoup">判子を押すと決まります</div>
-      <button class="material-btn" type="button" data-course="soup">📋 材料を見る</button>
+      <button class="material-btn omakase-detail-btn" type="button" data-course="soup">詳細を見る</button>
     </div>
   </div>
 
@@ -3020,6 +3133,9 @@
   <div class="fav-save-wrap">
     <button class="fav-save-btn" id="favSaveBtn" type="button" disabled>
       <span class="fav-save-icon">♡</span> <span id="favSaveLabel">この献立をお気に入りに登録</span>
+    </button>
+    <button class="fav-save-btn" id="omakaseTodayBtn" type="button" disabled>
+      <span class="fav-save-icon">🍚</span> <span id="omakaseTodayLabel">今日の献立にする</span>
     </button>
     <button class="fav-save-btn" id="shoppingListBtn" type="button" disabled>
       <span class="fav-save-icon">🛒</span> <span>買い物リスト</span>
@@ -3342,6 +3458,55 @@
   </nav>
 </div>
 
+<div class="stage records-page" id="backupPage" style="display:none;">
+  <div class="top-nav">
+    <button class="fav-nav-btn" id="backupBackHomeBtn" type="button">
+      <span class="fav-nav-icon">←</span> ホームに戻る
+    </button>
+  </div>
+
+  <header class="records-header">
+    <div class="eyebrow">SETTINGS</div>
+    <h1 class="records-title">データバックアップ</h1>
+    <p class="sub">マイレシピ・お気に入り・今日の献立・作った記録・買い物リスト・常備品設定・標準レシピの個人編集内容を、JSONファイルとして書き出せます。標準レシピ本体は対象に含まれません。</p>
+  </header>
+
+  <div class="backup-info-box">
+    <div class="backup-info-title">バックアップに含まれるデータ</div>
+    <ul class="backup-info-list">
+      <li>マイレシピ</li>
+      <li>お気に入り</li>
+      <li>今日の献立</li>
+      <li>作った記録</li>
+      <li>買い物リスト（不足食材の追加分）</li>
+      <li>常備品設定</li>
+      <li>標準レシピの個人編集内容</li>
+    </ul>
+  </div>
+
+  <div class="fridge-search-wrap">
+    <button type="button" class="fridge-search-btn" id="createBackupBtn">💾 バックアップを作成</button>
+  </div>
+
+  <nav class="site-footer-nav" aria-label="ページ一覧">
+    <button type="button" class="site-footer-link" data-page="home">ホーム</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="omakase">おまかせで決める</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="fridge">冷蔵庫にある食材から探す</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="seasonal">季節のおすすめ</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="recipeBook">ごはん図鑑</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="records">作った記録</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="addMenu">メニューを追加</button>
+    <span class="site-footer-dot">・</span>
+    <button type="button" class="site-footer-link" data-page="pantry">常備品設定</button>
+  </nav>
+</div>
+
 <div class="stage records-page" id="newsPage" style="display:none;">
   <div class="top-nav">
     <button class="fav-nav-btn" id="newsBackHomeBtn" type="button">
@@ -3508,6 +3673,46 @@
     <div class="shopping-panel-footer">
       <button class="shopping-copy-btn delete-confirm-yes" id="deleteConfirmYesBtn" type="button">削除</button>
       <button class="shopping-close-text-btn" id="deleteConfirmNoBtn" type="button">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<div class="favorites-overlay" id="omakaseFilterOverlay">
+  <div class="favorites-panel" role="dialog" aria-label="おまかせの絞り込み">
+    <div class="favorites-panel-header">
+      <h2>🔍 おまかせを絞り込む</h2>
+      <button class="favorites-close-btn" id="omakaseFilterCloseBtn" type="button" aria-label="閉じる">×</button>
+    </div>
+
+    <div class="recipe-filter-groups">
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">🏷️ タグ</div>
+        <div class="recipe-filter-chips" id="omakaseTagFilterChips">
+          <button type="button" class="recipe-filter-chip" data-tag="ダイエット"><span class="filter-chip-label">ダイエット</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="節約"><span class="filter-chip-label">節約</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="時短"><span class="filter-chip-label">時短</span></button>
+          <button type="button" class="recipe-filter-chip" data-tag="作り置き"><span class="filter-chip-label">作り置き</span></button>
+        </div>
+      </div>
+      <div class="recipe-filter-group">
+        <div class="recipe-filter-group-label">⏰ 調理時間</div>
+        <div class="recipe-filter-chips" id="omakaseCookTimeFilterChips">
+          <button type="button" class="recipe-filter-chip active" data-cooktime="all"><span class="filter-chip-label">指定なし</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="15"><span class="filter-chip-label">15分以内</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="30"><span class="filter-chip-label">30分以内</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="45"><span class="filter-chip-label">45分以内</span></button>
+          <button type="button" class="recipe-filter-chip" data-cooktime="60"><span class="filter-chip-label">60分以内</span></button>
+        </div>
+      </div>
+    </div>
+
+    <p class="omakase-filter-empty-message" id="omakaseFilterEmptyMessage" style="display:none;">
+      条件に一致するレシピが見つかりませんでした。<br>条件を変えてお試しください。
+    </p>
+
+    <div class="shopping-panel-footer">
+      <button type="button" class="manual-save-btn" id="omakaseFilterDecideBtn">この条件でおまかせ</button>
+      <button type="button" class="shopping-close-text-btn" id="omakaseFilterResetBtn">リセット</button>
     </div>
   </div>
 </div>
@@ -3710,152 +3915,139 @@
   </div>
 </div>
 
-<div class="favorites-overlay" id="materialsOverlay">
-  <div class="favorites-panel" role="dialog" aria-label="材料">
-    <div class="favorites-panel-header">
-      <h2>📋 材料</h2>
-      <button class="favorites-close-btn" id="materialsCloseBtn" type="button" aria-label="閉じる">×</button>
-    </div>
-    <div class="materials-dish-name" id="materialsDishName"></div>
-    <div class="shopping-list" id="materialsList"></div>
-    <div class="shopping-panel-footer">
-      <button class="shopping-close-text-btn" id="materialsCloseTextBtn" type="button">閉じる</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
   const DISH_DATA = {
     "和食": {
       main: [
-        { name: "鶏むね肉の照り焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "酒", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
-        { name: "鶏むね肉と野菜のせいろ蒸し", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "キャベツ", amount: "1/4個" }, { name: "にんじん", amount: "1/2本" }, { name: "もやし", amount: "1袋" }, { name: "ポン酢", amount: "大さじ2" }] },
-        { name: "鶏むね肉の梅しそロール", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "梅干し", amount: "2個" }, { name: "大葉", amount: "4枚" }, { name: "酒", amount: "大さじ1" }] },
-        { name: "鶏むね肉の柚子胡椒焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "柚子胡椒", amount: "小さじ1/2" }, { name: "酒", amount: "大さじ1" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "鶏むね肉とキャベツのポン酢炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "キャベツ", amount: "1/4個" }, { name: "ポン酢", amount: "大さじ2" }, { name: "ごま油", amount: "小さじ2" }] },
-        { name: "鮭ときのこのホイル焼き", ingredients: [{ name: "鮭", amount: "2切れ" }, { name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "バター", amount: "10g" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "鶏むね肉と大根の煮物", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "大根", amount: "1/4本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }] },
-        { name: "鶏むね肉の塩麹焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "塩麹", amount: "大さじ1" }, { name: "酒", amount: "大さじ1" }] },
-        { name: "鶏むね肉の大葉チーズ焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "大葉", amount: "4枚" }, { name: "チーズ", amount: "30g" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
-        { name: "鶏むね肉の甘辛照り焼き（ゆで卵入り）", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "ゆで卵", amount: "2個" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
-        { name: "豚しゃぶせいろ蒸し", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "もやし", amount: "1袋" }, { name: "キャベツ", amount: "1/4個" }, { name: "ポン酢", amount: "大さじ2" }] },
-        { name: "生姜焼き", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "生姜", amount: "1かけ" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "酒", amount: "大さじ1" }] },
-        { name: "鮭の味噌マヨチーズホイル焼き", ingredients: [{ name: "鮭", amount: "2切れ" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "マヨネーズ", amount: "大さじ1" }, { name: "チーズ", amount: "30g" }, { name: "玉ねぎ", amount: "1/2個" }] },
-        { name: "豆腐ハンバーグ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆腐", amount: "1丁" }, { name: "片栗粉", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
-        { name: "チーズイン豆腐ハンバーグ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆腐", amount: "1丁" }, { name: "チーズ", amount: "30g" }, { name: "片栗粉", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
-        { name: "厚揚げの照り焼き", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
-        { name: "厚揚げの肉巻き", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "豚肉", amount: "200g" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }] },
+        { id: "builtin-0", name: "鶏むね肉の照り焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "酒", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
+        { id: "builtin-1", name: "鶏むね肉と野菜のせいろ蒸し", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "キャベツ", amount: "1/4個" }, { name: "にんじん", amount: "1/2本" }, { name: "もやし", amount: "1袋" }, { name: "ポン酢", amount: "大さじ2" }] },
+        { id: "builtin-2", name: "鶏むね肉の梅しそロール", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "梅干し", amount: "2個" }, { name: "大葉", amount: "4枚" }, { name: "酒", amount: "大さじ1" }] },
+        { id: "builtin-3", name: "鶏むね肉の柚子胡椒焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "柚子胡椒", amount: "小さじ1/2" }, { name: "酒", amount: "大さじ1" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-4", name: "鶏むね肉とキャベツのポン酢炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "キャベツ", amount: "1/4個" }, { name: "ポン酢", amount: "大さじ2" }, { name: "ごま油", amount: "小さじ2" }] },
+        { id: "builtin-5", name: "鮭ときのこのホイル焼き", ingredients: [{ name: "鮭", amount: "2切れ" }, { name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "バター", amount: "10g" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-6", name: "鶏むね肉と大根の煮物", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "大根", amount: "1/4本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }] },
+        { id: "builtin-7", name: "鶏むね肉の塩麹焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "塩麹", amount: "大さじ1" }, { name: "酒", amount: "大さじ1" }] },
+        { id: "builtin-8", name: "鶏むね肉の大葉チーズ焼き", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "大葉", amount: "4枚" }, { name: "チーズ", amount: "30g" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
+        { id: "builtin-9", name: "鶏むね肉の甘辛照り焼き（ゆで卵入り）", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "ゆで卵", amount: "2個" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
+        { id: "builtin-10", name: "豚しゃぶせいろ蒸し", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "もやし", amount: "1袋" }, { name: "キャベツ", amount: "1/4個" }, { name: "ポン酢", amount: "大さじ2" }] },
+        { id: "builtin-11", name: "生姜焼き", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "生姜", amount: "1かけ" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "酒", amount: "大さじ1" }] },
+        { id: "builtin-12", name: "鮭の味噌マヨチーズホイル焼き", ingredients: [{ name: "鮭", amount: "2切れ" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "マヨネーズ", amount: "大さじ1" }, { name: "チーズ", amount: "30g" }, { name: "玉ねぎ", amount: "1/2個" }] },
+        { id: "builtin-13", name: "豆腐ハンバーグ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆腐", amount: "1丁" }, { name: "片栗粉", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
+        { id: "builtin-14", name: "チーズイン豆腐ハンバーグ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆腐", amount: "1丁" }, { name: "チーズ", amount: "30g" }, { name: "片栗粉", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
+        { id: "builtin-15", name: "厚揚げの照り焼き", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
+        { id: "builtin-16", name: "厚揚げの肉巻き", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "豚肉", amount: "200g" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }] },
       ],
       side: [
-        { name: "ほうれん草のおひたし", ingredients: [{ name: "ほうれん草", amount: "1束" }, { name: "かつお節", amount: "適量" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "きゅうりとわかめの酢の物", ingredients: [{ name: "きゅうり", amount: "1本" }, { name: "わかめ", amount: "大さじ1（乾燥）" }, { name: "酢", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }, { name: "塩", amount: "少々" }] },
-        { name: "もやしとにんじんのナムル", ingredients: [{ name: "もやし", amount: "1袋" }, { name: "にんじん", amount: "1/2本" }, { name: "ごま油", amount: "小さじ2" }, { name: "塩", amount: "少々" }, { name: "にんにく", amount: "1片" }] },
-        { name: "切り干し大根の酢の物", ingredients: [{ name: "切り干し大根", amount: "20g" }, { name: "きゅうり", amount: "1本" }, { name: "酢", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
-        { name: "なすの焼き浸し", ingredients: [{ name: "なす", amount: "2本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }] },
-        { name: "大根サラダ", ingredients: [{ name: "大根", amount: "1/4本" }, { name: "かいわれ", amount: "1/2パック" }, { name: "ポン酢", amount: "大さじ2" }] },
-        { name: "冷奴", ingredients: [{ name: "豆腐", amount: "1丁" }, { name: "かつお節", amount: "適量" }, { name: "長ねぎ", amount: "1/2本" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "トマトと大葉のサラダ", ingredients: [{ name: "トマト", amount: "1個" }, { name: "大葉", amount: "4枚" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-17", name: "ほうれん草のおひたし", ingredients: [{ name: "ほうれん草", amount: "1束" }, { name: "かつお節", amount: "適量" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-18", name: "きゅうりとわかめの酢の物", ingredients: [{ name: "きゅうり", amount: "1本" }, { name: "わかめ", amount: "大さじ1（乾燥）" }, { name: "酢", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-19", name: "もやしとにんじんのナムル", ingredients: [{ name: "もやし", amount: "1袋" }, { name: "にんじん", amount: "1/2本" }, { name: "ごま油", amount: "小さじ2" }, { name: "塩", amount: "少々" }, { name: "にんにく", amount: "1片" }] },
+        { id: "builtin-20", name: "切り干し大根の酢の物", ingredients: [{ name: "切り干し大根", amount: "20g" }, { name: "きゅうり", amount: "1本" }, { name: "酢", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
+        { id: "builtin-21", name: "なすの焼き浸し", ingredients: [{ name: "なす", amount: "2本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "みりん", amount: "大さじ1" }] },
+        { id: "builtin-22", name: "大根サラダ", ingredients: [{ name: "大根", amount: "1/4本" }, { name: "かいわれ", amount: "1/2パック" }, { name: "ポン酢", amount: "大さじ2" }] },
+        { id: "builtin-23", name: "冷奴", ingredients: [{ name: "豆腐", amount: "1丁" }, { name: "かつお節", amount: "適量" }, { name: "長ねぎ", amount: "1/2本" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-24", name: "トマトと大葉のサラダ", ingredients: [{ name: "トマト", amount: "1個" }, { name: "大葉", amount: "4枚" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
       ],
       soup: [
-        { name: "わかめと豆腐の味噌汁", ingredients: [{ name: "わかめ", amount: "大さじ1（乾燥）" }, { name: "豆腐", amount: "1丁" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
-        { name: "なめこと豆腐の味噌汁", ingredients: [{ name: "なめこ", amount: "1袋" }, { name: "豆腐", amount: "1丁" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
-        { name: "しじみの味噌汁", ingredients: [{ name: "しじみ", amount: "150g" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
-        { name: "かぶと大根の味噌汁", ingredients: [{ name: "かぶ", amount: "1個" }, { name: "大根", amount: "1/4本" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
-        { name: "おろし大根のすまし汁", ingredients: [{ name: "大根", amount: "1/4本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
-        { name: "えのきとねぎのすまし汁", ingredients: [{ name: "えのき", amount: "1袋" }, { name: "長ねぎ", amount: "1/2本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "かきたま汁", ingredients: [{ name: "卵", amount: "2個" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "片栗粉", amount: "小さじ2" }] },
+        { id: "builtin-25", name: "わかめと豆腐の味噌汁", ingredients: [{ name: "わかめ", amount: "大さじ1（乾燥）" }, { name: "豆腐", amount: "1丁" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
+        { id: "builtin-26", name: "なめこと豆腐の味噌汁", ingredients: [{ name: "なめこ", amount: "1袋" }, { name: "豆腐", amount: "1丁" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
+        { id: "builtin-27", name: "しじみの味噌汁", ingredients: [{ name: "しじみ", amount: "150g" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
+        { id: "builtin-28", name: "かぶと大根の味噌汁", ingredients: [{ name: "かぶ", amount: "1個" }, { name: "大根", amount: "1/4本" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "だし", amount: "400ml" }] },
+        { id: "builtin-29", name: "おろし大根のすまし汁", ingredients: [{ name: "大根", amount: "1/4本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-30", name: "えのきとねぎのすまし汁", ingredients: [{ name: "えのき", amount: "1袋" }, { name: "長ねぎ", amount: "1/2本" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-31", name: "かきたま汁", ingredients: [{ name: "卵", amount: "2個" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }, { name: "片栗粉", amount: "小さじ2" }] },
       ],
     },
     "洋食": {
       main: [
-        { name: "鶏むね肉のハーブグリル", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "ハーブ", amount: "適量" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
-        { name: "鶏むね肉のトマト煮込み", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "トマト缶", amount: "1缶" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "にんにく", amount: "1片" }, { name: "オリーブオイル", amount: "大さじ1" }] },
-        { name: "鶏むね肉の低温ロースト", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
-        { name: "白身魚のハーブ蒸し", ingredients: [{ name: "白身魚", amount: "2切れ" }, { name: "ハーブ", amount: "適量" }, { name: "レモン", amount: "1/2個" }, { name: "塩", amount: "少々" }] },
-        { name: "鶏むね肉ときのこの豆乳クリーム煮", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "しめじ", amount: "1/2株" }, { name: "豆乳", amount: "200ml" }, { name: "コンソメ", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
-        { name: "鶏むね肉のガーリックソテー", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "にんにく", amount: "1片" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
-        { name: "サーモンのレモンムニエル", ingredients: [{ name: "サーモン", amount: "2切れ" }, { name: "レモン", amount: "1/2個" }, { name: "小麦粉", amount: "大さじ2" }, { name: "オリーブオイル", amount: "大さじ1" }] },
-        { name: "鶏むね肉と野菜のコンソメ煮", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "にんじん", amount: "1/2本" }, { name: "セロリ", amount: "1/2本" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "コンソメ", amount: "小さじ2" }] },
-        { name: "チキン南蛮（タルタル少なめ）", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "卵", amount: "2個" }, { name: "酢", amount: "大さじ1" }, { name: "醤油", amount: "大さじ1" }, { name: "タルタルソース", amount: "大さじ3" }] },
-        { name: "無水キーマカレー", ingredients: [{ name: "赤身ひき肉", amount: "150g" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "トマト缶", amount: "1缶" }, { name: "カレー粉", amount: "大さじ1" }] },
-        { name: "ピーマンの肉詰め", ingredients: [{ name: "ピーマン", amount: "3個" }, { name: "赤身ひき肉", amount: "150g" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "片栗粉", amount: "小さじ2" }] },
+        { id: "builtin-32", name: "鶏むね肉のハーブグリル", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "ハーブ", amount: "適量" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
+        { id: "builtin-33", name: "鶏むね肉のトマト煮込み", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "トマト缶", amount: "1缶" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "にんにく", amount: "1片" }, { name: "オリーブオイル", amount: "大さじ1" }] },
+        { id: "builtin-34", name: "鶏むね肉の低温ロースト", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
+        { id: "builtin-35", name: "白身魚のハーブ蒸し", ingredients: [{ name: "白身魚", amount: "2切れ" }, { name: "ハーブ", amount: "適量" }, { name: "レモン", amount: "1/2個" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-36", name: "鶏むね肉ときのこの豆乳クリーム煮", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "しめじ", amount: "1/2株" }, { name: "豆乳", amount: "200ml" }, { name: "コンソメ", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
+        { id: "builtin-37", name: "鶏むね肉のガーリックソテー", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "にんにく", amount: "1片" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }, { name: "こしょう", amount: "少々" }] },
+        { id: "builtin-38", name: "サーモンのレモンムニエル", ingredients: [{ name: "サーモン", amount: "2切れ" }, { name: "レモン", amount: "1/2個" }, { name: "小麦粉", amount: "大さじ2" }, { name: "オリーブオイル", amount: "大さじ1" }] },
+        { id: "builtin-39", name: "鶏むね肉と野菜のコンソメ煮", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "にんじん", amount: "1/2本" }, { name: "セロリ", amount: "1/2本" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "コンソメ", amount: "小さじ2" }] },
+        { id: "builtin-40", name: "チキン南蛮（タルタル少なめ）", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "卵", amount: "2個" }, { name: "酢", amount: "大さじ1" }, { name: "醤油", amount: "大さじ1" }, { name: "タルタルソース", amount: "大さじ3" }] },
+        { id: "builtin-41", name: "無水キーマカレー", ingredients: [{ name: "赤身ひき肉", amount: "150g" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "トマト缶", amount: "1缶" }, { name: "カレー粉", amount: "大さじ1" }] },
+        { id: "builtin-42", name: "ピーマンの肉詰め", ingredients: [{ name: "ピーマン", amount: "3個" }, { name: "赤身ひき肉", amount: "150g" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "片栗粉", amount: "小さじ2" }] },
       ],
       side: [
-        { name: "トマトと豆苗のサラダ", ingredients: [{ name: "トマト", amount: "1個" }, { name: "豆苗", amount: "1パック" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
-        { name: "ミニトマトとモッツァレラのサラダ", ingredients: [{ name: "ミニトマト", amount: "8個" }, { name: "モッツァレラチーズ", amount: "100g" }, { name: "バジル", amount: "適量" }, { name: "オリーブオイル", amount: "大さじ1" }] },
-        { name: "ブロッコリーのガーリック蒸し", ingredients: [{ name: "ブロッコリー", amount: "1/2株" }, { name: "にんにく", amount: "1片" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
-        { name: "パプリカの焼きびたし", ingredients: [{ name: "パプリカ", amount: "1個" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "蒸し野菜のバーニャカウダ風", ingredients: [{ name: "にんじん", amount: "1/2本" }, { name: "ブロッコリー", amount: "1/2株" }, { name: "にんにく", amount: "1片" }, { name: "アンチョビ", amount: "2枚" }, { name: "オリーブオイル", amount: "大さじ1" }] },
-        { name: "水菜と生ハムのサラダ", ingredients: [{ name: "水菜", amount: "1/2束" }, { name: "生ハム", amount: "4枚" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "レモン", amount: "1/2個" }] },
-        { name: "きのこのマリネ", ingredients: [{ name: "しめじ", amount: "1/2株" }, { name: "エリンギ", amount: "1本" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "レモン", amount: "1/2個" }] },
+        { id: "builtin-43", name: "トマトと豆苗のサラダ", ingredients: [{ name: "トマト", amount: "1個" }, { name: "豆苗", amount: "1パック" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-44", name: "ミニトマトとモッツァレラのサラダ", ingredients: [{ name: "ミニトマト", amount: "8個" }, { name: "モッツァレラチーズ", amount: "100g" }, { name: "バジル", amount: "適量" }, { name: "オリーブオイル", amount: "大さじ1" }] },
+        { id: "builtin-45", name: "ブロッコリーのガーリック蒸し", ingredients: [{ name: "ブロッコリー", amount: "1/2株" }, { name: "にんにく", amount: "1片" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-46", name: "パプリカの焼きびたし", ingredients: [{ name: "パプリカ", amount: "1個" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "だし", amount: "400ml" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-47", name: "蒸し野菜のバーニャカウダ風", ingredients: [{ name: "にんじん", amount: "1/2本" }, { name: "ブロッコリー", amount: "1/2株" }, { name: "にんにく", amount: "1片" }, { name: "アンチョビ", amount: "2枚" }, { name: "オリーブオイル", amount: "大さじ1" }] },
+        { id: "builtin-48", name: "水菜と生ハムのサラダ", ingredients: [{ name: "水菜", amount: "1/2束" }, { name: "生ハム", amount: "4枚" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "レモン", amount: "1/2個" }] },
+        { id: "builtin-49", name: "きのこのマリネ", ingredients: [{ name: "しめじ", amount: "1/2株" }, { name: "エリンギ", amount: "1本" }, { name: "オリーブオイル", amount: "大さじ1" }, { name: "レモン", amount: "1/2個" }] },
       ],
       soup: [
-        { name: "野菜たっぷりコンソメスープ", ingredients: [{ name: "にんじん", amount: "1/2本" }, { name: "キャベツ", amount: "1/4個" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "コンソメ", amount: "小さじ2" }] },
-        { name: "トマトと卵のスープ", ingredients: [{ name: "トマト", amount: "1個" }, { name: "卵", amount: "2個" }, { name: "コンソメ", amount: "小さじ2" }, { name: "塩", amount: "少々" }] },
-        { name: "きのこの豆乳ポタージュ風", ingredients: [{ name: "しめじ", amount: "1/2株" }, { name: "豆乳", amount: "200ml" }, { name: "コンソメ", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
-        { name: "キャベツとベーコンのコンソメスープ", ingredients: [{ name: "キャベツ", amount: "1/4個" }, { name: "ベーコン", amount: "2枚" }, { name: "コンソメ", amount: "小さじ2" }] },
+        { id: "builtin-50", name: "野菜たっぷりコンソメスープ", ingredients: [{ name: "にんじん", amount: "1/2本" }, { name: "キャベツ", amount: "1/4個" }, { name: "玉ねぎ", amount: "1/2個" }, { name: "コンソメ", amount: "小さじ2" }] },
+        { id: "builtin-51", name: "トマトと卵のスープ", ingredients: [{ name: "トマト", amount: "1個" }, { name: "卵", amount: "2個" }, { name: "コンソメ", amount: "小さじ2" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-52", name: "きのこの豆乳ポタージュ風", ingredients: [{ name: "しめじ", amount: "1/2株" }, { name: "豆乳", amount: "200ml" }, { name: "コンソメ", amount: "小さじ2" }, { name: "玉ねぎ", amount: "1/2個" }] },
+        { id: "builtin-53", name: "キャベツとベーコンのコンソメスープ", ingredients: [{ name: "キャベツ", amount: "1/4個" }, { name: "ベーコン", amount: "2枚" }, { name: "コンソメ", amount: "小さじ2" }] },
       ],
     },
     "中華": {
       main: [
-        { name: "鶏むね肉と青梗菜のオイスター炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "チンゲン菜", amount: "1株" }, { name: "オイスターソース", amount: "大さじ1" }, { name: "ごま油", amount: "小さじ2" }] },
-        { name: "よだれ鶏", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "醤油", amount: "大さじ1" }, { name: "ラー油", amount: "小さじ1" }, { name: "にんにく", amount: "1片" }] },
-        { name: "鶏むね肉とブロッコリーの中華炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "ブロッコリー", amount: "1/2株" }, { name: "オイスターソース", amount: "大さじ1" }, { name: "ごま油", amount: "小さじ2" }] },
-        { name: "鶏むね肉とキムチの豆腐チゲ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "キムチ", amount: "100g" }, { name: "豆腐", amount: "1丁" }, { name: "だし", amount: "400ml" }, { name: "味噌", amount: "大さじ1と1/2" }] },
-        { name: "鶏むね肉のねぎ塩だれ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "塩", amount: "少々" }, { name: "ごま油", amount: "小さじ2" }, { name: "レモン", amount: "1/2個" }] },
-        { name: "鶏むね肉と白菜のミルフィーユ蒸し", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "白菜", amount: "1/4個" }, { name: "酒", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
-        { name: "豆腐ハンバーグ（鶏むね肉入り）", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆腐", amount: "1丁" }, { name: "長ねぎ", amount: "1/2本" }, { name: "片栗粉", amount: "小さじ2" }] },
-        { name: "鶏むね肉と豆苗の塩炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆苗", amount: "1パック" }, { name: "塩", amount: "少々" }, { name: "ごま油", amount: "小さじ2" }, { name: "にんにく", amount: "1片" }] },
-        { name: "鶏肉と野菜の黒酢炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "パプリカ", amount: "1個" }, { name: "黒酢", amount: "大さじ1" }, { name: "醤油", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
-        { name: "豚キムチ（野菜たっぷり）", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "キムチ", amount: "100g" }, { name: "ニラ", amount: "1束" }, { name: "もやし", amount: "1袋" }] },
-        { name: "豚肉となすの味噌炒め", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "なす", amount: "2本" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "砂糖", amount: "小さじ1" }, { name: "ごま油", amount: "小さじ2" }] },
-        { name: "豚肉ときのこのポン酢炒め", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "ポン酢", amount: "大さじ2" }] },
-        { name: "回鍋肉（キャベツたっぷり）", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "キャベツ", amount: "1/4個" }, { name: "ピーマン", amount: "3個" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "豆板醤", amount: "小さじ1" }] },
-        { name: "ビビンバ", ingredients: [{ name: "牛肉", amount: "150g" }, { name: "ほうれん草", amount: "1束" }, { name: "にんじん", amount: "1/2本" }, { name: "もやし", amount: "1袋" }, { name: "卵", amount: "2個" }] },
-        { name: "麻婆豆腐", ingredients: [{ name: "豆腐", amount: "1丁" }, { name: "豚ひき肉", amount: "150g" }, { name: "長ねぎ", amount: "1/2本" }, { name: "豆板醤", amount: "小さじ1" }, { name: "味噌", amount: "大さじ1と1/2" }] },
-        { name: "キャベツたっぷり餃子", ingredients: [{ name: "豚ひき肉", amount: "150g" }, { name: "キャベツ", amount: "1/4個" }, { name: "にら", amount: "1/2束" }, { name: "餃子の皮", amount: "20枚" }] },
-        { name: "厚揚げと豚肉の味噌炒め", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "豚肉", amount: "200g" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "ピーマン", amount: "3個" }] },
-        { name: "厚揚げときのこのあんかけ", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "片栗粉", amount: "小さじ2" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "厚揚げのキムチ炒め", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "キムチ", amount: "100g" }, { name: "にら", amount: "1/2束" }, { name: "ごま油", amount: "小さじ2" }] },
+        { id: "builtin-54", name: "鶏むね肉と青梗菜のオイスター炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "チンゲン菜", amount: "1株" }, { name: "オイスターソース", amount: "大さじ1" }, { name: "ごま油", amount: "小さじ2" }] },
+        { id: "builtin-55", name: "よだれ鶏", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "醤油", amount: "大さじ1" }, { name: "ラー油", amount: "小さじ1" }, { name: "にんにく", amount: "1片" }] },
+        { id: "builtin-56", name: "鶏むね肉とブロッコリーの中華炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "ブロッコリー", amount: "1/2株" }, { name: "オイスターソース", amount: "大さじ1" }, { name: "ごま油", amount: "小さじ2" }] },
+        { id: "builtin-57", name: "鶏むね肉とキムチの豆腐チゲ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "キムチ", amount: "100g" }, { name: "豆腐", amount: "1丁" }, { name: "だし", amount: "400ml" }, { name: "味噌", amount: "大さじ1と1/2" }] },
+        { id: "builtin-58", name: "鶏むね肉のねぎ塩だれ", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "塩", amount: "少々" }, { name: "ごま油", amount: "小さじ2" }, { name: "レモン", amount: "1/2個" }] },
+        { id: "builtin-59", name: "鶏むね肉と白菜のミルフィーユ蒸し", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "白菜", amount: "1/4個" }, { name: "酒", amount: "大さじ1" }, { name: "塩", amount: "少々" }] },
+        { id: "builtin-60", name: "豆腐ハンバーグ（鶏むね肉入り）", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆腐", amount: "1丁" }, { name: "長ねぎ", amount: "1/2本" }, { name: "片栗粉", amount: "小さじ2" }] },
+        { id: "builtin-61", name: "鶏むね肉と豆苗の塩炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "豆苗", amount: "1パック" }, { name: "塩", amount: "少々" }, { name: "ごま油", amount: "小さじ2" }, { name: "にんにく", amount: "1片" }] },
+        { id: "builtin-62", name: "鶏肉と野菜の黒酢炒め", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "パプリカ", amount: "1個" }, { name: "黒酢", amount: "大さじ1" }, { name: "醤油", amount: "大さじ1" }, { name: "砂糖", amount: "小さじ1" }] },
+        { id: "builtin-63", name: "豚キムチ（野菜たっぷり）", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "キムチ", amount: "100g" }, { name: "ニラ", amount: "1束" }, { name: "もやし", amount: "1袋" }] },
+        { id: "builtin-64", name: "豚肉となすの味噌炒め", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "なす", amount: "2本" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "砂糖", amount: "小さじ1" }, { name: "ごま油", amount: "小さじ2" }] },
+        { id: "builtin-65", name: "豚肉ときのこのポン酢炒め", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "ポン酢", amount: "大さじ2" }] },
+        { id: "builtin-66", name: "回鍋肉（キャベツたっぷり）", ingredients: [{ name: "豚肉", amount: "200g" }, { name: "キャベツ", amount: "1/4個" }, { name: "ピーマン", amount: "3個" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "豆板醤", amount: "小さじ1" }] },
+        { id: "builtin-67", name: "ビビンバ", ingredients: [{ name: "牛肉", amount: "150g" }, { name: "ほうれん草", amount: "1束" }, { name: "にんじん", amount: "1/2本" }, { name: "もやし", amount: "1袋" }, { name: "卵", amount: "2個" }] },
+        { id: "builtin-68", name: "麻婆豆腐", ingredients: [{ name: "豆腐", amount: "1丁" }, { name: "豚ひき肉", amount: "150g" }, { name: "長ねぎ", amount: "1/2本" }, { name: "豆板醤", amount: "小さじ1" }, { name: "味噌", amount: "大さじ1と1/2" }] },
+        { id: "builtin-69", name: "キャベツたっぷり餃子", ingredients: [{ name: "豚ひき肉", amount: "150g" }, { name: "キャベツ", amount: "1/4個" }, { name: "にら", amount: "1/2束" }, { name: "餃子の皮", amount: "20枚" }] },
+        { id: "builtin-70", name: "厚揚げと豚肉の味噌炒め", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "豚肉", amount: "200g" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "ピーマン", amount: "3個" }] },
+        { id: "builtin-71", name: "厚揚げときのこのあんかけ", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "片栗粉", amount: "小さじ2" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-72", name: "厚揚げのキムチ炒め", ingredients: [{ name: "厚揚げ", amount: "1枚" }, { name: "キムチ", amount: "100g" }, { name: "にら", amount: "1/2束" }, { name: "ごま油", amount: "小さじ2" }] },
       ],
       side: [
-        { name: "春雨とツナの中華サラダ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "ツナ", amount: "1缶" }, { name: "きゅうり", amount: "1本" }, { name: "ごま油", amount: "小さじ2" }, { name: "酢", amount: "大さじ1" }] },
-        { name: "もやしのナムル", ingredients: [{ name: "もやし", amount: "1袋" }, { name: "ごま油", amount: "小さじ2" }, { name: "塩", amount: "少々" }, { name: "にんにく", amount: "1片" }] },
-        { name: "小松菜ナムル", ingredients: [{ name: "小松菜", amount: "1束" }, { name: "ごま油", amount: "小さじ2" }, { name: "塩", amount: "少々" }, { name: "にんにく", amount: "1片" }] },
-        { name: "きくらげと卵の中華あえ", ingredients: [{ name: "きくらげ", amount: "5g（乾燥）" }, { name: "卵", amount: "2個" }, { name: "ごま油", amount: "小さじ2" }, { name: "醤油", amount: "大さじ1" }] },
-        { name: "白菜とツナのポン酢サラダ", ingredients: [{ name: "白菜", amount: "1/4個" }, { name: "ツナ", amount: "1缶" }, { name: "ポン酢", amount: "大さじ2" }] },
-        { name: "無限ピーマン", ingredients: [{ name: "ピーマン", amount: "3個" }, { name: "ツナ", amount: "1缶" }, { name: "ごま油", amount: "小さじ2" }, { name: "鶏がらスープの素", amount: "小さじ2" }] },
+        { id: "builtin-73", name: "春雨とツナの中華サラダ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "ツナ", amount: "1缶" }, { name: "きゅうり", amount: "1本" }, { name: "ごま油", amount: "小さじ2" }, { name: "酢", amount: "大さじ1" }] },
+        { id: "builtin-74", name: "もやしのナムル", ingredients: [{ name: "もやし", amount: "1袋" }, { name: "ごま油", amount: "小さじ2" }, { name: "塩", amount: "少々" }, { name: "にんにく", amount: "1片" }] },
+        { id: "builtin-75", name: "小松菜ナムル", ingredients: [{ name: "小松菜", amount: "1束" }, { name: "ごま油", amount: "小さじ2" }, { name: "塩", amount: "少々" }, { name: "にんにく", amount: "1片" }] },
+        { id: "builtin-76", name: "きくらげと卵の中華あえ", ingredients: [{ name: "きくらげ", amount: "5g（乾燥）" }, { name: "卵", amount: "2個" }, { name: "ごま油", amount: "小さじ2" }, { name: "醤油", amount: "大さじ1" }] },
+        { id: "builtin-77", name: "白菜とツナのポン酢サラダ", ingredients: [{ name: "白菜", amount: "1/4個" }, { name: "ツナ", amount: "1缶" }, { name: "ポン酢", amount: "大さじ2" }] },
+        { id: "builtin-78", name: "無限ピーマン", ingredients: [{ name: "ピーマン", amount: "3個" }, { name: "ツナ", amount: "1缶" }, { name: "ごま油", amount: "小さじ2" }, { name: "鶏がらスープの素", amount: "小さじ2" }] },
       ],
       soup: [
-        { name: "きのこの中華スープ", ingredients: [{ name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "鶏がらスープ", amount: "400ml" }, { name: "ごま油", amount: "小さじ2" }] },
-        { name: "春雨とザーサイのスープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "ザーサイ", amount: "30g" }, { name: "鶏がらスープ", amount: "400ml" }] },
-        { name: "白菜と春雨のとろみスープ", ingredients: [{ name: "白菜", amount: "1/4個" }, { name: "春雨", amount: "50g" }, { name: "鶏がらスープ", amount: "400ml" }, { name: "片栗粉", amount: "小さじ2" }] },
-        { name: "かきたま野菜スープ", ingredients: [{ name: "卵", amount: "2個" }, { name: "にんじん", amount: "1/2本" }, { name: "鶏がらスープ", amount: "400ml" }, { name: "片栗粉", amount: "小さじ2" }] },
-        { name: "冬瓜と鶏むね肉のスープ", ingredients: [{ name: "冬瓜", amount: "200g" }, { name: "鶏むね肉", amount: "1枚（300g）" }, { name: "鶏がらスープ", amount: "400ml" }] },
-        { name: "春雨酸辣湯", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豚肉", amount: "200g" }, { name: "酢", amount: "大さじ1" }, { name: "ラー油", amount: "小さじ1" }, { name: "卵", amount: "2個" }] },
-        { name: "春雨担々スープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豚ひき肉", amount: "150g" }, { name: "ごまペースト", amount: "大さじ1" }, { name: "ラー油", amount: "小さじ1" }] },
-        { name: "春雨入り鶏団子スープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "鶏がらスープ", amount: "400ml" }] },
-        { name: "春雨キムチスープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "キムチ", amount: "100g" }, { name: "豆腐", amount: "1丁" }, { name: "鶏がらスープ", amount: "400ml" }] },
-        { name: "春雨中華スープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "にんじん", amount: "1/2本" }, { name: "えのき", amount: "1袋" }, { name: "鶏がらスープ", amount: "400ml" }] },
-        { name: "春雨入り豚しゃぶ鍋", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豚肉", amount: "200g" }, { name: "白菜", amount: "1/4個" }, { name: "ポン酢", amount: "大さじ2" }] },
-        { name: "春雨豆乳味噌鍋", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豆乳", amount: "200ml" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "白菜", amount: "1/4個" }, { name: "鶏むね肉", amount: "1枚（300g）" }] },
-        { name: "鶏団子鍋", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "白菜", amount: "1/4個" }, { name: "だし", amount: "400ml" }] },
+        { id: "builtin-79", name: "きのこの中華スープ", ingredients: [{ name: "しめじ", amount: "1/2株" }, { name: "えのき", amount: "1袋" }, { name: "鶏がらスープ", amount: "400ml" }, { name: "ごま油", amount: "小さじ2" }] },
+        { id: "builtin-80", name: "春雨とザーサイのスープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "ザーサイ", amount: "30g" }, { name: "鶏がらスープ", amount: "400ml" }] },
+        { id: "builtin-81", name: "白菜と春雨のとろみスープ", ingredients: [{ name: "白菜", amount: "1/4個" }, { name: "春雨", amount: "50g" }, { name: "鶏がらスープ", amount: "400ml" }, { name: "片栗粉", amount: "小さじ2" }] },
+        { id: "builtin-82", name: "かきたま野菜スープ", ingredients: [{ name: "卵", amount: "2個" }, { name: "にんじん", amount: "1/2本" }, { name: "鶏がらスープ", amount: "400ml" }, { name: "片栗粉", amount: "小さじ2" }] },
+        { id: "builtin-83", name: "冬瓜と鶏むね肉のスープ", ingredients: [{ name: "冬瓜", amount: "200g" }, { name: "鶏むね肉", amount: "1枚（300g）" }, { name: "鶏がらスープ", amount: "400ml" }] },
+        { id: "builtin-84", name: "春雨酸辣湯", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豚肉", amount: "200g" }, { name: "酢", amount: "大さじ1" }, { name: "ラー油", amount: "小さじ1" }, { name: "卵", amount: "2個" }] },
+        { id: "builtin-85", name: "春雨担々スープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豚ひき肉", amount: "150g" }, { name: "ごまペースト", amount: "大さじ1" }, { name: "ラー油", amount: "小さじ1" }] },
+        { id: "builtin-86", name: "春雨入り鶏団子スープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "鶏がらスープ", amount: "400ml" }] },
+        { id: "builtin-87", name: "春雨キムチスープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "キムチ", amount: "100g" }, { name: "豆腐", amount: "1丁" }, { name: "鶏がらスープ", amount: "400ml" }] },
+        { id: "builtin-88", name: "春雨中華スープ", ingredients: [{ name: "春雨", amount: "50g" }, { name: "にんじん", amount: "1/2本" }, { name: "えのき", amount: "1袋" }, { name: "鶏がらスープ", amount: "400ml" }] },
+        { id: "builtin-89", name: "春雨入り豚しゃぶ鍋", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豚肉", amount: "200g" }, { name: "白菜", amount: "1/4個" }, { name: "ポン酢", amount: "大さじ2" }] },
+        { id: "builtin-90", name: "春雨豆乳味噌鍋", ingredients: [{ name: "春雨", amount: "50g" }, { name: "豆乳", amount: "200ml" }, { name: "味噌", amount: "大さじ1と1/2" }, { name: "白菜", amount: "1/4個" }, { name: "鶏むね肉", amount: "1枚（300g）" }] },
+        { id: "builtin-91", name: "鶏団子鍋", ingredients: [{ name: "鶏むね肉", amount: "1枚（300g）" }, { name: "長ねぎ", amount: "1/2本" }, { name: "白菜", amount: "1/4個" }, { name: "だし", amount: "400ml" }] },
       ],
     },
   };
 
-  // Every built-in dish gets a stable id (based on its fixed position in the
-  // DISH_DATA literal, which never changes) so personal edits to standard
-  // recipes can be tracked and re-applied on every load, the same way
-  // my-recipes already are.
+  // Every built-in dish now carries its own fixed id directly in the
+  // DISH_DATA literal above, so it never changes when dishes are added,
+  // removed, or reordered. This just back-fills a stable id for the rare
+  // case a dish is ever added without one — derived from its own
+  // category/course/name rather than a running counter, so even the
+  // fallback can't shift due to array position.
   function assignBuiltInIds(){
-    let counter = 0;
-    Object.values(DISH_DATA).forEach(courses => {
-      Object.values(courses).forEach(dishes => {
+    Object.entries(DISH_DATA).forEach(([category, courses]) => {
+      Object.entries(courses).forEach(([course, dishes]) => {
         dishes.forEach(dish => {
-          if (!dish.id) dish.id = `builtin-${counter++}`;
+          if (!dish.id) dish.id = `builtin-auto-${category}-${course}-${dish.name}`;
         });
       });
     });
@@ -3893,6 +4085,29 @@
       }
     }
     return null;
+  }
+
+  // Looks a dish up by its stable id alone (no category/course needed),
+  // returning where it currently lives. Used by every feature that stores a
+  // reference to "this exact recipe" (favorites, today's menu, records)
+  // instead of matching on its name, so renaming a recipe never breaks them.
+  function findDishById(id){
+    for (const category of Object.keys(DISH_DATA)){
+      for (const course of Object.keys(DISH_DATA[category])){
+        const dish = DISH_DATA[category][course].find(d => d.id === id);
+        if (dish) return { dish, category, course };
+      }
+    }
+    return null;
+  }
+
+  // Matches a stored dish reference (as saved in favorites/records) against
+  // a current dish. Prefers id (renamed-proof); falls back to name only for
+  // older saved data that predates id-based storage.
+  function matchesDishRef(saved, dish){
+    if (!saved || !dish) return false;
+    if (saved.id && dish.id) return saved.id === dish.id;
+    return saved.name === dish.name;
   }
 
   function applyBuiltinOverrides(){
@@ -3952,7 +4167,26 @@
 
   const stampBtn = document.getElementById('stampBtn');
   const categoryBtns = document.querySelectorAll('.category-btn');
-  let currentCategory = '和食';
+  let currentCategory = '全て';
+
+  // "全て" isn't a real key in DISH_DATA. Rather than mixing genres within a
+  // single drawn menu (e.g. a 和食 main with a 洋食 soup), a draw that uses
+  // "全て" first rolls one concrete genre, then proceeds exactly like a
+  // normal single-genre draw — so every downstream feature (favorites,
+  // buildMenuAroundDish, editing, etc.) keeps working with a single real
+  // category and needs no special-casing.
+  function resolveDrawCategory(category){
+    if (category !== '全て') return category;
+    const genres = Object.keys(DISH_DATA);
+    return genres[Math.floor(Math.random() * genres.length)];
+  }
+
+  function getFortunePool(category){
+    if (category === '全て'){
+      return GENERAL_COMMENTS.concat(Object.values(CATEGORY_COMMENTS).flat());
+    }
+    return GENERAL_COMMENTS.concat(CATEGORY_COMMENTS[category] || []);
+  }
 
   const slips = {
     main: { el: document.getElementById('slipMain'), dish: document.getElementById('dishMain') },
@@ -4038,6 +4272,10 @@
     favSaveBtn.querySelector('.fav-save-icon').textContent = '♡';
     favSaveLabel.textContent = 'この献立をお気に入りに登録';
 
+    omakaseTodayBtn.disabled = false;
+    omakaseTodayBtn.classList.remove('saved');
+    omakaseTodayLabel.textContent = '今日の献立にする';
+
     shoppingListBtn.disabled = false;
     shoppingChecked = {};
 
@@ -4057,13 +4295,41 @@
 
   let favoritesOnlyMode = false;
 
+  // 小鼓（こつづみ）の効果音ファイルをbase64で埋め込み、判子を押した瞬間に
+  // 再生する。単一HTMLファイルの構成を維持するため外部ファイル参照はせず、
+  // データURIとして内包している。
+  // WAV (uncompressed PCM) instead of MP3 — some sandboxed / restricted
+  // browser contexts don't ship an MP3 decoder, which showed up as
+  // "NotSupportedError: no supported sources" even though the embedded
+  // data itself was valid. WAV has no such codec ambiguity.
+  const STAMP_SOUND_SRC = "data:audio/wav;base64,UklGRk6nAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAATElTVBoAAABJTkZPSVNGVA4AAABMYXZmNjAuMTYuMTAwAGRhdGEIpwAAa/8TANP/BwB7ALr/tv/H/43/rP+j/zv/fP/0AAIBJwIaBIsEwgV4BnAGPwdBCCEIWQcDBzsHtQfdBqgFNwWWBSIGbQUcBRQFXwVuBkIHYwcpBmoG5AcJCEQIggi/CG0IJgiyBwsHCQdQBmsGSweyBl0GggR4AjoCBvri93ACnAA7AgcT4h1xIIsfzwU09yoIkg+gBA3+sQHoC/4WnAEl78Py5vxYE8AU7gUGBtwI8Ad+E/IXqxC4+dv1pf7P/df5OO0S9lkAlQEMAOQA2Qj2B0gPyRbdDgQKOwfEBJUIbQ3JCaQAL/on8hPsCO3C5WLWN8t0yOvTKeT47J31uP49BogGHw7kGw8jgiU3HQ0VwRVKHuYbgxGXBVT9/wCmCCYHDwxAGsQmojL6OjA3yjCTKtUZFBFIDlv6e+uD7THyjfB17TvXJsxk4wbyo+vB7icAJBaNKY4avRAMHMMpsUIpQDkpJyb1GsgMjhtIFOwBWe6M6Gbpg+nO8A7eQem2/2v6GvDX8+L3F+7K7OLm7NSfyUnEjcPWzbza8eHt59/yIwBmDfoZ3iKIJ8MoxyNLG/ATggymCdMHaQCg+/f7jv5VAb7/lvoT9lnzXe1I5s7nZvYE/zv8GgE8BegE/RK3IF8gXSaZKFIj3CXxKmMnziR8IfwcIyMeJIUb5BS6DR0DLvpR9MjrvOG921jbPt214DjkNuVB5rrpf+4t8z/6G/Qz8X8A5P1V/VgGuAH1+A374QhTBm0JRBMrECMOSglC/xvzuuaB3wrhTOUq5wXqwOy66/LpR+uu7WDt1POe+y7/kwTxBqgHkAjnC10OtQ8vEPIOIhORGnghfSeZKZQnviSrJHgl8iRLItAfLBzBEx8MBAO18dXhkteyycnG2MvUy3PSRN5V46Htc/7yDPoYHR/jHnwcOBo5FokQ8AoFBSv9cPVf8Hbr1eQP3kfZwdde2JDYjtuK3nbeM9573LLbrNyS2//cHeWQ8rL+sAk5D0ERoRQQFAYTWRJhDtAJVQecBUEGPwfgBlwG8gh4DGIOhhHIFcsWKRa7F2IXiBLCDcEHswF//CX4KvXa8vLxh/Qq+KH6Jf0v/2sBuAPLBcgGvgUGCB0NFQ7YD8kU0BbcFjASxgSk+jz2n+3l3tTR9ck7xu7EtL+AvFPAIciC1LLd6OLI6/7yqfgbABgDigKu/t/+DgXvDRkRhw/pEjoU0BXMGV4a7hbCDiEFqPrO8EXo+OGc33XgyuQJ6hrv5vUw/dECwwg9Dr4Q6BHlFqcd2yJ+Jekl5iXsJick+R9dHLwV5g7YBpb8NPIt6wbkt9uW1VzTPNWR29fjluyY9Vf+0AQdCE0IVQSSACn72va59Afwn+u26hnrK+kC56zfx9mW3JbdoNnp2KbcJePI54LoW+xb9AEA5w/PFxIW3RclF74R6RDFCpYAsfXz7UnoieTy5HfkuO7P/EMG1A+7HFEoCS5AMu4xjC2bKJchWBtoFlgQ/wrsBc8A4vxA+hL2t/H/7JbnfuQG4ZrdedvC3U/jcuoW84b8Ugg1FHIcoSCuIQIfhxnMEmALswS8+7PwaejY4jTdZ9oq2Z7U7tDrz+rP4dBP01nVqdew27viJ+1l+BQCmwuVFWwh8S3PLacoYSRTGwYWKhJHCnED6/v78nPrIOi96Afsk+0r8IT6qgNdDiAaCyEkIzEklyYHJG4hOyC7G8kWSRMyEDwM/QXPAQgAE/2W+D/01e20543kGeQp5Sjogu5b9ff8hQTPCq4PWROCE/cPoQstA6H4ifBg6avk0eI54uThtOFk4x7m3+gb6svqROrG6YLsLfCO8+X3HvwwAa4JqBj8IZ0h+yEEGwcTQRFsDdIHuQDK9D7nht4620Dbxd3L4QfnBPHh/xkQ8x4pK2cz7ThfOpA3YDPwLXYm3B6XFvIOngpeBHD+hvvn9xP05fAJ6pffo9ny1QLRxNAt1YncnerZ+RME3w2OGNweix9vHMcW+BMMEAMGQ/r07FDlQuS84EHd6NrG1u7URtZN3KzdWN8H5XvpBPEX9sv5EAD+DUAZKxmOGc8WVRSAFzYYkhcbFRQNcQN/+z/11vBt74bvS+9Y9okDbxIWIQ0rljGUODk8GDu8N6QyBCoPHyEV2wwGCToGaQKK/9T8o/n/9/7yo+rV48TfONxO12zTMdNX2uLow/jIB/cWDiHPJSoqVCm9IrYYfwt3/nb3ge+n4fvWetIVzofICcMXwKTGOc2vz5DSk9Q43RHs3PWG/8YKoA/dFvQfvihFLR0v5C7PKvIp9SBIFHgMqAT4+s/xxO2I6oTsMvVi/pEJDBToGgcgCCVFKrwuVDC1Lrcs+ikPJ2om3ieAKO0n1yXlH84Xgw3ZAGL0R+d8263RBM16zZ/Q7the5BXuX/gmBDMQLxrIHxIi3R2zFVwNOQLb9nDs7ODs1prPkskDxmjE7MI8xJvJd84U1RPem+aL7gr22v6jCNwRTxlfIIQmQyxzL2gt+ChDI6sbrBQ0Cxr+q/ac8bDsWOw8723zZffW/4UHRw/RGZ8jhizZNAw9/kJsRrtFXUP7QUM+fzgRMXsoYB+4E3MGvfZj5rbZsNBZyrDGCMaAx3DLxdKe3hTsQfgkA78LpxMtG3ggEiEyHCsUVgu1AKb0VuoM4dDX1tD1zqfOWc6qzzPPS8830lbUjNY/2+Hf1uVZ7rb2EgC/CgAVzB7sJZ0paSraJ/ckOSG3GzgV7g6kCZsFlQM/BHIGKwnBDeoTzhvyIicoIyyhL7wyFDTBMtAv2CxuKRYmzyP8H/AYKxI+CsIAAvrA817s5eW738jaCNmV2XLbmt4I5H/s7fWX/7YJphJBGdMcDB28GB4Rngcz/DzwruTE2f/Phsgew6q/EL6IvYO+DMGoxOPIWs6h1UffMupJ9mgDgBDMHIsoVTK9OBA9Tz0vOSsytSh/HfIQMgVa+kPxJutZ6NXoUOsc8cj5iQOXDZMW2B6OJu0tUTSCOBk8KD4bPeY6xjcuM14tvyV8Hb0VhQwJAT30suha4ALZCNLkzZDNINDt1uTfoenk9DAADgg0DSIRyA9zCiUEl/s88i3phN7t1KvOTsr1yKfJnsrAznzUZdnL38rmZO049DL8DwOYCO0NDxGPE28WYRehFfgSCw89CksEVP2u93H0zvNa8+ry1/QG+ff9hgQoDFEUjBzRIycrcDHxNhU8TT7LPto+fDy6OFU0TS6kJ+0hqBszE0gJDP/w9S/tKeTW2lDTTc8bzbTNpNCe1dzcseXs7wD5rQFuCUYP7BNBFekT9BCwC/UEHv0J9cTsAOVj3hrX4c+IyrDGhMTxxNTFhMg8zhfVXd1h5jzvrvjlAjoMiRQ1GlYdpx+kIJIeCxtcFqoQ+AtZCKwEJAJFAjIC4wI2Bc0IoQxqEdoWWRpdH/EkNCmJLCMuAS2kKTgkMx0MGdQUkg/FCW0EwQBz/Tz3lfBZ7uPstO0a8Uvz3vXC+ZX8IgIkCekNfw6vDPULDwmzBM79kfWJ7rbmW96D1ibRhcyNyKfGpMWmxVnHYsprzjbUStuW4hfq2/GO+bsCwQt6EVkVgBfFF6AYrxhlFUEQiQpqAyL9Qfn49HPxvO5A7J/tP/Ha88H3gvvXACIKoRMhHAwj7SkFML40aDfVN/Q2ajQaL6QoHyNGGz0SIAoWA1T7LPSv7X3noebC6ILqQ+xY8Bv3Ef8oAoUCcQU9B44IwAhUBXMBv/099UPv0+qf5IPfrdkW1XrRotAsz07QsdWi2X7c4OGG6b3vTfWt+bP9tQDtAAz/b/1W+6P3vfP37wDt9um6597myOfX6Q3sLe0j7x70FfphAEcH6Q/qGIYhKCiFLIAwSTKEMksx0iyoKGQkFB+dGWAS+QptAzn8m/bc8UXuGOxn7eDxJPYV+mgAwAefDRsTtBbXF94X7hXAEXcNgQhWA6j+ZfmF8+XtE+jS4ifg9Nxb2KLUvNLr0ojUe9Se10vd1uFk6DDuvPEt9Wv5e/uU/BP9nPrp9jnz2e2Y6LnkKuDy3y7i4OKS5MDn9euR8ar3tP0NBF8L8hIlGckdYyC9IssjMyPiIYEe6RosF5oSlg2DCOcDqf8R/f/69/mR+/v+5AN/CGEMoRDOFBcYyhnCGKoVyRI2EL4MzwmtBsgCwP2h+Tz3svQ69CvzE/FQ8ADvseyU6+/pY+hy6EXojuhe6QjqJ+uw7F3tku4u75LuOu3G6wfp3uWi4z/gI96M3FTbCNyA3iLi/uUL6zrxivd//Z0BcQVqCssNkRCKEWsQDxFQENwNSQznCHsEOgKdAXYAyP/j/iX9ff1l/8EA/gIbB0EMcRFzFWgZpBzXHucgqyFRIMEekRwLGcgVrxHnDDAHswGG/WX53/Tw8O/ur+377PzsXuz167bsKO747m7vsfEx9Ez1tPaG+J75aPpH+av25fNC8KDs1Ogn5MLgH98J3qvdx92W3sffaeOk54XrQPDX8xP4Yfw6/6MBPgPpAu8AQv9w/uH8dfrs9wX2ffXj9n/4lvnz+4D/BQNkB5kMShBEFLEYLhzRHgUhcyFoIK4gYiCaHRYaEhc4FF8RLQ3rB3MCkf7m/Fb7lPiW9kn1yPQC96r4//m8+4X+bgLOBcMHnAiPCfAJdAnQBjQDDv9s+pr1c/C568jmGeNy4E7e4NxH3OTcnt253r7f9eAE4xzlj+em6kLtse8P8jD00vZL+b77B/1H/tsAtwFFATUBZgAP/5z+rP5S/lD+7f6m/yABfALtA7UF1gb1B58JxQvBDUkP0BDAEhMVJxgqGsIaBByrHEEcsRstG1UaeBggFuoT9BHlD9YNTwvzB8EFiAMhAd//nf7d/D37ufoO+ov5+PgQ+DL3Vfb09cv0IvOc8iLzivJm8crvtuzL6a/oauig567neufo5kbnyucz6QLqxOmx6j3s2+4Q8pP0JfZH9534fvk8+oH7UvyC/BX9zvza/OP9uf62/8cA9AH/A+EFkAYgCJkKaw3uEA0TuhO+FToXWxiAGgUcZB26Ha8drx6vHlQddRzxG8IbbxrDF1EViBK0D/sMoQm6BYgCt/9U/Xf7vPm9+Aj40PcI+Fj4WvkL+iT5mveZ9r32IfeM9sT1A/W6893xQvCb7i/tOOyg6hTpLeis5+Lmj+Y15jblH+W45TLm1een6lPt+PB09Nf3a/ud/Z//KQIABAkF/QULBhIG1gb3B6cHQghJCrELXQ3xDSIONA81EfsR9BHEEo4TpBT1FTcXRxkRG5IbwRxzHQIe6B3WHMsbQBpYGBYVJBJ9Dy4MZglBB5wE5wEFAOL9m/u8+bj3X/Yl9mT2hfZ89074qfdz99z3Vfhl+OT3TPe99vb1afTU8uvwm+4y7FnpdeYY5JfihuH14FnhJOLg4zjnFOsW7zTzTfdt+53/fgMGBpMHdAgrCcEJ/QgBCOIHZAj/B1kHZwb5BKcEtARUA9ACjASnBtwILQoeDNYP6RNnF3gZvBqtHUohCiPwI7gkuCRmI9EhjR53GsUWJBMSEGwMkAgtBPQA3P4S/Jf5i/ef9av0afTA9LD1rfck+nX8/f4CAS8CvgKZAsIBl/9q/Er5avVK8fntwer652jmz+Qd43biM+I44hzj1eST5lToGepv7KDv1fKl9fP3i/qE/aMAnQJ0AxYFCAcLCNQIygirB3cGpgV8BMIDkwOXA6IE4gX8BpYIMQr6C64OtBGZEyEVlBd5GnUc5RxaHY0dWR72Ht0cFxqkGKcWfhNHEJkLpQd/BD0BhP9z/tn9m/3n/Sf/FwCh//b/xgC+AdUBSAGOAGb/4P60/bv71flP+OL1iPIp8B3u5etn6ozoB+Z/5JTjDuNF49njfeQU5s7n7Ohz64Pu7vDy8uz0NPf++e/7yvwk/uP+sf5+/jX+gP4OABIBSwHhAnEFugf0CEUKCQv3C48NBw8oEMEQehFTEqUT4RR1FeYVfBbcFiAXCBczFvUUbhRqFPUTGhOQEZsQhBCfDwUO/wwdDGILlQoGCF8FKATHAwwDYQEt/yL8Gfnf98r2yvQF81DypvLY8m7yNPJ08V3xuvFq8FPumOyQ68zqbOrt6XPo0+Y45lzmsOaJ5uDlO+Z05lLmd+eN6RHsi+4c8Qr0HPfW+QX9dQDJA6EGiwgGCp8K7Ap1CrwJ4gl6CZ4IxweeB1YIKAk9CbIJlgoMC2wMxA5eEEYSVxSMFd0XexoKHDsdoR57H8sfux/4HlYd1xoVGGsU9Q9FC1QGpAFl/cf5AvfR9JDzc/Of8yz0/PRV9Z31N/fG+Hz4lPjN+Vv6Kvq4+Af3h/VA9P7ypO9Q67rn7uOD4HbeA9wa2ozZ6dlM28zd1+Cd40LoIu0W8cz0uvfx+hX+vAA6AvoCTgOaA9UDKwNtAhwCCgJjAmUCZQEZAdIBWwMWBewFzQYWCFoKqQ1RETQUhRZdGWscwx7VH8EgCyEvICEfBx0vGhMYlRXnEf4OHg1+CowHXAWWA4sCrwGA/9j9Zv3Z/KT8bvz/+z38XPy7+7z6Nvk09+X0pPKs74vsSepW6OXm3+XR5PTjUeQl5UXlDOYl6CbpfOnC6g/rlOvE7KvsTezE7MHsD+wZ7e7uie8Z8KTw8/Hl9Ff3Evk8+4j9WwCGA0oFmQbvCN0L7Q4tEWQSxxPjFHYVLRaTFQYV2hS+FMYU2hRbFZ4V1hbPFnwVQxQ/FNUURhSyE8ESuxFQEKkOigyaCmAIRQa2BNICwQAh/0L+Qvyp+gX4YPWV9I3z+vJq8qvwZO/c71vvAO/Q7sjtxuyQ7Czsc+qR6Z/oj+cb5onk8+N641fjwON95LTksuSa5CPlUecn6t3r+O1O8QP1PvlX/M/+yAHFBB0HmgihCYkKCQsgC2QLMgueCv4JhQl0CdAJpAm+CTcLEQ1CD+wQQBGvEjwVGRfsF0kYNRmDGngbRxpEGMcWExVkE1AQAgzXCC8GrAPOAeP+HvyC+Vz4K/gg97L1T/QS9Xv23fZX9dbz/PLW8frxQPGT7svsIewq6w7stOyl68/q8erU6ybsJuxg6wPrMOsj6kfp7OhI6Gro3eky68bsg+4F8EnyxfRN9i34C/vH/U4ACAKKA6YFaAfNCJUJ9wkVC6cL3AscDf0N+w7dD3sQqxAfEdsRlRFoETIRIxDgDoUOjA1tC2cKyQmZCMcHMgdPBncF2gRdBBcEbQQvBAYE1wQqBSwFNwVcA7QB8wBo/6L93/sH+jf41PaX9Gry0fA974Lu0Oxx6gXpB+ju5xXox+ct6BLo6+hp68rtpe8b8iv1EPeB+NX57vpI/PD8NP1i/fL8Vfzr+0f7p/pg+ij64fla+Qv5xfnw+j78xP01/0AASgKoBJUFiAbnB70I2QkwC54MLQ6TD4EPZg9OEBEQWw+yDokNMQyOClII4gVMBJ0DPwOkAqcBvADR/+H+m/5l/lf+3/0A/tP+F/8q/3f+c/02/av8UPsx+u/4Afjd9xD3r/Xn9Jj0VvQs9eT16vXc9oT3y/f6+Gb5APni+M/4H/i/94X37fa998z4afgM+BT4v/iA+ZT5Sfkt+ZL5SfpD+yb8gP3l/m8AdQIbBGYFNQZABxoIiAg3CFMHRgbXBHkDLQI9AIH+cf1f/Oj7Rvz5/Ob99f62/8AAtgLNBNIFkQYICGEJEArDCQwJLwiGB7cGwARdAukAsP4L/Kz6cfkm+AD3mfaK9vT2K/gh+ff62PyO/Tj+av/gANQBlgI3AyYDLQMlA7MCLQIMAa//oP7F/JP69Ph999j1kvQj9C70JfW+9o735fhF+7X9LQCdAQAC8gIaBOEEKQU1BMcCygAr/yH+0vwG/G77pfsB/EP8Sfxs/PL9N//A/xsAOgAhAeIBYQGZAHIA4QAVAX8ADf8U/v79Nf7S/Wb9Xv0X/Sj93/wS/Wf9av4+ABMBtwG7AiUDlwNHBYYGDwfkBq8GZwYnBvIF0wQIBPsClAEVADP/PP4+/FD63vgz+Dj4Svia+DL6gfyM/tT/VwFHAykFzAZ+B9wHnAiqCCwHlAWnA1QBZP+Q/dP7dPpQ+Yj4qfi5+Jf4o/js+PD42/ge+Xb5XPpp++D7WPwZ/Xf9Wf3s/J38GPw3/Df9fv35/Fv84/tF/JX9iv7z/p7+bf5W/sr+Vv9P/8H/9f9kAJsATwGzASwBxAFrAjsCywEHAZAAEwFnAacB3wHaAfwBuQLOA38EZQXWBfEF8gbxBz0INAiGBwkHtwZfBn0F/gM6A3oCcAG5/zz+Lf1n/Dj8Evu9+Yv5VPlC+bT6F/z0/AH+cv8lAWsCMANCA+QDJgT/Aq0BYADe/tn8iPrK+C/3XPVA81XxgvBj8DHwpu+975vwCfJH9Jb2vPi6+z3+ggBxAykFPQb/Br8H9AekBzgHVwU0BOQDvALyANv/U/+X/tX+Kf/c/s3+LP9F/wcAnwFeAtADIQaGCLkKBQzYC88LbQz4CwALHQp0CfoIEAgDBkQEPwPLAqYCpgEwAC7/7v4m/7b/EQAoAHn/A/+P/y3/M/62/Vj98PzQ/Ar8nPo++Qn4mfa/9U31rvQp9K/z3fNn9KT0+vQr9an1LPd0+Pf4cPkJ+n/6KPvi+iT6T/qR+g77LPvb+iD7PPwh/dD9rf7s/tz+Xv/DAGMB3QHgAisEogVwBykJaQq5C14Mqgz9DOUM1guxCpoJnwdZBqkFoATMA+sDiANaA0IEngSVBAYFiwYICKcIWQjdBxEHfgZYBj4FgANJAsYA/P5//or9Ovwu+x/6K/k2+B/3N/XM9DH1NfVy9dn1Z/Yh98f3+vcG+Nv38fb89Xr10PQA9E3zQvK88cHy3PNd9En1wPZD+Or5qfo5+438GP75/0gBuQFkAssCHANjBNIEWgQWBD0E1gSDBbkFswTlBJEFFAWwBPwEDwV2BbUG4gcACQYKiwpCC6QMrg00Dm8O9Q36DCwMEgu4CYgIRQfKBXAE2gKYAMv+uP15/FP7Xvpa+WT5v/mo+BL4RvlV+oP72fz0/Df9Ef68/kf+Uf1c+wz5Sfi491b2cvSx8kXyWPLP8WbxlfFO8j3zBfR99Gj1d/Zw9xj53Pq6+yH8Sf1V/g//l/82/3z/MwCUANwAkAFrAbAAxQGCAn8CQAMiBHEFnAdBCdwJ8QodDJ0MQwwpC1QJ1AfDBuUFyAUTBlgF0gR3Bc4FiAX+BO4EeQQDBDsDBgK7AQsCoQIKA8ACJALGASUCvwI9AtEBiQEBARsAuv1B+3L5BPgf97T1GvS/853zoPNf9GT0I/OC8kLzuvT/9e32tvec+c/7Mfx9/ED94/1f/k3+LP2P/Pn7hPrD+Qr5q/eG9mb2U/a69mT46fk+/Bb/MAHyAuQE8QVSBgAHLAcmBgMF6gQ1BbEFngUMBQYFCgVdBVcFmwR7BAgEHwMkAw0DGwMSA7IDiQSRBewGywZfB20INAgxBzUGsATaAlABJP/Q/BD7Xvlb+Aj50PjA+EL6RfuB/Nz9/v0D/s/+Pv+Z/lT+of7n/Sr9B/xj+jT6Efrb+X/5tPgC+KX2VfXh9Nr03/Rv9Jj0nfUI9wr5WfrY+0H+XgD7ARgDVQO2AqoChgJuAiYClgHaAJMAFwHiAEQAEv/1/YD9qvxo+/P6QvtE+2L8RP6S/24BugOfBYgHPAkOCjYKWwpiCRcIAgcRBX0CfQAq/w/+5v03/j7+pv54/yIA1QBgAbIB2AE5ATQA4P///3f/qv4v/ur9Bf6J/iL+5P13/lP+vv1r/ST9C/2S/KH6Rflo+db5wvps+7f7gvzq/Hb8C/2W/QD9H/yP+3L70vte/Dn77Prr+9b7R/z6/K38XPyN/NP7iPs/+376Y/r1+nb7aPzC/SH+Zv8zAcoB5QGAAp4CWAJSAj4BCADD/2X/oP7L/uH+8v7+/1MAHQB2AMoAjQA6ABIAYAC1AE4A6f8fAI0AMgFwAlAD/gPCBAQFFgVRBfgE1wP+AigCoAFnAVcAC/8L/ov9Hf2i/Aj84Psn/IH8evyG/KH8mfw8/dX99v03/kX+9/0w/j3+z/2t/Yz9+PwS/Jv7U/sC+y/7Rfv8+v76h/va+y/8Avz3+o76vPrj+hv70Pok+pT6Ufsh+6/7Dv2S/gkAOwD7/8AAYgFLAfABuAIGA7YCyAFAAaMBWgLgAg8D9gL6AuICbAKMArICKQINASsAeP8A/8P+k/6A//UACgKyAgMDKgPUA/IEJAW0BMkESASOA90ChAEWAAH/Cv4E/Qb8Q/uQ+tb5dfkp+UX5bfnX+Lj4svhL+Mv3vPek+Nb53frH+8H8hv2d/lv//P5s/kz+6f1c/e/8ePzz+9L7b/vq+tb6tPpD+pX5d/na+T/6avr5+mz8kP2J/jD/fv/aAPUBYQKLA5MEmQWJBn4GkgawBiQHdwd4B+wGQgYhBTgEnQT0A1cCmgDa/of9If2F/GX7wPut/Db9Gf7z/iT/0/9GAUwCAgN2AysD/wLqAo0BXQBb/yX+sfzl+k75U/hj9/H2w/Z19nH21PaA+BD6T/sw/M/8Sf6G/2D/vv66/jP+bf2q/FP7Z/rU+VP5M/mk+T35tvjo+Bz57vkL+/371P1e/yIAEAGIAaICIwRyBYkFFwVwBQoFjQSeA2MCygHWAOX/Df8z/ur94v1r/vL+E/9s/6L/DAB7ADkBawFjARACJAPvA74EBwZ1BrcGXgYuBXMDewGe/339rPv++XD46vet98v3sPgd+XH5A/tR/P78I/6F/2MAeQAmAMH/hf/V/08AWQA2AEAAbQDmACMBJgCF/un7FPoJ+qv5lfj79zn4FPlG+vH6xfsX/Tv+KgDIAY0CNAP7AhsDmwNHA0MCogC8//b+F/5u/U/89/u6+777NfxZ/JT88vzP/YX+g/47/0gAlgEoA2oE+QS6BLYEmAPrAbcAGv95/S38HvvM+g77UPvt+7r8PP2Y/WH+Tv8QAL4A8QDzAI4BgwJsAvcBIwEsAJ0AngFgAWMBVAKyAnwCGwHC/p/9n/1K/V/82vvY+9/7ufy9/Uv+Xv/j/1gA8QEkA58D/wImA44DWANkAYP+Vv2j/G/8yPtr+Vz4a/ge+AH5rfl2+e/4cvmW+u77p/0z/sb/1gGoAvICuwPNAwkDrgKdAW3/jP1B/N/66Plr+QD56fhS+Vr5lvmm+pT7Ofz6/Jv9P/50//IAyAH2AuYDTgQtBTEG2AYvB/YGpgYuBkUFBgRgAiQByP9t/oz9i/wR/Mr8Jf47/zYAZQCfAJ0B4wIdA9QCxwJZAk0CAgIEASgAnP/q/iL+of2W/c/8ZvwL/Sr91vwI/ML7mPvh+6j8V/zn/K/9hP3G/cL9T/0A/Rf8v/rH+cb5WflY+dz53vnS+WP6KvuT+078f/2n/m3/EABqAM4AZgHpAV0CmgKJAs4CJAPKAgMCOgEMAUcAOv+R/r/9lv0M/jr+nP7L/5sAJAFbAskD/AQQBoUGZwa/Bi4HJge+Bp4FUgShAxcD9gEaAZUAnf/7/uv+vf2p/LP85vwL/Q39rPxN/HD8PPxi/Oj8Nv0u/b78k/ym/KX8i/xg/JX71fqh+rT6JvsO+zb6p/lu+nH72vsz/Pb88v3T/uf/WwBLABcAg//H/nX+3f3j/Fr89vu5++D7tPtS+7z7jvw+/W3+6v9GASQDSASqBDAFDAa8BvcG0AZHBocFjgSjA3kC2QG1AFf/6/43/6b/CgBDAIwA5QHoAtkCjgJEAhwCsAFDACX/YP5W/qb+df4c/pz9iP2o/Yf+Gv+o/tv92P1l/nn9jfwU/O77TPwN/Df7QPua+6b7XPyZ/ED8Cvwx/Hb85/xV/cX8VvyY/HP87/sN/Cr8ovt4+6/7qfua+8L7K/z6/Nb9kP6n/wkBHgJyAm0CDgKiAaEB5ABy/4D+5f3A/Sr+PP6O/mT/eQChAdACmwN5Az0DGQNuAhMCzQEaAYoAggCpAG8AZABBAHIAZgBt/4v+RP5Q/uz9N/1Q/a/9hP6g/4j/F/+r/78ABwH4Ad0CZwKgAdgB1QH7ADEAA/+m/tT+Nf4W/fL8dfx7+yf7XfrJ+ef5z/mO+SP6UftR/CH9YP7N/7QAdAG+AaQB0QG9AToBkQCW/3P+nv2+/Of7bfs2+/b6zvqt+sH6+fog+2j7uPuh/Gr9Lv6M/78AhgFOAuMCKAO8AxAEnQNEA9UCAgIMAXf/D/5j/ff8Bv2+/Nz7fvuu+2z88P1m/2sAcwHIAi0ETwUpBnIGMwbaBVkFfASgAwIDSAJHAR4AvP6i/cf8F/zC+3v7UftP+/37ifwE/Qn+gf7I/kb/6f9vANAAMAFLAQUBngB7/zj+Mf0I/Mn6vvn1+Fv4Kfjy9+b3Qvjn+Ij5Lvrq+k78Mv7p/xEBvAFdAi8DsQN3AwEDQgLdAE7/6/2f/F37IPq1+E/3XPcp+KL4w/mj+8T97P/YAbcD7QX3B7wJtgqgCnEKkAkXCH0HoAb/BFkDpgJVAlwBmgBL/2f+wf61/rD9jv2E/iP/cv9T/4v+T/4h/2EARQHZAWsCvQJEAz4DrAJFAlEBcgCr//T91vsk+n75Pfmb+ID3afbT9sj3Zfi9+OT4vPmz+tL6NfqT+tP7sfyr/C/84/sH/F/8gPxF/Cj8wfsO+yb7E/vA+lX6A/q5+iz8j/2+/l8ALALdAx0FpgWVBVUFLgUYBdQE5QMEA4wCXgJKAhQCxQF2AfoApAAdAekBkgKJA4sEQwWLBRYG8gWbBVwGnQYFBlIF/ARYBAgDXwFG/679H/14/N76P/nV+AL5c/n3+XD6KPvL+yT9cv60/rr+H/45/tr+Uf6i/LH6Cvrm+Zn5Cvn29/D3qvjA+C/4U/iy+K749vgW+T35sPkY+gf7MPxd/ZH+Wv/hABICrQI2A60DLwQzBNwDHQOCAqwBcABr/z3+Pf2h/Fz8q/yG/Sb+CP+lAB0CLgN3BOYFwgZYB+sH2AdzB0MHvwbdBdkEcgMXAu4Aa//q/cP87vs/+876Jfrw+TD7/fwj/rX+k/+YAHgBkwH9AKYAiQAvAFn/+/3f/Pr70vqE+sD5wvgY+Hn3W/dS99f2W/Yw93D4ofkn+6n8R/7g//wA0QFpAsUCwAL3AkcD+wJSAhIBQf8Z/nL9gvxg+436jPpO+3/85f06/24AwwE2A0MEGQX8BbkGtwdmCFsIxwfhBgwGRwVpBD8DNwJdAQIA0/5A/of91vxy/AD8ovvQ+zP80vyx/Wf+MP/y/2kApgC5ADQArP9W/7f+2P1G/eH8S/y5+9v66/km+c746/jT+L/41fio+OX4Vvp6+w38oPwd/c79xv59/6T/2wCeAYkBNgLlArYCwQH+/3P+av6P/pf92/xp/ZX+xv+v/2f/FgCsAbYDfQRjBMcEDwXsBCMFTgXNBNcDYgMDA0MCnAFVALL/8v8+/+z9Gf39/AX99/27/rH+Lv+s/+7/ZgC/AFUAtv8F/wj+D/0c/AH77fkG+aP4+/go+QL5Tflz+VP5bfn5+ZT6Dfsz+2n7Xfx2/WT+E/+q//3/ZgDFAO8AoQClAEsBXQFnAWMBxQDY/2b/E/9z/jD+4v2d/XP+bv/h/0sAAgDT/wUBhAITA3EDXwSgBcgGggZKBpwGmgb3BkIGPwTSAjwBYf/H/vr9x/xU+9j6KvvX+wv9G/3y/Y//XADlAKsB1AEtAa4Ax/84/tr8hfvt+fX4Rfhy9wz3x/b09uX3Afng+SX7UvzB/Fr9Fv54/hH/yv8xANoAYAGMAXIBHgGLABMAg/9V/kP9zfx8/LP8IP0p/ef9kv5F/64A6wEMAyIE2gSHBQMGcgauBlEGCwbrBcgFdQWEBFcDagLLAUkBxgAwAAX/RP7p/Vr9B/2v/Dr8E/x1/M78bf3f/ez9j/4m/43/4f+x/67+YP7o/j/+Wv3v/H78Dfx/+0b6GPmC+LT4i/n/+eX5Qvoh+7T7oPyB/Ub+HP9CAGcB5QH9AbQBagEeAYAAnf/u/oT+MP4v/oT+cv64/nb/oP8GACIBhALVA+YEEAUeBYwFkwW0BRMFCATlAywD3gF0Ab8AJAAyAPn/j/84/2b/Sv9j/4//FP+Q/p/+9P7W/vj+H//0/mX/IAAVABoAXQAUAJ//MP8j/gX9PPwV+wf6gPkV+Y34Afhj94z3lPhV+Xz5vvma+sX7EP28/U7+Cv+q/3oAGQF2AaUBtQGgAeUB8QGXAVcB7wAhAGv/Uv/a/rX+Vf/P/4cADwL9AgIDiQOsA2UDhwNIA68CVwIyAjQCbwI1AhkBDgEyAsMClAIVAgMCHwLWAf4ASwCE/5r+8P76/hn++P0O/hr+8f6N/xT/W/7s/Uj9gPzq+876EvrV+V75e/nf+VD6qfrx+vb6nPod++b7Rvyj/AH9ev3b/Uf+mv6P/oD+lf4C/1T/Pv9R/1H/Of9j/4r/Of/A/rT+zv4//7b/HwAwASAC9ALXAwgEyAPkA00EQQTpA30DCwMDA/ACfQIBAsQBsgHuAWwCOwLuAdsBxwH6AaUB1QD6/6P/0/8gAB8AbP+i/xsAxf9v//H+Jv4Z/aH8E/wH+5369fnG+aH62vrj+lf7vfv/+4L81/x2/Kv87PxV/Pj70Pud+4r71/tk/CX96/2J/nL/FAABAGv/0P5F/pD9Ef38/An9Kv2r/Tr+Fv9BACEBswE7AoQCqQJqAwEEJQQ6BNwDdQO1AwQE5gPQA6UDZwNtA5EDNAOQAg8CWgHCAJ0AXQD2/+//EgA8ALsAHAHoAPsAKAGVANz/PP9+/rH9Jv3w/J/8fvys/Iv8xvwr/Sn9Cf3N/J38ffzp/Ob8hvy1/Iv8Vvxa/HD8pfwj/bP9Lf7j/mX/Zv8t//b+tv5Y/s79Pv0d/Vb9oP0x/tj+jv9TAMkAVAEDAqYCNQNEAyADIgMuAxkDjgL8AdkBHgJ2AssCEwMzA/kCOQLTAcEBcAGeAOT/6P9AAFwASwCaAPIAfwHOAW8BRgFBAZYAyv+F/0//yf7S/Uj9Jf1E/Yv9S/0D/QL90vyS/Of8KP37/K78V/wB/C38oPzV/GH9D/6G/vT+gf+m/4P/dP8a/zj+Mf2L/ET8bPyT/B/95v1i/un+sv+gAFwBwwGtAaoBBwJ8AqUCkAJPAhUCNAJLApAC0wLLAvUCGgPqAo8C6gEWAVkAwv9T/yH/Nf/D/34AUgEUAkUCnwIRAyoDtgIwAt0BrQEtARgARf9f/gH+zP34/D38J/wK/ID8jv2M/WT91vyf/Hb9c/7G/rv+T/8oALkApQDlALAAIgD+/4H/dv6G/fH8EPwD/FP8V/w//Ij8hP1w/lP/7P9tANMABwEhAT0BYwExAf8AzQCaAMUA/QAQAQwBFgE0AQ8BvABSAP3/9v+6/2T/h/+y/9X/gQBTARMCvgIMAxADQAPIA9UDLQOtAlUC8wHDASoBFABB/57+7/3O/dP9e/17/dX9RP7J/h3/zP66/gv/Mv9R/3T/T/+M/y8Awv9L/w7/v/65/sD+UP7V/bP9zP0N/uX9Pf5k/qz+ff8fAIAArQDrAO0ALQEDAXIA4v+D/3H/c/8J/1n+kv4j/3//d/9+/9v/5f/W/wwABwAQAB4ASwDcACcBhQG9AUkCKgOmA+gD4wPQA4MD8AL1AeAAz//A/i3+2P3f/SX+Qf5o/q/+8P6B/+X/lP9m/1L/kf8xAIgA8ABUATwBYgH0AQcCtAFQAaQA+/+D//T+Vv6l/R/9uPx6/Jf8xPzq/CX9zv26/oT/EQBJAF4AnACSAHYAKgCF/x3/+f4y/zP/vv5t/rT++P4N/1f/lf+0/w4AcQCcAAcBjgEqAoQCYwJqAnECRgJ/AoMCHwKaAREBiwDK/0v/fP5L/oz+bf6z/jb/GAADAa0B9gHzAeMBCAI9AjkCHAIdAhYC4AGsAQwBaAAmAML/W/8U/8T+k/5c/vj9t/2G/fX8l/zB/Nj8LP28/UH+2P5r/+X/XwD3AEYBBAGZAB4AhP8T/7/+hv6D/kz+1P2D/Yj9zf0L/h/+OP6I/u7+dP/x/1AAjgDwAJMB9QEMAuoBxAGzAbsBmgEaAWQAGgArAAwA3/+R/7f/VADAAFABDQJhAngCtQIPAyQDNwNPAykDEwOmAkgCLQLJASQBmgAvAOf/uf8M/0/+JP5I/p3+vf6Q/rr+9P5I/+P/ZAClAHkAQQB5ALwAiADc/0z/8v6J/k7+7P2X/aP9sv2j/db9KP4j/g/+B/79/d/9e/3//Cf9sP0R/mr+nv7c/nr/6v/n/ygAcACSAJkAWgBOAIIAkgC9APgA/AARAfgACQF1AXQBSQF6AfMBRQI3Al0ClAL/ArMDlAMOA/cCsAIoAvIBjwHKAG0ATgDr/5z/CP+d/hz/hv+N/6X/HwDYAIwB/AHwAb0BlwGfAZgBNgHUABYAG/+K/ur9Rv2g/PH7avsG+9768/q7+4/8tfwB/WP9q/1X/uT+LP+W/9j/1v8dAKwA6wDdAHsA2/+0/77/TP/m/sj+n/6R/mD+Gv5x/vv+Zf8VALoARAHUAQsCOQKzAhoDDANsAhQCRAIoAgMCPgJtAkoC6wH6AUcCfALZAroCeQKWAjwC6wFRAsACzwKeAjQCzAGzAVQBjAAZAMb/D/8Q/lP95/yz/OL80Px6/Gn8bPyy/Dv9wP0N/iL+Yf6e/rv+1v7I/pf+k/7D/pH+e/7s/iL/cf+M/77+8P1W/b78hPxq/AX8qvvP+wn8bPxr/Vb+5f6K/yEArABrAQYCYgK4ArICZwJBAjcCTQJtAnACXgJuArYCtQJfAhYC6QHuAegBpQGSAcIBGQKqAhwDKgPuAqQCkAKJApMClAIYAqABWgHLACIAXv+X/jD+DP76/R3+mf4+/7f/w/+i/6P/jP98/0v/2P6t/nv+SP6H/qX+Zv4e/tj9jv1b/SL9xPyx/OL8zPyD/HL8qfza/CP9n/3y/TP+o/4P/1X/ov/O/8j/FgBrAFQAWACLALgA7wDoAJEAPQDq/77/AAA2AEUAewCtAPgAVwG2ASUCggLGAssC5wJ7AxEEeASTBBsEdQMrA+ICHgJRAaIABgCm/0T/AP8E/0P/vP8HABwALQAKAMf/zf8KAPb/sP+a/5f/qP+2/2b/Cf/9/qH+Ff4W/gv+uP2G/Sn9uvzA/Cf9eP2y/f79TP6X/qn+r/7Z/u7+D/8G/8H+m/6Q/p7+rv7T/hL/If8r/zz/S/9//7n/7f8xAF0AXQCJAMQA3AAuAY4BuwHmASkCowJEA7UDtAOLA1kD4gKMAkECxgF6ATcBDQFFAZcBuwGXAUQBBwH1ALkAZQB1AKkAogB7AGYAdQC2ACoBWgFXAWAB3gAmAAQAHQAlAA0Ajf/8/vD+7P6C/lH+Rf7P/Wz9bP1O/RH97fy0/Ij8m/ya/Hr8rPw4/c/9Tv5//pb+2P4Y/2r/jP92/3v/HP/J/iH/fv+N/1f/Qv96/9z/bwCCAHIA4QDcAIUAowDXALoAeAA3ABgAUAB+AKgAZgE4AsQCSgOxA+4DGAQWBNsD0APKA1MD+gKuAiYC0wFwAcAARgAdAL3/JP++/m3+Zv6t/qH+g/7M/oH/OwB7AI8AqwCZAKAAxACFAO7/av///rz+sf55/i/+V/6j/qH+pP7P/rr+if5c/vH9e/0a/c38pfx2/GX8lfzn/EL9ev2q/e/9cf4V/zL/Qv/Y/1gAogDTAAcBYwHmAaoCDgMBAygD+AKbApICOgKhAT8B/QClAG8AgwBOAE4A+wA8ATwBggFxAVkBtQHiAZ4BfQGGAZABoQFLAeYA4wDyACIBVgFaAUYBAgGfAEEABQC8/zD/vP6N/m3+PP4u/iT+0v2c/X79SP1H/UH9/fzn/Ej9gf1n/bb9FP5B/q7++v7m/rH+h/5y/nv+n/6b/pn+xv4D/27/4f9CAKkABwE3AUIBUgEPAX4AEAC6/5v/n/9w/zj/Of+n/1kA/wCCAcABIQLkAmkDsQMLBBgE1QPBA9cDeQPlAq0CSQLPAZkB6AAIAMr/s/9M/+f+xv7D/rX+Y/4G/hr+gf4S/2z/hv/n/zMAVQCFAGsAGAC//4b/X/8a/8f+X/4x/mr+gf4s/q39Uf0P/eX80/yy/In8Z/yJ/PL8Wv24/QP+ff5T/zkA4QAxAVkBbAGFAa8BmwFwAWkBZQFNATEBJQETARMBGQHvANMA6gAOASwBOwFcAXUBXgFNAXEBrAHPAQMCVAJ2AnECTQL+AdYB1QGTAfkAYgAsADMAFwC6/2H/Rv9u/9P/9P+//5v/bv9c/1P/H//V/l3+Lv5V/ln+QP7W/YH9ov2z/Xz9TP1q/Xv9pv0A/uv9IP7B/iP/tf8tADkAPgBNAHMAmwClAG8AEwDX/6b/oP+0/6L/uP/1/xAAFwA0AHYAzwA8AZ0BwgHgARUCNwJdAokCpgK+AtUC3gLdAu4C8gLDAosCUQIOAqkBBQFvABQAr/8b/8j+2v7z/hf/+f6U/rf+Of98/5f/s//X/xQACQB8/yL/Mv9l/6z/l/84/+7+sf6h/rD+lv4u/sn9nP2f/e39+P24/cn91/26/c39Cv5K/sD+XP+Y/5f/pP/i/24A3wAuAVQBMgFOAaAB3gEVAjMCJQLoAdUB/QHxAdMB2AHVAcABnAF9AXQBbgFOAQMBrgBoAEcAZACUALgAnwCNAPEAWgGlAegBxwGdAcIBqgErAeMA1ADEANUAbACs/1X/KP8K/6b+3f1M/fX8sPxx/GD8ZPxt/O/8Xf2B/dr9Xv40/wUAfAChAI4AqgCrAHoASQDt/6f/jP+P/4b/Wf9o/1j/AP/R/qr+cv5K/lb+t/4u/3T/sv8YAKUAfQEWAgcCLQKUAsQCGwM/A88CegKEApECewJjAj0CJQJRAj0C6wHgAaMBLgEJAdcATgDJ/2f/QP9z/3D/Hv8d/0v/ev+V/0v/Ff9c/5X/Uf8S/yT/RP90/0z/9/75/v7+JP8b/67+mv6d/nb+VP4i/tz9tP0F/jH+Bv4C/tD91v0//mv+e/5c/i7+QP5X/oD+0P4x/77/cwAKAXMBDQKkAukCDgMCA9kCogIYApIBXAFLAVwBIgGvAK0AxgCrAKUAgwBLAEsARQAdADoAZgBbAKMANwGQAbgB6AEbAjwCcwKFAiYC0wGnAW8BPQHsAIwANgCo/w//t/5U/qj99/xx/AL80Pvk+9z73vs7/IH8s/ws/av9KP6v/jD/ov/k/w4AQgB6AJcAdAA8AB8ABADb/93/4v+b/3z/eP83/yX/JP/0/tL+kv5k/pn+2P4k/6j/CgBMAMoAWQGyARkClwLmAiIDPgM+A1sDdAOAA2sDKwPyAp0CRQIYAtkBbwHrAH4AJQDD/23/Iv8b/0n/Pf8J//r+Df/7/tb+1P7B/qf+uP7m/i//j//Z/wEAIQA5AEUANQAUAPj/oP8g/6P+Hf7I/Wf93PyK/FX8IPwK/Br8TfyT/PD8SP2u/Tr+sf4y/73/HQCBANMA6QAcAYQBwgHSAdIBwgHWAesBtgFeARsBHgFAASUB8wDyADMBXgE5ASQBKwFDAYUBmwF+AWABQgE1AToBXAFcATIBOgFLAWQBmAGnAb8B+wH/AbMBbwFSARcB1gC2AHIABwDA/6b/ff83/9X+RP7a/bP9cv0v/SH9H/0n/TP9Kv1f/cb9Ff5p/qP+3P44/0z/Nv9K/27/kv+O/5D/1f8WACgAJgBLAHwAZgAuABYACQDf/5b/U/8b/9n+hP5m/pL+vf4W/6b/HgB1AKgA4wBTAeEBTwJ9AqICuwLPAuwCuwJsAhsCygHZAc8BcQENAZcAXABcACsAxf9w/2X/bv92/5T/y/9LANIAGwFUAY0BqgFnAekAsACSADwA2/+3/8H/tv9c/8T+bv6N/qP+eP5X/mT+hv5//kD+Sv6R/qP+xP7w/hz/ef99/1L/ev+Z/5f/e/8y/wT/Jv9f/17/Zf+W/5P/kP/W/xQAIQAYAA0AKgB0AIcAWwBLADsAHAAlAB0A8v/U/7//sf/L/xQARABSAHkAlwCzAO8AGwElATEBXQGHAbQB/AEqAmICkAJXAi0CQgIOAocBFQG/AFoAAQCk/1T/Tv9S/0b/Lf8E/wv/Pv9s/5n//P9yAJAAmQC9ALIApwDZAPIAyQB4AO7/n/+v/3z/E/+f/iH+yf2h/aj9nf22/Rn+Lf47/of+uv76/j//Xv9K/yb/Kf8d/wT/Av8B/wf/D/8j/2b/5v9lAJ8AuACwAIoAbgBFABwADQAGABQANABjAK4A/ABYAbgB0gG3AZIBXgFAATsBFAHoAOwA9AD7ABwBMwFTAaQB3wHPAdsBLgJbAlYCPAIUAhcCEgLQAXEBAwF3AMD/Rv8N/9L+n/4//gT+Ev4J/hH+Kf5w/uz+HP8q/3D/yv/Q/7P/5P/c/4D/Qf8J/87+k/5b/iz+FP7q/YD9WP14/Zb9wf3M/cn91P3p/RL+Nv5w/p7+xP41/7H/CwBZAKkAFgF2AYcBbQF4AX8BXwFKAS8BHAEzASAB1wC8AN0AAgEfAT8BVwGRAfUBPwJuAqMCxgK+AowCWQIvAu4BpgFZARMB4ACrAI8AeABDAAcAuP9d/0D/Yf9R/zT/Z/+n/97/7//R/9//EABDABsApP9k//r+m/6O/iT+l/06/fP84Pzx/AP9B/0//Zj9pP2u/ef9Ff5M/pz+2f4U/3v/0v8UAHcAxgDbAMQAkABhAEsANAACANv/v/+a/4b/fv+C/7H/AwBTALEALQGOAdMBFgJBAlgCbAJ3AmUCWQJ5ApECjAKJAoECbwJXAiMCvAFNAewAhAAcANz/wP+L/2n/iv+y/+T/CwD4/+D//v8nAA4A4P/A/5b/bf8g/8H+m/6u/rz+lP5l/mL+Yf4+/ij+R/4u/uD9xf3A/cj92P3w/Tr+mv77/jj/Sf92/63/3v/7/9r/rP+i/7f/2v/3//b/6f8ZAFIATwBzAKsA0QAeATcBMAFdAWsBgwG5AcUBtQGdAacB2wEHAgQCzAGwAcIBvAGMAVkBKAHvAO4A/QDiAOEA+QANARYBKgE8AQUBywC2AJEAVADT/zr/0f6y/qn+X/4c/jD+c/5//k7+Vv6P/t/+A/+2/nr+l/7f/gP//P4X/xr/Iv92/7X/uv+u/67/v//V/9H/nv+Y/6z/if9x/2H/OP8x/zn/Iv///tD+nv6w/vf+D/8t/5z/HQCQAOQAMwGzAVMC7wIeA/YC8gLFAokCcAIRApsBLwHDAIUAawBDAO//0f/u/9//zf+7/7n/+f9FAGYAXQBuAKUA1wDpANkA1gDGAL4AvQCEAGIAMwDB/3D/Rv/5/nD+HP4m/l7+pf6l/r3+Hf93//D/MQAiACcAIADt/8P/wP9//yv/OP8v/xn/Mv8D/8H+1v7y/tz+4/4W/zL/bv/S/xQAUgCbAMYA5QANAUYBawFeAUcBMAEaAfQAngA8APX/3v/G/5T/l/++/+X/+P/5/ysAbwC+AAwBJAFPAZkBqQGMAbUB9gHrAeUBkAEJAfkAyABgABwA1P+Q/zD/zP6T/mn+ZP6b/uH+FP9x/8b/BgB9AKcAkgC2AMIAoACEAH0AbgBpAGYAEADH/7L/lP90/xb/tv6K/lf+S/5g/lb+P/5c/qn+0f71/lP/w/8qAG8AggB+AHsAigCkAKsAkwBVABEA8P/5/wwA9v/Y/9r/7f///+f/yP/g/xUAPABEAFQAeACkANQAtgB+AIUAmACWAIcAjQCkAKAAnQC0AKcAaABmAHoAYwBpAEcAGgBuAOUAHwEsAUgBaAFSATEBAwGzAF8AAgCl/27/U//n/mb+af5u/jX+KP5R/q7+Bv8F//D+N/+u/wwARwBWAH0AqACIAHMAZAAmAAEA1/+O/2P/QP8E/+r++f7R/oH+Zv5j/lj+bf6j/tP+Av9K/6D/9v9bAL8ACwFDAWQBZAFLATQBNAE+ARgBzQCRAEgABwDz/8H/e/9X/0//df+w/+D/EwBfAL8ABgFIAaMB2QG/AXwBLgH4AAsBFAHCAG4AQQAXANX/ef8//zv/Xf+Z/8T/0P/d//j/AgADABMA+//d/+7/8P/p/9T/i/9V/0L/Hv/z/t7+6f4E//v+1P7I/rv+w/4M/yX/F/9I/4P/vP8QAE4AUQA7ADoALQAVAAwA+P/1/wgADQD9/9L/pv93/0D/FP/a/rT+wP6//sT+Cv9n/7z/OwDUAGkB+wFVAokCxwLkAtgCmgItAsUBYgHiADQArP9l/wT/pP5e/gb+2P3z/Q3+If5s/tX+Uf/y/3IAywAuAaABEQJGAjoCDwLLAXkBDQGGAOL/Qv/c/oD+Nf4F/sz90f0D/jX+f/65/vr+Rv9//7f/zf/Q/+j//v8hAFgAfACBAJAAjQBaAEAAHQDO/4X/SP87/zT/F/8s/03/hf/x/0EAaQB9AJoA3AAaAUsBUQEeAQIB/ADVAIUANgAHAOL/w/+n/5D/gv9k/13/ef+I/5n/tP/j/zkAlQDdAP8ACwEZASMBKAEPAckAXgDh/3z/Kf/K/m7+If7v/c/9zv0Q/mf+rP4A/1D/mP8IAIAAwgDiAPoAEwEwAUkBWAFOASsBAQHEAGUA/P+p/1f/Dv/a/oT+Qv5d/o/+yf4L/yb/Yf/o/2AAngDfADABjgH5AQoCzgGxAaEBlwFzARYBtQBTAAEA2v+r/3D/Qv85/1D/Z/99/5z/1P8WADwAUQBqAIIAfQBnAGoAXAAaAMb/df83//j+oP5H/hn+JP5V/pL+1f4c/2P/sf8AAEoAjwC3AM4A4wDoAN8A0QDHAKIAWQASALX/V/8N/8r+xf7Z/tT+4/4A/yL/af/S/zcAjADXAAsBcwH5ASoCOgJDAkMCcgJ7AjwC8wGIAQ8BugBnAOT/SP/K/oz+j/6C/l/+fP7N/i7/mP/k/yMAiQAZAZcB1wHjAdcB2gHXAaABVAHiAC0AiP8G/3n+3f0z/aP8Z/yA/MP8B/1Z/dv9eP4I/37/+f9wAMoAMAF5AYcBqQG9AYYBLQG/AFIAIAAAAK7/dP9s/27/k/+b/3H/bP+h/w8AZQB9AMQAMAGHAd0BCALYAb4B9gHtAbQBqgGfAbUBuAFKAeAAzgDjANUAnABuAFYALwDt/9z/3v/O//T////m//T/4//Z/w8ASAA4APn/5//F/33/TP8B/6j+Zv4k/vX9A/4y/kb+aP6b/r/+9P4l/1v/fv9//6r/yf/a/yEAQgApAAoA4f+t/4v/c/80/+b+pv5//nv+WP4//nX+vv4R/5f/PQDZAIYBVQL+Am0DmgOPA48DlAOKA0gDwgJNAtsBYgECAX0A0/9m/zv/+/7T/un+AP9K/6f/pP+1/zEAqwDVAPUAOAFqAXgBaAFPATIBDQH6AKoAIADQ/5f/b/+H/4L/Hf++/pH+Rf4G/vD9p/12/aP9yv3V/fv9Gv4U/k/+vf7r/gH/J/9Z/5P/rP+i/3P/Tv9v/5n/m/+F/3z/lP/l/1wAmQC8AO8ACAE0AWUBbwFzAW4BUwEmAfIAsABhAC0AEQAGAOr/xf/s/zMAbAC4AAMBVAGfAdUBCAIxAlACWQJEAhIC4gHHAYEBIAHMAGkABwCo/zf/wv5a/hb+5/3Q/dr96f0W/ln+i/6+/gz/bv/G/xwAXwB4AJoArwCkAI4AZwBQADgACADa/4v/Bv98/gr+if0M/dT8wvzM/PH8Ef1o/fr9h/7u/jv/rv88AK8AAgFDAY4B3wEYAhQC8AHZAaIBcgF1AV0BHwHgAKwAggBQABoA4f/H/9f/8v8QADQAagCgAMAA6AADAQwBEwEKAQUB+wDTAJ8AdABjAFcATABGADIAGwAKABEAJQAoACoAIwATAA8AFAAcAA0A+v/c/5n/bv9W/x3/1/6K/ib+zf2j/Xr9VP1f/XD9lv3q/Tf+jv70/k3/sv8gAHoAwAD8AB4BLwE8ARwB4QCdADwA3/+J/zL/5v6i/nf+YP5W/mH+b/5//q7+Bv9t/+j/eADwAHkBJwKlAvICJgMxAyUDHgP2AoQCAgKhAUUB4wBkAM//af9V/2f/af9s/4//vP/X/87/xf/j/xoAWAB3AIgAswDXAN8A5QDjAL8AiwBdACcA///Y/5H/U/8o//T+x/6x/rH+s/6r/qH+nv6W/nn+Yv5V/kf+UP5i/mr+gP6m/sT+1P7k/uz++P4k/0j/Uf9h/3f/iP+r/93/AQApAGgAnADPABYBVQF2AXYBYQFGASQB8wC3AH4AZgBzAHgAZwBiAGMAYAB5AKcA0gADATEBYQGnAdsB0wHCAdwBDQIsAhoC8QHmAdUBlAFJAf0ApQBfACMA0v+I/0H/7P7B/rn+lf51/nL+cv6P/tH++v4Q/zb/Wf90/5//xv/Q/8P/q/+N/1P//P63/ob+X/4//gz+1v3R/fH9FP4v/jz+Sv6H/t7+If9g/6X/7v85AF4AYgCBAMEA+QAOAQMB/wATASQBJwEkARsBDAETATYBTQFCATwBYgGIAYUBeQF9AZoBwgHDAa4BpgGCAVYBRwEpAfQA0QCtAIAAewCEAG8AXwA/AAUA+f8GABQANgBKAEwAPwAUAOr/8v8FANb/mP9p/yr/BP/e/qv+jf5Z/ij+HP4Q/v/9+P0A/hz+af6q/qb+xv4U/1//n/+Z/4z/tP/F/9X/+v/q/8T/4v8JAPv/CAApAEQAfQCFAFwAWABfAHUAkQB1AFAAXQCNAOsASgFaAV8BswESAjgCLgIHAg0CLgLtAYgBZAFVAVsBXQEgAdAAhQBBACwAPwAqANX/n/+g/7j/xv+V/3v/p//D/9T/2P/C/7j/yP/h/8X/jv9d/yH/Ff8J/9X+qv6L/oT+ef5s/oj+l/6R/nv+af6B/n7+dP6K/qX+u/7b/jb/kv+6/9z/3/8BAGAAfABaADMAEQAOACQAIgAKACkAbgCuABQBcQGuAeMB3QHIAcsBqAF7AWYBRQEzARUBrQBhAHsAjgB3AH0ArgAGAVIBJQHaAOMA4wDOAK8AZwBAADAAEQAYAC4AHQDw/9P/xf/R/9r/kP9m/4f/W/8k/xj/9f7R/qn+dP49/ib+Jf4Z/jP+Rv49/lb+bv6u/hb/U/92/5X/vP/X/+D/3f+e/1n/NP8e/y7/PP9I/2H/cf+b/9j/HQBpAJYAtQDdAAYBDAHwAN4A0QDjAAsBDwENARUBGwEzAU0BWgFtAXMBaQF3AX0BUwEdAeAAjQBEABMA8v/r//T/8f///xwAHQAYAAgA4//A/6n/nv9x/z//Of8a//T+/v75/tP+0f4D/yb/U/+P/5L/if+B/17/PP/1/rL+tv7L/tH+3f7z/vP+7v7x/tv+6/4j/0L/Xf90/5D/vv/l/wwAPwB6AJsAsQDhAAABEwEvAS0BGgENAQoBCgEIAQUBBgEVARABBgEOAfUAzgCzAIoAcQB3AHMAXQBdAGoAcACEAKAAyADqAN8AyACmAGAAGADW/5b/Yv86/wn/5v7u/vj+/v4M/xr/Mv9P/2n/df9q/2P/Uv8q/wf/6v7N/sH+y/7X/u7+A//s/t7+Df9L/3D/bf9f/33/uv/b/9f/5f8iAHUAnwCWAJwAuQDRAOUA1QCbAGMAQAAsACQAHAAAAPz/JgBPAHgArADeABwBWwF9AYUBjAGRAYcBfwFmAToBEgHkAL8AngBoACsA4/+Q/0n/I/8I/+f+2P7Y/t7+7/71/gn/QP99/6r/wv/g/wAABQD6/+L/sv9//17/Q/8o/xz/Dv8S/0L/Zv9u/4H/jf+V/6z/qP+C/27/b/94/4b/e/9z/53/0f/w/w4AKQBLAH4AjAB2AH0AnQDCAO4ACQEKAfsA4ADjAAgBDAHhAL0AwADiAPMAzACtALcAwADHAMQAmgB7AIEAaAA3ABQA1P+E/2z/dP9t/1//Vv9f/4H/mP+f/67/uP/B/+X/CgATABwALQAiAAEA4f/A/6H/dv81//j+1f6u/nj+WP5T/ln+c/6T/rP+9P5O/5z/8v9iALcA3wAJAScBMQFGAUkBKAEDAdYApACEAGcAQwAuACIAEgAEAOr/2P/m/+r/6P/9/woAKgB7AMsACQEqARUBAgEYARkB6gCwAHwAagBfACAA7v8CADIAdQCcAHUATwBIADIAJAAcAOD/m/+E/3v/d/+B/3P/eP+l/7P/tv/L/7v/if9w/1n/JP/6/ur+4P78/if/P/9v/6r/1f8DADUAWgB4AIUAeAB0AH8AcABbAFkARAAYAOX/xP+7/67/pf+T/2//b/+G/47/n/++/9r/CwBbAKsAAQFiAZ4ByAH0AfoB3wGdAUoBCwG7AGIAIQDs/83/tP+H/2//iP+i/6T/mv9+/3z/rP+4/6//zP/+/0sAhACGAI4AowC8AOUA3gCZAGAANAD1/9n/zP+D/1L/V/9H/0X/WP9M/zr/QP9W/2v/ev91/17/aP+E/5r/wf/b/+P/+v8RABgAKQBBADkAIgAZAP3/4//X/77/v//Y//L/GwA7AFIAYgBvAKYA8gALAewAuACGAG4AYQAhANn/xv+w/7f/9P8LABAANgBmAJoAwwDQAMkAxADRANcAwwCjAIoAfAB5AHoARADy/+T/4/+//6L/nf+o/5P/Yv9U/1z/c/+X/6H/n/+8/9z/2v/t/x0AMABAAEUAMQA2ADAADwANABEA8v/C/6j/ov+M/3b/Zv9b/1L/M/8h/zH/Q/9N/2D/iP+w/9P/CgBNAJ8A3ADiAPAACwEJAeEAlQBFAAEA1P/M/8P/t/+4/7T/rP/E/+v/4//X/+z/6f/v/xAACQAPADoASABKAGAAeQCOAKUAuwDHAM4AvgCkAIwAYgA+ABQA2P+9/6//jf9t/2P/c/97/3n/iP+l/7//vf+p/7D/yf/U/8j/yP/g//3/JAA5ACoAKgAnAAwA///5/+f/zf/K/9//8P/3//b/DQAwACcAEgAHAOX/vv+q/5z/ev9A/wr/8/4R/zz/Tf9m/5b/0/8JAB4AKgBBAGAAgQCGAHcAZwBWAFUAaQB6AHoAgwCSAIMAYwA0APr/1/+j/1X/Nf8+/0v/W/9t/3n/jv+v/8z/BQBGAFUAZgCdAMMA1QDbANIAzgDVANIAuwCWAGQARABKAD0AEADZ/4z/SP8l/wL/1v60/qb+rP7M/gH/Ov9y/6j/3P8cAF8AkQCoALUAyADEAKwAmgB0ADoADQDi/7b/jv9m/zr/IP8W///+6f7e/tX+4/4L/z//e/+0/+T/DAA+AHMAkgCYAH4AWABTAFsATgBBAEYARgA/AEMARwBIAFIASQAzAC8AKgAVAAYA/P/m/9P/0//T/+D/AAAMABgASgB5AIAAeABoAEgAMgAhAPb/xv+f/33/d/+Q/6r/v//d/wcAOABnAIAAfQB2AGwATwAoAAAAxv+G/1j/LP/w/rT+iP53/oX+l/6n/sf+8v4c/1r/qP/0/0AAggCoAM0A/AAYAR8BIAEOAe0AygCXAFEABwC6/3b/Sf8j//f+1P7E/sn+5v4Q/0D/eP+8/wcAXQC7ABEBUAF6AZcBqwG3Aa8BlAF0AUgBCQHIAH4AFQCv/2P/F//b/sj+yf7P/uT+/f4f/17/o//V/wUAPQBxAJQAnQCSAIoAjQCLAHUAUgA2ABwA+P/Y/73/l/9x/1T/Nv8e/xD/A/8G/yL/QP9d/4P/pf/G//X/HwA7AFcAbAB0AHwAewBrAFMANwAYAPb/1P+2/57/kf+d/73/5P8PADoAYgCFAJ8AtwDTAOoA8QDkAMYAoQB7AE0AHQDs/7r/nP+P/4P/i/+t/87/8f8TACgASwB4AIwAnAC4AMAAtwC3ALMAogCDAEsAEgDv/9H/qP98/13/Tv88/yL/FP8a/zX/Xv9y/3z/pv/U//b/MwB2AJ0AvgDSAM4A4gD6AOIAvACmAIAATQAWAM3/hv9h/0//Mv8G//b+E/85/27/wf/9/yIAZACpANMA8wDxANEAxgC3AIMAVQA7ACcAHwAMAOb/2P/p////CwAKAAAA9v/o/+f//f///9v/u/+x/7f/zf/j//H//v8GAAIA/P/7////AAD8//H/3//L/8j/1v/r//z/AgAIABgAMABJAGQAewCOAKIArgCzAKoAhwBeADcA9f+3/6b/n/+L/3v/Vf8s/0H/ff+g/8D//f9RAK4A/AAmAUYBdQGqAcMBqgFxASoB1AB+ADEA1/96/zb/Df8C/wv/Bv8A/x3/QP9Q/3D/o//R//z/IQAtADMASwBqAIUAnQChAJAAggB+AGsAOgDy/6r/ev9W/yH/5f7L/t7+A/8g/zP/Vf+Z/+j/HQA6AE0AVwBWAFMATwBEAC8AFQAEAAEA/v/7/w0AJwAmABwAJwA+AFYAcwCLAJkAqwDBAM8A2gDnAOsA1gCtAIcAawBMACMA8f/B/6z/s/+9/8L/z//t/xsARABWAG4AmACyALQAtwC0AKUApACmAIoAVwAqAAgA6v/E/4n/Uv9D/0H/Jf8D/+/+4/73/ir/TP9M/03/bP+w//j/CgD4/w8AUgB9AHoAbABqAG0AYQA+AA0A6v/R/6j/hf98/23/Uv9Y/3b/j/+m/7f/w//s/yIAPwBZAH0AkQClAMcA1QDNAMsAxgC2AKUAkgB8AFwAKwD8/93/xv+4/73/zf/s/yAAUwBxAIAAgwB+AHsAdgBoAFkAQQAYAPX/4f/C/5X/Z/9G/0f/av9//33/lf/D/9r/2//g/+v/+v8CAPP/5f/j/8//sP+l/5v/c/9D/y3/Nf9D/zf/Hv8v/2r/j/+T/6L/x//u/xEAJwAkABcACwAEABAAKgA1AD8AYwCVALkAyQDCALcAuACrAH8ASQAUANn/p/+G/2X/Tv9P/2H/hf/A/wMAQgB7AKgAzADxAAgBCwEMAQkB8gDUALkAkQBcACUA5v+l/27/Ov8J//L++P4M/yH/Lf84/1b/hP+q/8j/4P/r//L//v8CAPj/6P/M/6z/of+o/6b/nP+R/4f/iv+W/6H/rP+w/6L/kf+S/5r/n/+n/67/s//F/9z/5v/q//P/+v8BAAsAEgAaACcANwBLAGcAegCIAJ0ArAC0AMsA6gD7AAMB/QDYAKgAgwBjAEAAJQAcAB4AHQASAAoAFAArAD0APgAtABgACgD6/+P/0P+//6L/hv+C/5L/pP+6/9X/8/8TACoAMgA5ADwALAAMANv/lP9W/y7/Bf/d/sb+tf6l/qT+s/7H/uL+9/4E/x//Tf97/6D/xP/o/woAJAA7AFcAdgCJAIYAgQCEAIIAeQBxAGQAUgBMAFMAUgBEADcAOQBIAFIAUwBUAFEASgBDADwAPgBPAF0AZQB9AKEAtwC5ALkAvQC+ALkAtQCxAKIAhgBoAFcAUgBEACAA+v/c/8D/qf+b/4//gf9x/1z/T/9P/0r/Of8s/yn/Iv8R/wT/DP8e/yz/PP9I/0f/SP9b/3f/kf+m/7D/rv+t/7D/tP+4/77/wf+8/7v/vv+8/7z/wv+//7v/yP/f/wAAKABDAFYAeQCPAI8AngC9AM8A1QDaAN4A5gDxAPkAAgEQARgBDQH2AN8AwQCcAIAAaQBMADgALwAhABgAFAACAO//8//4//L/8//+/wkABgDx/9r/zv/N/9b/0f+u/5L/j/+M/4v/mP+T/3H/W/9U/0f/O/83/zn/Ov81/zT/Qf9U/2X/ef+M/5f/n/+m/5//lP+Y/5v/lv+d/7L/xf/i/w4ANABMAGIAfwCfALYAwwDNANAAyQDOAN0A2gDMAMQAuACkAJEAeQBbAEQAOgAxACEAFAAYACkAQQBlAIQAlgCpALMArwCzALoArwCaAH0AVwA6ABoA5f+2/53/hP9r/13/V/9X/1f/UP9K/0j/UP9l/3D/Zf9g/2b/bf+I/63/v//S//P/CQAUABcABADx/+v/2P+3/5//lP+Y/6z/vv/I/9T/4v/z/wsAHAAnADUAPgBAAE4AZgB1AH4AhQCIAI0AkACHAHsAeQB3AHMAcQBvAGsAYQBPAEcAUABQAEMAOgAvACQAKAA0ADMAKAAfABkAEAAAAO3/4v/g/+b/7v/u/+7/8//z/+z/4//N/67/lv+A/2n/Wv9P/1P/cf+b/8r/+v8OABYAMABDADgAKQAUAPX/5P/Y/8P/u/+6/63/s//R/+X/8P8CABcALgBKAFsAYwBqAGkAZgBwAH0AfgB3AGgAVgBKAEEANgApABsACgD9//z/+//3/wIAFAAiADMARwBYAGMAZgBbAEwAPAAoABQAAgDw/+D/yP+q/57/oP+Z/5P/nP+f/5H/gP90/3n/l/+1/7b/q/+z/87/6/8NACgAMAAuADAAMwA4ADkAKwAeABUA+f/a/9D/y//D/8z/3P/i/+n/+P8NACkAQQBLAFIAXgByAIwAlwCLAH8AfAB1AG0AZgBcAFIATAA+ACcAGgAgACoAKAAhACYAMwBDAFYAcACGAIgAeABrAFYAKwAEAOn/wv+W/3L/T/82/zb/QP9F/1P/cP+U/7f/2f/4/w0AGQAiACsANwA/ACsACwADAAEA7P/V/8b/tf+p/5z/gP9z/4j/nf+h/6j/u//T//P/HwBPAHgAnAC6AMYAxQDGAM4A3gDnANcAwAC1AKMAggBmAFAAPQAuAB4ADQAHAAAA8P/g/9T/0P/Y/+H/7P/+/woAEgAbACAAMQBTAGsAbwBrAFcAPwA5ACkAAADX/7T/k/9//2j/Rf8r/yf/MP83/y//If8r/0j/X/9v/3//if+L/4z/k/+i/7v/1f/j/+f/5f/a/9H/0//M/7j/s//M//r/MQBbAHcAnwDUAPkACQEKAfgA0QCiAH8AZwBGABwA+v/e/8z/yP/P/+D/AAAfAD8AbQCYAK4AtwC6AMMA2ADkANkAyQC6AKMAfgBJABMA7P/F/5H/X/86/yj/IP8O//n+AP8c/zn/Uf9f/2L/Zv9n/2n/dP97/3f/ff+X/7P/vv/A/8n/2v/d/8r/q/+J/27/W/9M/0X/TP9V/2H/fv+o/9T//v8jAEEAWgBuAIAAkQCbAJYAgABoAFkAUwBYAGcAdgCCAIwAkwCVAJUAlgCdAK0AuQDBAMoAzQDHALwApwCLAHUAYwBMADEAEgDt/8v/r/+U/37/cP9q/2j/Y/9c/17/bf9//5D/m/+m/7j/y//b/+j/8P/w/+X/y/+l/37/Wf84/yH/F/8V/xb/Gv8l/zb/RP9M/1n/d/+a/7L/v//U//b/FQAoADYAUAB4AKQAxQDZAOEA4ADZANAAwAChAHgAVwBHADsAKgAUAAgACgATAB4AKwBAAFsAfQCiAMIA1QDcANsA2gDXAM0AtwCTAGYANwAKANv/o/9m/zP/FP8F//7+/f4D/xL/Kf9N/3z/qv/P/+b/8v/4//j/7v/X/7f/k/95/23/Zf9d/1z/Y/9s/3H/b/9y/4H/lP+j/6//vf/O/97/7/8LAC0ATgByAJYArQCyAK8AqgCqAJ8AeQBJACgAEwAEAPv/9v/3/wAAFgA9AGUAfwCSAK4A0QDqAOkA1gDMAMMAqwCSAH0AWwAzAA0A5P+9/5f/af9C/zH/Jf8X/xL/Ef8W/yr/Tf93/6T/xv/d//P/CAAWABoAFAAHAPf/5//b/9L/zP/I/8T/wP+4/6j/mP+L/37/ef97/3r/fP+L/6v/1v8AABwAPwB7ALoA4wD1APwA/wD3AN0AtwCRAG0ASgAsABIA9v/e/9b/3v/o/+z/8f8AABcAKQA4AFAAawB2AHsAggCBAH0AfABtAE8ALAD3/8L/p/+H/1f/Ov8q/xv/Hf8m/yr/Qv9t/5P/u//k/wEAFQAiACkALAAnABgACADw/9b/wv+w/5z/jP95/2r/cP9+/43/p//F/9//BgA6AG0AnADFAOgACAEcARsBCQHxANMApQBlACoAAQDa/7n/qf+h/5z/n/+s/8T/5v8FACAAQQBiAIAAmwCrALEAswCwAKYAlgCEAHAAUwAsAAcA5P++/5f/c/9R/y//Df/x/uP+5/7+/h//Qf9p/5v/yf/s/wsAKQBEAFMAUwBGADIAHgAUAAUA6v/Q/7P/lf+P/5P/if+K/5z/q//B/+T/BwA9AHoAlwCrANEA5wDoAPAA7wDVALAAfQBGACEACwD6/+z/3v/Z/+P/9f8OACwAQABLAFYAZAB2AIIAhACGAIcAgQB8AHQAXwBEACUA///Y/6v/ff9e/0D/Iv8T/wP/7f7v/gb/Hv9C/2j/hP+w/+r/GQA9AFsAawB0AHEAVQA2ABgA6//B/6H/ef9T/0P/Pf87/0D/SP9a/4P/t//r/ycAaQCjANEA8gAAAQYBGAEfAQgB5gDIAKoAkAB5AFEAJQAQAAYA9P/k/9z/4//2/woAHQAxAE4AbwCHAJUAoAChAJkAmwCXAHkAVQAzAAwA6P+//47/cP9h/0L/If8Z/x7/Jf8w/zz/Tv9k/3j/l/+//+D/+/8HAAAA9v/s/9b/vv+t/5//k/+H/37/gf+K/5T/qf++/8r/1v/n//v/GQA1AEoAYQB2AIoApgCuAJgAhQCAAHkAbgBfAFQAWQBbAE0AQAA6AEMAXABpAGsAfwCQAJMApwC/AMAAwADIAMgAyADEAKsAkgCFAG4ASAAaAN//qP+G/2n/P/8b/xT/HP8m/z7/Zv+B/43/pf/B/9T/6P/1//P/8v/v/9j/vf+t/5v/iv99/2j/UP9F/0L/Qf9J/1T/Vf9Y/2j/f/+U/6z/xP/b//X/FQA6AF0AeACPAJ4ApACrALIArgCqAKsAowCcAJ4AlAB+AGwAWABIAEIANwAuAD4AVgBqAIIAkgCZAKYAsgC6AMEAswCVAH8AbABWAEAAIAACAPf/5//K/7v/v//U/+3/7v/d/9z/3v/d/+n/8//z/+n/y/+s/6P/jv9n/1T/RP8l/xL/Df8H/w//HP8f/y7/Qv9J/17/hP+l/8j/8P8NACQAQABYAGYAbABpAGUAXwBQADUADADh/8H/p/+M/4L/lf+y/8n/1//m////JgBVAHgAhwCTAKUAwADnAAgBEwEUARQBEAEJAfgA0wCuAJQAbgBCACgAFQD1/9n/yf+4/63/qf+f/5z/qv+2/7T/rf+o/63/vf/I/9D/4f/t/+n/7f8BABcAJAAWAPb/3v/H/6X/j/+B/2n/V/9Z/2H/dv+K/4r/i/+Y/5b/jP+S/5j/mf+j/6r/qf+u/7j/xv/Z/+v//v8VACkAOgBGAEMAQABKAFEATQBLAEwAUQBYAFUATgBKAEMAOwA2ADAAKAAjACIAJwAwADMAOQBFAEkARwBBADQAOABNAFMAUQBaAFUAPgAyACsAGgAGAPL/4P/e/+H/3P/W/9P/z//P/8r/u/+w/6z/oP+X/5r/of+p/7P/u//D/8j/yf/M/9L/zv/B/73/uv+w/6r/qP+i/6L/rf+7/8v/3f/m/+r/8f/2//r///8FAAwAEgARABEAFAAQAA4AEwAUABIAEwANAAYACgAMAA8AFQAUABIAIAAyAEcAZAB+AI4AlwCVAI4AjQCEAG4AVAA6ACoAHQD+/9j/xv/A/8L/zP/R/9P/2//j//H/CgAbACQAMAA2ADQANAA1ADYANAAcAPr/5P/P/7X/nv+K/3j/av9Z/03/VP9q/4b/o/+0/77/zf/f//D//P/7//f/AwAUABgAEAACAPT/6//j/9r/3P/p//L/8v/1//3/BgALAAkABgAKABIAGgAjACwAMgA4AEEARwBFAEAAQABGAEMAOgA0AC4AJwAlACIAFAAMAA8ADwAPABcAJAAyADwAPwBCAEYAQQA7AD0APgA5ACsAGgARAAsA9v/e/87/vv+u/6X/of+m/67/p/+i/7P/w//C/8X/1f/n//H/8P/p/+n/9f8DAAQA+P/s/+D/zv/D/8D/s/+f/5j/mf+h/7T/yP/b//P/BgARACAALwA1ADoAPgA3ACYAGQASAAsAAwAAAPv/8f/v//H/8f/6/w0AGwApADoASQBYAGsAeAB/AIMAhgCGAH8AbQBVADcAFQD4/+b/1//O/9D/2f/h/+P/4f/p//v/BwAPABUAFwAYABsAIAAgABsAFQAWABkAFgANAAEA9v/y/+v/1f+5/6X/lv+M/4j/hf+C/4b/l/+t/7//0v/j/+//+/8DAAMABwAKAP//9f/6/wEACgAXACAAJwAqABwABwD+//b/6P/d/9n/3v/n/+v/9f8KAB4ANABMAFkAYABnAGUAZQBnAFgASABEAD8AOwBBAEEAQQBJAEgAPAAwAB4ADwAPAAsA9//j/9f/2P/k/+v/6v/u//P/9f/4//z//f/z/+H/1f/T/9T/0P/M/8//2v/j/+j/8P/+/wgACAD///X/6//a/8r/v/+4/8D/zf/U/+L/9v8BAA8AHAAXABEADgD8/+v/4//W/9H/3v/p//T/BAAJAA8AKAA4ADsAQwBQAGEAbgBhAE4AUwBiAGwAbABeAFAARwAzACEAGgALAPf/6v/c/9P/0f/K/8//6P/3//j///8FAA0AGQAaABUAFwARAAMA//////v/9v/w/+3/7f/u/+v/6P/l/+P/2v/N/8D/s/+q/63/sP+z/8L/2v/y/wMACAAEAAUAAgD6//r/AgAKAAcA+f/0/wQAGAAnAC4ALAAvADgANgA0ADgAMQApACsAJwAeABoADAACAAwAEQALABEAGwAgACUAIwAZABgAFwAIAPv/9//6//f/7P/h/93/4v/u//D/6P/o/+z/8P8AAA0ABwAAAPz/8P/s/+7/5//k/+r/6f/p/+//6v/f/9n/0//O/87/0v/a/+j/9f/9/wYADwAWABQAEQAWABoAFQARAA4ACQAGAP//9f/2//3//f8BABAAIQAwADcAMwAuADAANQA5ADgAMQAoACAAHwAgABkAEwATABEADAAGAPz/9P/4//n/9f/3//z/AQAMABIACAD4//P/9v/9/wUAAgD4//T/8P/g/83/xf/D/8v/2P/Z/9P/2f/m//P/AgAIAAIABAAMAAsACgANAAcAAgABAPv/9//8//7/AAAJAA0ABQD7//b/9v/4//X/7v/v//v/AwABAAAABgAXACsAOQBBAEoAUABNAEgAQgA2ACgAHAATAA4ACQD9//b/+P/6//n//f8AAAAA/f/3//T///8LAA0ADgATABUAFAARAAoAAQD2/+D/xv+3/6//qf+t/7f/wP/J/9T/4v/5/xUAJAAnACYAJwApACwAJAAOAPX/4//c/9v/2f/W/9r/5v/y//n//P/9/wAAAwADAAIAAAAAAAkAEwAUAA4ACgASACoARgBTAFUAWwBgAFoATwA+ACgAFQAFAO7/2//U/9D/0P/b/+j/7//1//T/8v8BABUAGQAVABcAHQAoADUAMAAaAAoA/f/o/9X/w/+u/6T/qf+s/6z/tP++/87/5P/1//7/DQAYABQADgAMAAcA///0/+T/1v/a/+X/5v/i/9//3f/g/+n/7//w/+3/5v/c/9T/0v/T/93/7f///xEAIQAuAD4AUwBfAFkATgBJAEQANwAmABcACQAAAPz/9f/w//X//f8HABUAHwAcABUAEwAUABoAHAAYABcAIAAoACgAIQAQAAAA/v////L/5P/i/+T/4v/d/9X/z//V/9z/3P/b/97/4v/p/+7/7P/p/+z/7v/x//r/AgAHAAgA///r/+H/5P/i/9j/zf/C/7f/r/+q/6j/q/+z/8L/2v/y/wYAGgAtAD4ASwBOAEMAMgAnAB4AFQAMAAIA+v/4//7/BAAFAAYACwAQAA8ADQANAAwABwAGAAgADAAQABsAKgA3AD4APwA/AD4APAA4AC4AHwAPAAEA9P/q/+L/2P/Q/9H/2v/j/+v/8//9/wQACgARABUAEgAPABEAEgALAP7/8f/j/9b/y//B/7L/o/+Z/5f/mf+c/6D/qP+1/8b/1P/e/+z/AAAVACQALQAyADEAKgAkAB0AEQAHAAMAAgD7//H/7f/v/+7/6f/k/9//2//Z/97/6P/6/w4AHgAoADQARABTAGAAawBzAHQAbwBnAFYAPgAmABUADAAJAAkABQD4/+3/8/8EAA8A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wP/G/8//0v/T/97/8f8CAAwAFgAkADUAQgBMAFEAUQBKAEMAPgA5AC8AIwAeAB8AHwAbABgAGgAdAB0AGQAUABMAFQAaACIAKwA0AD0ARQBKAEwASwBIAD8AMQAhABUADQAEAPr/8P/o/9//2P/T/9L/0P/J/8H/vf+9/73/vv/D/8r/0v/b/+b/9P8AAAgADAAMAAgA/v/v/9//0P/D/7j/sP+r/6r/q/+v/7f/xP/X/+v/+f8DAA4AHAAnACsALAAvADUAPABCAEcASABGAEAAPQA5AC8AIAAUAA8ADQAHAAAA//8HABAAFAAVABkAIgAtADUAOAA0ACwAJQAkACUAIgAcABMACwAEAP3/9v/u/+b/4v/g/9//3//f/+T/7P/z//f/+P/2//H/6f/g/9j/zv/E/77/vv/A/77/t/+0/7j/v//D/8X/zP/X/+H/6P/v//v/CgAXAB8AJAApACwALAAtADAAMQAvACkAIQAYAA0AAwD9//n/8v/n/+L/5//x//b/9f/1//z/CAATABwAJwA0AD4AQwBFAEkATgBSAFEASAA4ACMAEAABAPP/4//U/8v/yv/O/9D/0v/X/+D/6P/s/+7/8v/3//3////+//r/9//3//r/+v/2//H/7v/u/+7/6//n/+X/4//g/9z/2f/a/93/4f/l/+z/9P/8/wQADAAVAB0AIAAdABcAEQAMAAgAAgD7//T/8P/w//X/+v/9//7/AAAGAA4AFwAeACQALAAzADcAOAA3ADQALQAjABcACwD+/+7/3//U/8//zP/M/8//1v/f/+n/9P8AAAsAEAATABcAHwAlACUAJAAnAC0ALgAoAB8AGgAZABUACgD6/+v/3//U/8r/wv+6/7T/tf+9/8r/2v/r////FQApADkARQBNAFEATwBHADsALQAeABAABAD5/+3/4v/Y/9D/yv/H/8j/y//P/9D/1P/e/+////8IAA8AGgAoADIAMwAuACgAJQAiABwAEgADAPT/5//h/97/2//X/9j/3v/p//P/+/8EAA4AFwAeACMAJwApACsALAAsACgAHwATAAkAAwD///3/+v/5//j/8//s/+j/6//z//v/BAAQACIAMwA9AEAAQQBFAEcAQgA2ACkAHwAXAAsA/P/u/+P/2//S/8n/xP/F/8v/0v/a/+L/5//r/+//9v8BAA0AFgAcAB8AIAAcABYADgAFAPj/6P/X/8r/wP+4/7L/r/+z/7z/xv/Q/9v/6v/6/wsAGAAjACwAMwA7AEEAQAA5AC4AJgAjAB0AEAAAAPT/7v/s/+n/5f/k/+X/6f/w//7/EwApADoARgBRAFkAXABYAFAARwA9ADUALgAnAB0AEAAEAP3/+v/1/+z/4v/d/9r/1//T/9P/2//m/+//9f/5////BwAPABQAFAARAAoA///w/97/0P/H/8L/vv+5/7b/uf/A/8j/zv/T/9n/4f/q//H/+v8CAAoADgAPAA4ADAAJAAUAAQD+//v/9//x/+r/4//e/9z/4f/s//v/CQAXACUAOABJAFQAWgBgAGcAbABrAGQAWwBTAEkAPQAuAB0ACwD6/+v/3//V/87/y//M/87/0P/V/+D/8f8DABQAJAA2AEUASgBIAEYARgBCADYAIgAJAOz/zf+u/5b/h/98/3X/c/94/4X/lf+o/73/0//o//v/CwAXAB0AHQAcABsAFwAQAAgABAADAP//9//t/+X/3//b/9j/1v/V/9T/2P/j//P/AwARAB8ALgA/AE0AWgBjAGYAYgBYAEwAQgA3ACkAGgAMAAEA/P/6//r/+v/5//n//f8DAAkAEAAbACsAOQBAAEEAQgBCAD0AMAAdAAcA8f/c/8n/t/+l/5T/iv+J/4//lf+d/6v/vP/O/9z/6f/4/wcAEwAaAB0AHQAaABgAGAAXABAAAwD1/+n/3P/N/73/tP+v/6z/qv+u/7r/yv/a/+v/AQAZADEARABVAGUAcQB1AHIAbABiAFUARQA1ACYAFwAHAPr/8P/n/+H/4P/l/+v/7//0//3/CgAUABoAHgAmADAANgA3ADMALQAkABcACQD6/+r/2f/J/77/uP+0/7P/tf+7/8T/zP/U/9v/4f/m/+r/7//z//X/9//5//v/+//4//L/6//i/9j/zP/A/7j/tv+8/8b/0v/f/+3//v8RACUANwBIAFQAWwBfAGIAZABgAFIAPgAtACEAGgASAAkAAgD+//3/+//4//b/+f8BAAoAEAAUABsAKAA2AD0APAA6ADoAOwA3ACwAHwAVAAkA+f/n/9n/0P/K/8T/vv+6/7j/uP+6/77/xf/L/9D/1v/e/+n/9f/9/wMABgAHAAcAAwD5/+3/4v/Z/9D/xf+7/7f/vP/E/87/2f/o//r/CwAYACQAMAA9AEUARwBFAEQARQBFAEIAPgA5ADQAKwAfABUADQAGAP//9//w/+7/7//w//L/9/8EABgALAA7AEEARABHAEwATwBJADoAJwAVAAMA8P/d/8z/vv+1/6//rf+v/7b/wP/N/93/6//3/wAABwAMAA0ACgACAPr/8v/s/+b/3v/S/8T/uv+2/7f/uf+6/77/x//T/97/5//y/wIAGAAqADUAOQA9AEIARwBHAEIAPAA5ADcANAAvACkAJQAhABsAEQAGAP3/+P/2//P/8v/z//b//P8FABEAHgAsADgAQABGAEcARQA/ADYAKwAeAA0A+v/n/9n/z//I/8L/vv+9/8H/xv/J/8n/yf/N/9T/3P/j/+j/6//t//D/8v/y/+//6v/m/+L/4P/d/9r/2P/X/9j/2v/e/+T/7P/1////BwAOABQAGQAdACAAIQAiACEAHwAfACAAIAAdABcAEwARABEAEAAPAA8AEgAYACAAJgArADIAOwBCAEYARQBBAD0AOQAzACoAHwASAAcA/P/y/+f/3f/V/9D/zv/P/9L/1f/a/93/4P/j/+X/6f/s//D/9f/5//z//f/8//n/9f/w/+v/5P/c/9T/zP/G/8H/vP+3/7P/tP+5/8P/zv/c/+r/+v8IABUAIwAxADoAPQA7ADcAMwAuACgAHwAWAA4ABwAAAPz//P/+/wEABQAKABMAIAAsADcAPwBGAEsATQBLAEUAPgA3ADAAJwAbABAACAABAPr/7v/j/9z/3P/e/93/2//d/+T/6//x//b//v8KABQAGAAXABQAEAALAAIA9//p/9r/zP+//7T/qv+h/5z/nv+m/7D/uv/E/8//3v/t//v/BwATAB4AJwAsAC8AMAAwAC4AKAAeABIABgD+//j/8v/s/+f/5P/k/+X/6P/u//n/CAAWACIAKwA0AD4ARQBJAEkARwBEAD8AOgA1AC8AKAAeABUACwACAPj/7//p/+X/4v/h/+X/7f/1//n//P8AAAcADQAPAA4ADwARABAACQD9//H/6v/j/9z/0//M/8r/zP/S/9j/3v/j/+j/7//3//3/AwAHAAwAEAARAA8ACgAFAP7/9f/q/+D/2//b/9v/2f/Y/9v/4//t//b//P8CAAoAFQAhACkALgAyADcAOwA6ADQALQAlAB4AEwAHAPz/9P/u/+b/4P/e/+D/5P/o/+7/+f8GABMAHwApADQAPAA+ADsANwAzACwAIAASAAQA+f/v/+X/2//U/9H/z//N/83/0f/Y/+H/6v/z//z/BAAMABIAFgAYABoAHAAcABkAEwAMAAQA/f/2/+7/6f/k/+D/2v/V/9L/0//W/9j/2//h/+r/9v8CAAwAFAAbAB8AIgAhAB4AGAASAAwABwAAAPf/8f/u/+3/7P/r/+z/8f/7/wUADgAWACAAKQAxADcAOQA6ADgANAAuACQAGAAKAP//+f/1/+//5//e/9v/3//n/+7/9P/7/wIACQAOABQAGwAjACkAKwAsACsAKQAkABsAEAADAPf/7f/k/9v/0v/L/8f/x//J/8v/z//V/9//7P/4/wMADQAVAB0AIwAmACMAHQAVAAwAAQD1/+f/2//R/8n/wv+//8H/x//N/9L/2v/m//X/AwAMABQAHwAtADgAOwA5ADUAMwAyAC0AJQAdABcAEwANAAcAAQD//wAAAwAFAAUABAAGAAsAEQAVABcAFwAXABcAGAAYABkAGAAXABYAEwARAA4ADAAKAAcAAQD6//T/8f/z//b/9v/0//P/9f/5//z/+//3//P/7//s/+j/4//e/9n/1v/U/9L/0f/R/9L/1P/X/9v/4P/k/+X/6P/s//T/+/8AAAQACgATABsAHwAdABkAGAAYABYADwAGAP3/+P/2//P/8f/v//D/9P/7/wMADQAZACYAMgA+AEgAUABVAFYAUwBLAEAAMwAnAB4AFgANAAIA9v/t/+j/5v/l/+T/5P/n/+z/8f/1//n//f8DAAcABwADAP7/+v/2//L/7P/n/+L/4P/f/93/3P/a/9j/1//X/9j/2f/Z/9b/1P/S/9P/1P/W/9n/3f/j/+r/7v/w//L/9P/2//j/+P/4//r/+//8//7/AgAJABIAHAAkACoAMQA4AD4AQwBEAEIAQAA7ADYAMAAoACAAGQATAA4ACwAIAAQA///9//3/AAADAAcADgAXACEAKQAtAC0ALQAuAC0AKQAgABQACQD+//L/5v/a/8//x//C/77/vP+6/7n/uf+7/7//xf/M/9P/2//k/+3/9//+/wMABQAGAAMA/P/z/+z/5//k/+L/3v/a/9r/3v/j/+b/5//q/+//+P///wUACQANABIAGAAeACIAJgAqAC8AMwA1ADUAMwAwAC0AKQAkAB8AGgAXABYAFgAWABUAFAATABQAFQAVABUAFAATABAADQAJAAYAAwD///v/+P/1//P/8v/w/+//7f/t/+z/6//r/+v/7P/t/+3/7//z//f/+f/3//P/7//r/+f/4v/a/9P/zf/K/8n/yf/K/83/0//b/+P/6//z//z/AwAJAA4AEwAYABwAHQAdABsAGwAbABsAGgAYABYAFAARAAwABQAAAP3/+//7//z///8DAAkAEAAXAB0AIwAmACgAJwAlACMAIQAdABgAEwAOAAsACQAGAAIA/f/6//f/9f/y/+3/6f/n/+b/5v/n/+v/8P/2//r//f///wAAAQAAAPz/9//y/+7/6//p/+j/6f/s/+//8f/x//D/8f/z//T/8//y//H/8f/y//T/9f/3//r//P/+////AQADAAUABQADAAEAAAABAAMABQAHAAoADwAVABsAIAAjACUAJAAhABwAFQAPAAsABwAFAAIAAAD+//z/+//6//r//P///wIABAAFAAYABgAGAAUABAAFAAcACgAOABEAEwAVABUAFQATABAACwAFAP3/9f/v/+v/6P/m/+L/3//b/9j/1v/Y/93/5P/r//H/9f/5//7/BAAJAA4AEQAUABcAGAAVABEACwAHAAMA/f/3//H/7f/s/+3/7f/t/+//8//5////AwAFAAcACgAMAA4ADgAOAA4ADgAPABAAEQATABMAEgAQAA8ADwAPAA4ACwAIAAcACAAJAAkACQAJAAsADQANAAwACQAIAAgACAAEAP7/+f/2//b/9f/0//L/8//2//n/+f/5//n//P8AAAMABAAFAAYABwAHAAUAAgABAAAA/f/3//D/6f/m/+X/5P/j/+H/4v/m/+r/7v/x//X/+v8AAAQACAALABAAFQAYABgAGAAZABoAGwAaABgAFQAUABQAFAAQAAwABwACAPz/9f/v/+z/7P/u//L/9v/7/wIACgASABgAGwAcAB4AHwAfAB4AGgAVABAACQADAP3/+P/0//D/7f/r/+z/7//y//X/9v/2//j/+//9//7/+//5//j/9//1//L/7v/s/+v/6//r/+r/6//v//X/+v/9////AQAFAAkACgAIAAYABAAEAAQAAwAAAPz/+v/5//n/+f/6//z///8CAAUABgAIAAkACgAJAAkACQAKAA0AEAASABUAFgAXABgAFwAXABcAFgASAA0ABgAAAPv/9v/w/+v/5//n/+r/7f/w//L/8//2//r//v8BAAQABgAJAAwADQANAAsACQAHAAQAAAD6//X/8P/s/+f/4v/e/93/3//j/+j/7f/y//j//v8DAAcACgANAA8AEAAPAA0ACwAJAAgABgAEAAIAAwAFAAgACgAKAAkABwAHAAgACQAJAAkACgALAAwADQANAAwACwAJAAgABgAEAAEA/v/7//j/9//3//j/+v/8//3///8AAAAA/v/9//z//P/8//z//P/8//3//v/+//3/+//5//j/9//0//H/7f/p/+b/5f/l/+f/6//w//X/+/8AAAUACgANAA8AEAAPABAAEQARABAADQAKAAcABgAFAAMAAAD+//3//f/9//z/+v/6//v//f8AAAMABwAMABIAGAAcAB4AHgAdABsAFgAQAAgAAQD7//b/8v/u/+z/6v/q/+r/6v/r/+z/7//y//T/9//7//7/AQADAAMAAwACAAEA/v/6//X/8P/r/+j/5v/l/+f/6v/u//L/9//8/wAAAwAFAAYABwAHAAgACAAIAAcABgAHAAcACAAIAAgACQALAAwADAAMAAwADAANAAwACwAJAAgACAAJAAkACgAKAAwADgAPAA4ACwAIAAUAAwD///z/+P/3//b/9v/2//X/9f/2//j/+f/7//3//v8AAAIAAgABAAEAAAD///3/+//3//P/7//q/+X/4f/e/9z/3f/f/+L/5f/p/+3/8f/2//r///8DAAcACgANABAAEgASABIAEgASABEADwAOAAwACgAIAAUAAwABAAAA///+//7///8AAAMABwALAA8AFAAYABsAHQAeAB4AHAAaABgAFQASAA4ACgAFAAEA/f/4//T/8P/v/+//8P/w//D/8f/z//b/+f/6//r/+//9///////8//n/9v/0//P/8v/w/+7/7v/u/+//7v/u/+7/8P/y//T/9f/3//r//f8AAAEAAgADAAQABQAHAAgACAAIAAcABwAGAAYABgAGAAYABgAHAAoADQAQABQAFwAaAB0AHwAgAB8AHgAbABcAEwAPAAsABwADAP//+//4//X/9P/z//T/9P/1//b/+P/6//3/AAACAAMABAAGAAcABwAGAAMA/v/6//X/8v/v/+v/6P/l/+P/4//k/+b/5//n/+j/6//v//L/9P/2//j//P8AAAMABgAIAA0AEgAWABgAGAAZABoAHAAaABcAEgAPAA0ACgAHAAMAAAD///////8BAAMABgAKAA4AEQAUABgAHAAeAB0AGwAZABcAFQASAA0ACAADAAAA/P/5//f/9f/0//P/8//0//X/9//3//X/9P/z//P/8f/u/+r/6P/o/+j/5//m/+b/6P/s/+7/7//w//L/9f/5//v/+//8//7/AQADAAUABQAFAAUABQAEAAQABAADAAMAAQABAAIABQAIAAkACQAJAAwAEAAUABUAFQAWABkAHAAfACAAIQAhACIAIQAgAB0AGQAUAA8ACQADAP3/9//y/+7/6//r/+v/7P/s/+7/8v/4//z//f/9////AQAEAAUAAwAAAP7//f/9//v/9//x/+3/6v/n/+T/4f/e/93/3v/g/+P/5//r//D/9P/4//v///8BAAMABAAFAAUABgAHAAcACQAJAAoACgAKAAoACwALAAwADAAMAA0ADwASABMAFAAUABUAFAATABEADwANAAsACQAGAAQAAwADAAMAAgABAAAA/////wAAAAAAAAAAAQABAAIAAwADAAIAAAD9//r/9//z/+//6//n/+T/4f/g/+D/4P/h/+L/5P/n/+z/8f/2//r//v8CAAYACgAMAA0ADAAMAAoACQAHAAUAAwABAP///v/8//r/+v/5//n/+f/6//z//v8CAAcACwAQABQAGAAbAB4AHwAfAB0AGwAYABQAEAAMAAgABAAAAP3/+//5//j/9//3//f/9//2//f/9//4//j/9//3//b/9v/3//b/9v/1//T/9P/0//T/8v/x//D/7//u/+7/7f/t/+7/8P/y//T/9v/4//n/+//7//z//P/7//v/+//7//v//P/9//7///8BAAMABQAHAAkADAAPABIAFAAXABkAGgAcABwAHAAbABkAFgAUABEADQAKAAcAAwABAP7//P/6//n/+f/5//n/+v/8//7/AAACAAUABgAIAAgACAAHAAUAAwABAP3/+v/2//L/7//s/+n/5v/k/+L/4f/g/+D/4f/i/+T/5//q/+3/8v/2//r//f8AAAMABQAHAAgACQAJAAkACQAHAAYABQAEAAIAAAD+//3//P/9//3///8BAAQABwALAA4AEQAUABcAGAAZABgAFwAXABYAFAARAA4ADAALAAoACAAHAAcABwAIAAgABwAHAAYABAACAP//+//4//X/8//w/+7/7P/r/+v/6//r/+v/7P/t/+7/8P/y//T/9//5//v//f/+///////+//z/+v/4//f/9f/0//P/9P/1//b/9//3//j/+v/7//z//P/9////AgAEAAUABgAJAAwADwARABMAFQAXABgAGQAXABYAFAATABEADwANAAsACgAKAAgABwAFAAQAAwACAAIAAQACAAMABQAGAAcABwAHAAYABQAEAAIA///9//v/+f/4//f/9v/0//P/8f/w//D/7//u/+3/7f/u/+//8P/x//L/9P/2//f/+P/5//r//P/9//3//P/7//v//P/8//v/+v/6//z//v8AAAIABQAIAAsADQAPAA8AEAAQABAADgAMAAoACgAKAAoACQAIAAgACQAKAAsADQAOAA8AEAAQABEAEQARABAADgAMAAoACAAIAAcABQADAAEA/f/6//b/8//w/+7/7P/r/+z/7//0//n/+//8//3//v8AAAEAAAD///7//v/+//7//v/+//3//f/8//n/9//3//f/9//1//L/8P/w//L/9P/3//n/+////wQACAALAA0ADgAOAA0ADAAMAA0ADgAPAA4ADQALAAoACQAHAAUAAgAAAP7//v///wEAAgACAAIAAgADAAYACQAKAAoACQAIAAcABQACAP//+//4//f/9//4//v///8DAAUABQADAAIAAgAAAPz/9//z//D/8P/w//D/8P/v/+//8P/x//L/9P/3//n/+//9//7/AQAFAAgACQAJAAoACwANAA8AEAAPAAwACgAHAAUAAwABAP///P/6//j/+P/5//n/+f/5//j/+f/6//3/AAADAAYACQAMAA8AEwAXABoAGwAaABYAEwAQAAwACAABAPv/9v/z//L/8f/x//L/8//0//T/9f/2//j/+v/8//z//P/9////AQADAAMAAgACAAMABAAFAAUABQADAAIAAAD+//z/+v/5//f/9v/3//j/+//+/wAAAAAAAAAA///9//z/+v/4//b/9f/2//n//P8AAAQABwAKAA4AEQATABQAEwARAA8ADAAKAAcABAACAP///P/6//f/9v/1//T/8//y//L/9P/3//n//P/+/wAAAgAEAAcACQALAAwADgAPAA8ADwAPAA0ADAAJAAYABAABAP///P/6//b/8//x/+//7v/u/+7/8P/y//X/+v/+/wMABwAKAA0ADwAQABAADwANAAoABwAEAAAA/f/7//n/+P/4//j/+f/6//v//P/9//3//P/8//v/+//7//v//P/8//3//v//////AAABAAIAAwADAAQABAAEAAQABAAEAAQABQAGAAcACQAKAAsACgAJAAYAAwD///z/+f/2//X/9f/2//f/+f/7//3///8BAAIABAAGAAcACQALAA0ADwAQABAAEAAPAA0ACwAHAAIA/v/4//P/7v/q/+j/5v/m/+j/6v/u//H/9v/5//3/AAADAAUABwAIAAoACgALAAsACwAKAAgABwAFAAMAAAD+//v/+P/2//P/8v/x//D/8f/z//b/+v/+/wIABgAIAAoACwALAAoACQAIAAgABwAHAAcABwAHAAcABwAHAAYABgAFAAUABQAFAAUABQAEAAQAAwADAAMAAgACAAEAAAD///7//P/6//n/9//2//b/9v/2//f/+f/7//3//v8AAAIAAwAEAAQABAADAAIAAQD///3/+//5//j/9v/1//P/8v/x//D/8P/w//H/8//2//r//v8DAAgADAAPABIAEwATABIAEQAPAAwACgAIAAYABQADAAIAAAD///7//f/8//z/+//7//z//f/+/wEAAwAGAAkADAAPABEAEwATABIAEAANAAoABgABAP3/+v/3//T/8v/x//H/8f/x//L/8//1//b/+P/6//z//v8AAAIAAwAEAAQABAADAAIAAAD9//r/+P/1//P/8v/z//T/9f/4//v//v8BAAQABgAIAAkACQAJAAgACAAHAAYABQAFAAQABAADAAMAAgACAAEAAQAAAAAAAAABAAIAAwAFAAcACgAMAA4ADwAQABAAEAAOAAwACgAHAAQAAQD+//z/+v/5//j/+P/4//n/+v/7//z//f///wAAAQACAAMABAAEAAQAAwACAAAA/v/7//n/9//0//P/8v/x//H/8v/z//X/9//5//z//v8AAAEAAwAEAAQABQAFAAYABgAGAAUABQAEAAQAAwACAAEAAAD///7//f/9//3//v///wEAAgAEAAYACAAJAAoACwALAAsACwALAAoACQAJAAgACAAIAAcABwAHAAYABQAFAAQAAwACAAIAAQAAAAAAAAAAAAAAAAAAAAAAAAD///7//f/8//v/+f/4//f/9f/1//T/9P/1//X/9//4//r//P/+////AQACAAMABAADAAMAAQAAAP7/+//5//f/9f/0//P/8//z//X/9//6//3/AQAEAAcACgANAA8AEAARABAADwAOAAwACgAIAAUAAwACAAAA//////7//v//////AAABAAIAAwAFAAYABwAIAAkACgALAAsACwALAAoACQAIAAYABAABAP///P/6//j/9v/0//P/8v/y//L/8v/z//X/9v/4//r//P/9////AAABAAEAAQAAAP///v/8//r/+f/3//X/9P/0//T/9f/3//n/+//+/wEAAwAGAAcACQAJAAkACAAHAAYABAACAAEAAAD//////////wAAAQACAAMABAAFAAYABwAIAAgACQAKAAoACwALAAsACgAJAAgABwAFAAMAAAD+//v/+f/3//b/9f/0//T/9f/2//f/+P/6//z//f/+////AAAAAAAAAAD///7//P/7//n/9//2//T/8//x//H/8P/w//H/8v/z//X/9//6//3/AAACAAUABwAJAAoACwAMAAwACwAKAAgABwAFAAMAAQAAAP///v/+//7///8AAAIAAwAFAAcACQAKAAsADAANAA0ADQAMAAsACQAHAAUAAwABAP///f/8//r/+v/5//n/+f/6//r/+//8//3//f/9//3//f/8//v/+v/5//j/9v/1//T/8//y//L/8f/x//H/8f/y//P/9f/2//j/+v/8////AQADAAQABgAHAAcABwAGAAUAAwACAAAA///+//3//f/9//7/AAABAAMABQAHAAkACwAMAA0ADgAOAA8ADgAOAA0ADAALAAoACAAGAAQAAgAAAP7//P/6//n/+f/5//n/+v/8//3///8AAAIAAwADAAMAAwACAAAA///9//z/+v/4//f/9v/1//T/8//y//H/8f/x//H/8f/y//T/9f/4//r//f///wIABAAFAAYABgAGAAUABAACAAAA///+//3//f/9////AAACAAQABgAIAAkACgALAAsACwAKAAkACAAHAAYABQAEAAQAAwACAAIAAQAAAAAA//////////8AAAEAAgADAAQABQAGAAcABwAHAAYABQAEAAIAAAD+//z/+v/4//b/9f/0//P/8//y//P/8//0//X/9//5//v//f///wIAAwAFAAYABgAGAAUAAwACAAAA/v/8//r/+f/5//n/+v/7//z//v8AAAIAAwAEAAUABgAGAAYABgAFAAUABAAEAAQABAAEAAQABAAEAAQAAwADAAMAAwADAAIAAgACAAIAAgACAAMAAwADAAIAAgACAAEAAAAAAP///v/9//3//P/8//z//P/8//z//P/9//3//v///wAAAAABAAEAAgACAAEAAQAAAP///v/9//z/+//6//r/+v/6//r/+v/7//z//f///wAAAQACAAMAAwAEAAQABAAEAAQAAwADAAIAAgABAAEAAAAAAP///v/+//7//f/9//3//v/+//////8AAAEAAgADAAQABAAFAAUABgAGAAUABQAEAAMAAgABAAAA/v/9//3//P/8//z//f/+////AAACAAMABAAFAAUABgAFAAUABAACAAEAAAD+//3//P/8//v/+//8//z//f/9//7///8AAAAAAQACAAIAAwADAAMAAwADAAIAAgABAP///v/9//v/+v/5//j/+P/4//n/+f/7//z//f///wAAAQACAAMABAAEAAQABAAEAAMAAwADAAIAAgABAAEAAAD//////v/+//3//f/9//7//v///wAAAQACAAMABAAEAAUABQAFAAUABAAEAAMAAwACAAIAAgABAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAEAAQACAAIAAgACAAIAAgABAP///v/8//v/+f/4//f/9//3//f/+P/6//v//f/+/wAAAQACAAMABAAEAAQAAwADAAIAAgABAAAAAAD//////v/+//3//f/9//3//f/9//7//v///wAAAQACAAMABAAEAAUABQAGAAYABgAGAAUABQAFAAQABAAEAAMAAwADAAMAAwADAAMAAwADAAMAAwADAAMAAwADAAMAAgACAAEA///+//3/+//6//n/+P/4//j/+P/5//r/+//8//7///8AAAEAAQABAAEAAQAAAAAA///+//3//P/8//v/+v/6//n/+f/5//j/+P/5//n/+v/7//z//f///wEAAwAFAAYACAAJAAkACQAJAAkACAAHAAYABAADAAIAAgABAAEAAQABAAIAAgADAAQABQAFAAYABgAGAAcABgAGAAYABQAFAAQAAwACAAIAAQAAAP///v/+//3//f/8//z/+//7//v/+//6//r/+v/6//n/+f/5//r/+v/6//v/+//8//z//f/9//3//f/9//3//P/8//z//P/8//z//P/9//7///8AAAEAAgADAAQABAAFAAUABQAFAAUABAAEAAQAAwADAAMAAwADAAMAAwAEAAQABQAGAAcABwAIAAkACQAJAAkACQAIAAcABgAFAAMAAgAAAP7//f/8//v/+v/6//n/+f/6//r/+v/7//v//P/8//z//f/9//3//f/9//3//f/9//3//f/9//z//P/8//z/+//7//r/+v/6//r/+v/6//v/+//8//3//v///wEAAgADAAQABQAGAAYABwAHAAcABwAGAAYABgAFAAUABQAFAAUABQAFAAUABQAFAAUABQAFAAQABAAEAAMAAwACAAIAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////v/+//3//P/7//r/+v/5//n/+P/4//j/+f/5//r/+v/7//v//P/8//3//f/9//3//v/+//7//v/+//////8AAAAAAQABAAIAAwADAAQABAAFAAUABQAFAAUABAAEAAQABAAEAAQABAAEAAQABAAEAAUABQAGAAYABgAGAAYABgAGAAUABQAEAAMAAwACAAEAAAD///7//f/9//z//P/8//v/+//8//z//P/8//z//f/9//3//f/9//3//P/8//z/+//7//v/+v/6//r/+v/6//r/+v/7//v//P/9//3//v//////AAABAAEAAQACAAIAAgACAAIAAwADAAMAAwAEAAQABAAFAAUABgAGAAYABgAHAAcABgAGAAYABQAFAAQABAADAAMAAgACAAEAAQABAAEAAQABAAEAAQACAAIAAgACAAIAAQABAAEAAAD///7//v/9//z/+//6//r/+f/5//n/+P/4//j/+f/5//n/+v/6//v//P/8//3//f/+//7//////wAAAAAAAAAAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAgACAAMAAwAEAAQABQAFAAYABgAGAAcABwAGAAYABgAFAAUABAAEAAMAAwACAAIAAQABAAAAAAAAAAAAAAD//////////////v/+//3//f/9//z//P/7//v/+//7//v/+//7//z//P/8//3//f/9//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+//7//////wAAAAAAAAEAAgACAAMAAwAEAAQABQAFAAYABgAGAAYABgAFAAUABAAEAAMAAgABAAEAAAAAAP//////////////////AAAAAAEAAQABAAIAAgACAAIAAgACAAEAAQAAAAAA/////////v/+//7//f/9//3//f/8//z//P/8//z//P/8//z//P/8//3//f/+//7///8AAAEAAQACAAMAAwADAAMAAwADAAMAAgACAAEAAAAAAP/////+//7//v/+//////8AAAAAAQABAAIAAgADAAMAAwADAAMAAwADAAIAAgACAAEAAQABAAEAAAAAAAAAAAAAAAAAAAAAAAAA/////////v/+//7//f/9//3//f/9//3//v/+//7//////wAAAAABAAEAAQABAAEAAQABAAEAAQABAAAAAAAAAP////////7//v/+//7//v/+//7/////////AAAAAAAAAQABAAIAAgADAAMAAwADAAQAAwADAAMAAgACAAEAAQAAAP/////+//7//f/9//3//f/9//7//v//////AAAAAAEAAgACAAIAAgACAAIAAgACAAEAAQAAAAAA//////7//v/+//7//v/+//7/////////AAAAAAEAAQABAAIAAgACAAIAAgACAAIAAQABAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//////////////////////////////////8AAAAAAAAAAAEAAQABAAEAAAAAAAAAAAD/////////////////////////////AAAAAAAAAAAAAAEAAQABAAIAAgACAAIAAgACAAIAAgABAAEAAQAAAAAA////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///////////////////////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAQABAAIAAgACAAMAAwACAAIAAgACAAEAAQABAAEAAAAAAAAAAAAAAAAA/////////v/+//7//v/+//////8AAAAAAQACAAIAAgACAAIAAgABAAAAAAD///7//v/9//3//f/9//3//f/9//3//f/9//7//v/+//7//////wAAAQACAAIAAwADAAQABAADAAMAAgACAAEAAAAAAP//////////AAAAAAAAAQABAAEAAQABAAEAAQABAAEAAQABAAIAAgACAAIAAgACAAIAAgABAAEAAAAAAP/////+//7//v/+/////////wAAAAD////////+//7//f/9//3//f/9//3//f/+//7/////////AAAAAAAA/////////////wAAAAAAAAAAAQABAAEAAQAAAAAAAAD////////+//////8AAAAAAQACAAMABAAEAAQABQAEAAQABAADAAMAAwACAAIAAgACAAIAAQABAAEAAQAAAAAA/////////v/+/////////wAAAAABAAEAAQABAAAAAAD//////v/+//3//f/9//3//f/9//7//v/+//7//v/+//7//v/+//3//f/9//7//v/+/////////wAAAAAAAAAAAAAAAAAAAAABAAEAAQACAAMAAwAEAAQABAAFAAQABAAEAAMAAgACAAEAAQAAAAAAAAABAAEAAQABAAIAAgACAAIAAgACAAEAAQABAAEAAQABAAEAAQABAAEAAAAAAP///v/+//3//P/8//z/+//7//z//P/8//3//f/9//7//v/+//7//v/+//7//v/+//7//v/+/////////wAAAAAAAAAAAAAAAAAAAAABAAEAAQABAAIAAgACAAMAAwADAAMAAwADAAIAAgACAAIAAgACAAIAAwADAAMAAwAEAAQABAAEAAMAAwADAAIAAgABAAEAAQAAAAAAAAD///////////7//v/+//7//f/9//3//f/9//3//f/+//7//v/+//7//v/+//7//f/9//3//f/9//3//f/9//3//v/+//7//////////////wAAAAAAAAAAAAABAAEAAQABAAIAAgACAAIAAgACAAIAAgACAAMAAwADAAMAAwADAAMAAwADAAMAAwADAAIAAgACAAIAAgABAAEAAQABAAEAAQAAAAAAAAAAAAAAAAAAAP///////////////////v/+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+//7//v/+////////////////////AAAAAAAAAAAAAAAAAAAAAAEAAQABAAEAAQABAAEAAQABAAEAAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAEAAQABAAEAAQABAAEAAQABAAEAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAP//////////////////////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA////////////////////////////////////////////////////////////////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==";
+
+  const stampAudio = new Audio(STAMP_SOUND_SRC);
+  stampAudio.preload = 'auto';
+  stampAudio.volume = 1;
+
+  function playStampSound(){
+    try {
+      stampAudio.currentTime = 0;
+      const playPromise = stampAudio.play();
+      if (playPromise && typeof playPromise.catch === 'function'){
+        playPromise.catch(err => {
+          console.warn('スタンプ音の再生に失敗しました:', err);
+        });
+      }
+    } catch (e) {
+      console.warn('スタンプ音の再生でエラーが発生しました:', e);
+    }
+  }
+
   function decideMenu(){
     stampBtn.classList.remove('stamping');
     void stampBtn.offsetWidth;
     stampBtn.classList.add('stamping');
+    playStampSound();
 
     if (favoritesOnlyMode){
-      const favs = loadFavorites().filter(f => f.category === currentCategory);
+      const favs = loadFavorites().filter(f => currentCategory === '全て' || f.category === currentCategory);
       if (favs.length === 0){
         showToast('このジャンルのお気に入りはまだありません');
         return;
@@ -4079,14 +4345,14 @@
       return;
     }
 
-    const mainChoice = pick(DISH_DATA[currentCategory].main);
-    const sideChoice = pick(DISH_DATA[currentCategory].side);
-    const soupChoice = pick(DISH_DATA[currentCategory].soup);
-    const fortunePool = GENERAL_COMMENTS.concat(CATEGORY_COMMENTS[currentCategory]);
-    const fortuneChoice = pick(fortunePool);
+    const drawCategory = resolveDrawCategory(currentCategory);
+    const mainChoice = pick(DISH_DATA[drawCategory].main);
+    const sideChoice = pick(DISH_DATA[drawCategory].side);
+    const soupChoice = pick(DISH_DATA[drawCategory].soup);
+    const fortuneChoice = pick(getFortunePool(drawCategory));
 
     applyMenu({
-      category: currentCategory,
+      category: drawCategory,
       main: mainChoice,
       side: sideChoice,
       soup: soupChoice,
@@ -4115,10 +4381,128 @@
     favoritesOnlyToggle.setAttribute('aria-pressed', favoritesOnlyMode ? 'true' : 'false');
   });
 
+  /* --- Omakase filter (タグ・調理時間) --- */
+  const omakaseFilters = { tags: new Set(), cookTimeMax: null };
+
+  const omakaseFilterOpenBtn = document.getElementById('omakaseFilterOpenBtn');
+  const omakaseFilterOverlay = document.getElementById('omakaseFilterOverlay');
+  const omakaseFilterCloseBtn = document.getElementById('omakaseFilterCloseBtn');
+  const omakaseTagFilterChips = document.getElementById('omakaseTagFilterChips');
+  const omakaseCookTimeFilterChips = document.getElementById('omakaseCookTimeFilterChips');
+  const omakaseFilterEmptyMessage = document.getElementById('omakaseFilterEmptyMessage');
+  const omakaseFilterDecideBtn = document.getElementById('omakaseFilterDecideBtn');
+  const omakaseFilterResetBtn = document.getElementById('omakaseFilterResetBtn');
+  const omakaseFilterBadge = document.getElementById('omakaseFilterBadge');
+
+  function updateOmakaseFilterBadge(){
+    const count = omakaseFilters.tags.size + (omakaseFilters.cookTimeMax != null ? 1 : 0);
+    omakaseFilterBadge.textContent = count;
+    omakaseFilterBadge.style.display = count > 0 ? 'flex' : 'none';
+  }
+
+  function updateOmakaseFilterChipsUI(){
+    omakaseTagFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      chip.classList.toggle('active', omakaseFilters.tags.has(chip.dataset.tag));
+    });
+    omakaseCookTimeFilterChips.querySelectorAll('.recipe-filter-chip').forEach(chip => {
+      const isAll = chip.dataset.cooktime === 'all';
+      const active = isAll ? omakaseFilters.cookTimeMax == null : omakaseFilters.cookTimeMax === Number(chip.dataset.cooktime);
+      chip.classList.toggle('active', active);
+    });
+    updateOmakaseFilterBadge();
+  }
+
+  omakaseFilterOpenBtn.addEventListener('click', () => {
+    omakaseFilterEmptyMessage.style.display = 'none';
+    omakaseFilterOverlay.classList.add('show');
+  });
+  omakaseFilterCloseBtn.addEventListener('click', () => {
+    omakaseFilterOverlay.classList.remove('show');
+  });
+  omakaseFilterOverlay.addEventListener('click', (e) => {
+    if (e.target === omakaseFilterOverlay) omakaseFilterOverlay.classList.remove('show');
+  });
+
+  omakaseTagFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    const tag = chip.dataset.tag;
+    if (omakaseFilters.tags.has(tag)){
+      omakaseFilters.tags.delete(tag);
+    } else {
+      omakaseFilters.tags.add(tag);
+    }
+    updateOmakaseFilterChipsUI();
+  });
+
+  omakaseCookTimeFilterChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.recipe-filter-chip');
+    if (!chip) return;
+    if (chip.dataset.cooktime === 'all'){
+      omakaseFilters.cookTimeMax = null;
+    } else {
+      const minutes = Number(chip.dataset.cooktime);
+      omakaseFilters.cookTimeMax = omakaseFilters.cookTimeMax === minutes ? null : minutes;
+    }
+    updateOmakaseFilterChipsUI();
+  });
+
+  omakaseFilterResetBtn.addEventListener('click', () => {
+    omakaseFilters.tags.clear();
+    omakaseFilters.cookTimeMax = null;
+    updateOmakaseFilterChipsUI();
+    omakaseFilterEmptyMessage.style.display = 'none';
+  });
+
+  // Tag match is OR (any selected tag); cook time is a ceiling, same rules
+  // as the ごはん図鑑 filters, kept independent so either page's filter UI
+  // can evolve without touching the other's state.
+  function matchesOmakaseFilters(dish){
+    const matchesTags = omakaseFilters.tags.size === 0 ||
+      (dish.tags || []).some(t => omakaseFilters.tags.has(t));
+    const matchesCookTime = omakaseFilters.cookTimeMax == null ||
+      (dish.cookTime && dish.cookTime !== '60+' && Number(dish.cookTime) <= omakaseFilters.cookTimeMax);
+    return matchesTags && matchesCookTime;
+  }
+
+  omakaseFilterDecideBtn.addEventListener('click', () => {
+    const genreCandidates = currentCategory === '全て' ? Object.keys(DISH_DATA) : [currentCategory];
+    // Only consider a genre "viable" if every course has at least one dish
+    // matching the filters — picking the genre first (like a normal draw)
+    // then verifying it can actually complete a full menu.
+    const viableGenres = genreCandidates.filter(genre =>
+      ['main', 'side', 'soup'].every(course => DISH_DATA[genre][course].some(matchesOmakaseFilters))
+    );
+
+    if (viableGenres.length === 0){
+      omakaseFilterEmptyMessage.style.display = 'block';
+      return;
+    }
+    omakaseFilterEmptyMessage.style.display = 'none';
+
+    const chosenGenre = viableGenres[Math.floor(Math.random() * viableGenres.length)];
+    const mainChoice = pick(DISH_DATA[chosenGenre].main.filter(matchesOmakaseFilters));
+    const sideChoice = pick(DISH_DATA[chosenGenre].side.filter(matchesOmakaseFilters));
+    const soupChoice = pick(DISH_DATA[chosenGenre].soup.filter(matchesOmakaseFilters));
+
+    applyMenu({
+      category: chosenGenre,
+      main: mainChoice,
+      side: sideChoice,
+      soup: soupChoice,
+      fortune: pick(getFortunePool(chosenGenre))
+    }, true);
+
+    omakaseFilterOverlay.classList.remove('show');
+    showToast('条件に合う献立を決めました！');
+  });
+
   /* --- Favorites --- */
   const FAVORITES_KEY = 'menuGachaFavorites';
   const favSaveBtn = document.getElementById('favSaveBtn');
   const favSaveLabel = document.getElementById('favSaveLabel');
+  const omakaseTodayBtn = document.getElementById('omakaseTodayBtn');
+  const omakaseTodayLabel = document.getElementById('omakaseTodayLabel');
   const favNavBtn = document.getElementById('favNavBtn');
   const favNavCount = document.getElementById('favNavCount');
   const favoritesOverlay = document.getElementById('favoritesOverlay');
@@ -4179,9 +4563,9 @@
     const list = loadFavorites();
     const alreadySaved = list.some(item =>
       item.category === menu.category &&
-      item.main.name === menu.main.name &&
-      item.side.name === menu.side.name &&
-      item.soup.name === menu.soup.name
+      matchesDishRef(item.main, menu.main) &&
+      matchesDishRef(item.side, menu.side) &&
+      matchesDishRef(item.soup, menu.soup)
     );
     if (!alreadySaved){
       list.push({
@@ -4205,6 +4589,15 @@
     favSaveBtn.disabled = true;
     favSaveBtn.querySelector('.fav-save-icon').textContent = '♥';
     favSaveLabel.textContent = 'お気に入りに登録しました';
+  });
+
+  omakaseTodayBtn.addEventListener('click', () => {
+    if (!currentMenu || omakaseTodayBtn.disabled) return;
+    saveTodayMenu(currentMenu);
+    omakaseTodayBtn.classList.add('saved');
+    omakaseTodayBtn.disabled = true;
+    omakaseTodayLabel.textContent = '今日の献立にしました';
+    showToast('今日の献立にしました！');
   });
 
   favNavBtn.addEventListener('click', () => {
@@ -4360,42 +4753,13 @@
     }
   });
 
-  /* --- Materials modal ("材料を見る") --- */
-  const materialsOverlay = document.getElementById('materialsOverlay');
-  const materialsCloseBtn = document.getElementById('materialsCloseBtn');
-  const materialsCloseTextBtn = document.getElementById('materialsCloseTextBtn');
-  const materialsDishName = document.getElementById('materialsDishName');
-  const materialsList = document.getElementById('materialsList');
-
-  function openMaterialsModal(dish){
-    if (!dish) return;
-    materialsDishName.textContent = dish.name;
-    materialsList.innerHTML = dish.ingredients.map(i => `
-      <div class="material-item">
-        <span class="material-name">${i.name}</span>
-        <span class="material-amount">${i.amount}</span>
-      </div>
-    `).join('');
-    materialsOverlay.classList.add('show');
-  }
-
-  function closeMaterialsModal(){
-    materialsOverlay.classList.remove('show');
-  }
-
-  document.querySelectorAll('.material-btn').forEach(btn => {
+  /* --- Omakase course buttons open the shared recipe detail modal --- */
+  document.querySelectorAll('.omakase-detail-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       if (!currentMenu) return;
-      openMaterialsModal(currentMenu[btn.dataset.course]);
+      const course = btn.dataset.course;
+      openRecipeDetail({ dish: currentMenu[course], category: currentMenu.category, course }, null);
     });
-  });
-
-  materialsCloseBtn.addEventListener('click', closeMaterialsModal);
-  materialsCloseTextBtn.addEventListener('click', closeMaterialsModal);
-  materialsOverlay.addEventListener('click', (e) => {
-    if (e.target === materialsOverlay){
-      closeMaterialsModal();
-    }
   });
 
   /* --- Cooking records ("作った記録") --- */
@@ -4408,9 +4772,10 @@
   const fridgeSearchPage = document.getElementById('fridgeSearchPage');
   const seasonalPage = document.getElementById('seasonalPage');
   const pantryPage = document.getElementById('pantryPage');
+  const backupPage = document.getElementById('backupPage');
   const recipeBookPage = document.getElementById('recipeBookPage');
   const newsPage = document.getElementById('newsPage');
-  const ALL_PAGES = [homePage, omakasePage, recordsPage, addMenuPage, fridgeSearchPage, seasonalPage, pantryPage, recipeBookPage, newsPage];
+  const ALL_PAGES = [homePage, omakasePage, recordsPage, addMenuPage, fridgeSearchPage, seasonalPage, pantryPage, backupPage, recipeBookPage, newsPage];
   const recordsNavBtn = document.getElementById('recordsNavBtn');
   const omakaseBackHomeBtn = document.getElementById('omakaseBackHomeBtn');
   const backHomeBtn = document.getElementById('backHomeBtn');
@@ -4418,6 +4783,7 @@
   const fridgeBackHomeBtn = document.getElementById('fridgeBackHomeBtn');
   const seasonalBackHomeBtn = document.getElementById('seasonalBackHomeBtn');
   const pantryBackHomeBtn = document.getElementById('pantryBackHomeBtn');
+  const backupBackHomeBtn = document.getElementById('backupBackHomeBtn');
   const recipeBookBackHomeBtn = document.getElementById('recipeBookBackHomeBtn');
   const recipeBookAddBtn = document.getElementById('recipeBookAddBtn');
   const newsBackHomeBtn = document.getElementById('newsBackHomeBtn');
@@ -4478,10 +4844,8 @@
 
   // Looks at the same cooking-records history the "作った記録" page uses,
   // and finds the most recent date this dish was logged in the given course.
-  function getLastCookedDate(dishName, course){
-    const records = loadCookingRecords().filter(r =>
-      r[course] && r[course].name === dishName
-    );
+  function getLastCookedDate(dish, course){
+    const records = loadCookingRecords().filter(r => matchesDishRef(r[course], dish));
     if (records.length === 0) return null;
     return records.reduce((latest, r) => (r.date > latest ? r.date : latest), records[0].date);
   }
@@ -4545,9 +4909,9 @@
     list.push({
       id: Date.now(),
       date: todayDateStr(),
-      main: { name: currentMenu.main.name },
-      side: { name: currentMenu.side.name },
-      soup: { name: currentMenu.soup.name }
+      main: { id: currentMenu.main.id, name: currentMenu.main.name },
+      side: { id: currentMenu.side.id, name: currentMenu.side.name },
+      soup: { id: currentMenu.soup.id, name: currentMenu.soup.name }
     });
     saveCookingRecords(list);
     cookRecordBtn.classList.add('saved');
@@ -4607,6 +4971,10 @@
     revealPage(pantryPage);
   }
 
+  function showBackupPage(){
+    revealPage(backupPage);
+  }
+
   function showRecipeBookPage(){
     revealPage(recipeBookPage);
     recipeSearchInput.value = '';
@@ -4632,6 +5000,7 @@
   fridgeBackHomeBtn.addEventListener('click', showHome);
   seasonalBackHomeBtn.addEventListener('click', showHome);
   pantryBackHomeBtn.addEventListener('click', showHome);
+  backupBackHomeBtn.addEventListener('click', showHome);
   recipeBookBackHomeBtn.addEventListener('click', showHome);
   recipeBookAddBtn.addEventListener('click', showAddMenuPage);
 
@@ -4644,6 +5013,7 @@
     records: showRecords,
     addMenu: showAddMenuPage,
     pantry: showPantryPage,
+    backup: showBackupPage,
     news: showNewsPage
   };
   document.addEventListener('click', (e) => {
@@ -4737,7 +5107,7 @@
               <span class="fridge-result-tag course">${COURSE_LABEL_JA[m.course]}</span>
             </span>
           </div>
-          <button type="button" class="material-btn fridge-result-material-btn" data-index="${i}">📋 材料を見る</button>
+          <button type="button" class="material-btn fridge-result-material-btn" data-index="${i}">詳細を見る</button>
 
           <div class="fridge-result-section have">
             <div class="fridge-result-section-title">冷蔵庫にある食材</div>
@@ -4775,7 +5145,7 @@
     const materialBtn = e.target.closest('.fridge-result-material-btn');
     if (materialBtn){
       const match = fridgeMatches[Number(materialBtn.dataset.index)];
-      if (match) openMaterialsModal(match.dish);
+      if (match) openRecipeDetail(match, () => renderFridgeResults());
       return;
     }
 
@@ -4896,12 +5266,7 @@
             <span class="fridge-result-tag course">${COURSE_LABEL_JA[m.course]}</span>
           </span>
         </div>
-        <button type="button" class="material-btn fridge-result-material-btn" data-index="${i}">📋 材料を見る</button>
-
-        <div class="fridge-result-actions">
-          <button type="button" class="fridge-result-fav-btn" data-index="${i}">♡ お気に入り</button>
-          <button type="button" class="fridge-result-choose-btn" data-index="${i}">🍚 今日の献立にする</button>
-        </div>
+        <button type="button" class="material-btn fridge-result-material-btn" data-index="${i}">詳細を見る</button>
       </div>
     `).join('');
 
@@ -4922,18 +5287,6 @@
     const fortunePool = GENERAL_COMMENTS.concat(CATEGORY_COMMENTS[category]);
     menu.fortune = pick(fortunePool);
     return menu;
-  }
-
-  function selectSeasonalDish(match){
-    const menu = buildMenuAroundDish(match.dish, match.course, match.category);
-    currentCategory = match.category;
-    categoryBtns.forEach(b => {
-      const active = b.dataset.category === match.category;
-      b.classList.toggle('active', active);
-      b.setAttribute('aria-pressed', active ? 'true' : 'false');
-    });
-    applyMenu(menu, false);
-    showOmakase();
   }
 
   /* --- Today's menu (home banner) --- */
@@ -4990,13 +5343,6 @@
     todayMenuBannerToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
   });
 
-  function setAsTodayMenu(match){
-    const menu = buildMenuAroundDish(match.dish, match.course, match.category);
-    saveTodayMenu(menu);
-    showToast('今日の献立にしました！');
-    showHome();
-  }
-
   todayMenuCookBtn.addEventListener('click', () => {
     const menu = loadTodayMenu();
     if (!menu) return;
@@ -5004,9 +5350,9 @@
     list.push({
       id: Date.now(),
       date: todayDateStr(),
-      main: { name: menu.main.name },
-      side: { name: menu.side.name },
-      soup: { name: menu.soup.name }
+      main: { id: menu.main.id, name: menu.main.name },
+      side: { id: menu.side.id, name: menu.side.name },
+      soup: { id: menu.soup.id, name: menu.soup.name }
     });
     saveCookingRecords(list);
     clearTodayMenu();
@@ -5045,28 +5391,15 @@
     const materialBtn = e.target.closest('.fridge-result-material-btn');
     if (materialBtn){
       const match = seasonalMatches[Number(materialBtn.dataset.index)];
-      if (match) openMaterialsModal(match.dish);
-      return;
-    }
-
-    const chooseBtn = e.target.closest('.fridge-result-choose-btn');
-    if (chooseBtn){
-      const match = seasonalMatches[Number(chooseBtn.dataset.index)];
-      if (match) setAsTodayMenu(match);
-      return;
-    }
-
-    const favBtn = e.target.closest('.fridge-result-fav-btn');
-    if (favBtn){
-      const match = seasonalMatches[Number(favBtn.dataset.index)];
-      if (!match) return;
-      selectSeasonalDish(match);
-      saveCurrentMenuToFavorites();
-      favSaveBtn.classList.add('saved');
-      favSaveBtn.disabled = true;
-      favSaveBtn.querySelector('.fav-save-icon').textContent = '♥';
-      favSaveLabel.textContent = 'お気に入りに登録しました';
-      showToast('お気に入りに登録しました！');
+      if (match){
+        openRecipeDetail(match, (eventName) => {
+          if (eventName === 'todayMenuSet'){
+            showHome();
+          } else {
+            renderSeasonalResults();
+          }
+        });
+      }
     }
   });
 
@@ -5096,6 +5429,7 @@
   let recipeIndex = [];
   let currentRecipeEntry = null;
   let pendingRecipeDelete = null;
+  let pendingRecipeDeleteOnChange = null;
 
   // Every dish in DISH_DATA, tagged with where it lives — this is the single
   // source the search box, cards, and detail modal all read from.
@@ -5181,8 +5515,7 @@
   function isDishFavorited(entry){
     return loadFavorites().some(f =>
       f.category === entry.category &&
-      f[entry.course] &&
-      f[entry.course].name === entry.dish.name
+      matchesDishRef(f[entry.course], entry.dish)
     );
   }
 
@@ -5193,7 +5526,7 @@
     const { dish, category, course } = entry;
     if (isDishFavorited(entry)){
       const list = loadFavorites().filter(f =>
-        !(f.category === category && f[course] && f[course].name === dish.name)
+        !(f.category === category && matchesDishRef(f[course], dish))
       );
       saveFavorites(list);
       updateFavNavCount();
@@ -5494,11 +5827,18 @@
     const btn = e.target.closest('.recipe-detail-open-btn');
     if (!btn) return;
     const entry = recipeIndex[Number(btn.dataset.index)];
-    if (entry) openRecipeDetail(entry);
+    if (entry) openRecipeDetail(entry, () => renderRecipeBookList(recipeSearchInput.value));
   });
 
-  function openRecipeDetail(entry){
+  let recipeDetailOnChange = null;
+
+  function notifyRecipeDetailChange(eventName){
+    if (recipeDetailOnChange) recipeDetailOnChange(eventName);
+  }
+
+  function openRecipeDetail(entry, onChange){
     currentRecipeEntry = entry;
+    recipeDetailOnChange = onChange || null;
     const { dish, category, course } = entry;
 
     if (dish.photo){
@@ -5543,7 +5883,7 @@
       ? dish.steps
       : '作り方はまだ登録されていません。';
 
-    const lastCookedDate = getLastCookedDate(dish.name, course);
+    const lastCookedDate = getLastCookedDate(dish, course);
     if (lastCookedDate){
       recipeDetailLastCooked.textContent = formatDateSlash(lastCookedDate);
       recipeDetailLastCooked.classList.remove('none');
@@ -5570,6 +5910,8 @@
 
   function closeRecipeDetail(){
     recipeDetailOverlay.classList.remove('show');
+    currentRecipeEntry = null;
+    recipeDetailOnChange = null;
   }
 
   recipeDetailCloseBtn.addEventListener('click', closeRecipeDetail);
@@ -5581,8 +5923,8 @@
     if (!currentRecipeEntry) return;
     const nowFav = toggleDishFavorite(currentRecipeEntry);
     updateRecipeDetailFavButton();
-    renderRecipeBookList(recipeSearchInput.value);
     showToast(nowFav ? 'お気に入りに登録しました！' : 'お気に入りを解除しました');
+    notifyRecipeDetailChange('favoriteChanged');
   });
 
   recipeDetailTodayBtn.addEventListener('click', () => {
@@ -5591,18 +5933,23 @@
     const menu = buildMenuAroundDish(dish, course, category);
     saveTodayMenu(menu);
     showToast('今日の献立にしました！');
+    const notify = recipeDetailOnChange;
     closeRecipeDetail();
+    if (notify) notify('todayMenuSet');
   });
 
   recipeDetailEditBtn.addEventListener('click', () => {
     if (!currentRecipeEntry) return;
+    const entry = currentRecipeEntry;
+    const onChange = recipeDetailOnChange;
     closeRecipeDetail();
-    openEditDishModal(currentRecipeEntry);
+    openEditDishModal(entry, onChange);
   });
 
   recipeDetailDeleteBtn.addEventListener('click', () => {
     if (!currentRecipeEntry) return;
     pendingRecipeDelete = currentRecipeEntry;
+    pendingRecipeDeleteOnChange = recipeDetailOnChange;
     recipeDeleteConfirmName.textContent = `『${currentRecipeEntry.dish.name}』を削除しますか？`;
     recipeDeleteConfirmOverlay.classList.add('show');
   });
@@ -5617,22 +5964,26 @@
       const customList = loadCustomDishes().filter(entry => entry.dish.id !== dish.id);
       saveCustomDishes(customList);
 
+      const notify = pendingRecipeDeleteOnChange;
       pendingRecipeDelete = null;
+      pendingRecipeDeleteOnChange = null;
       recipeDeleteConfirmOverlay.classList.remove('show');
       closeRecipeDetail();
-      showRecipeBookPage();
       showToast('マイレシピを削除しました');
+      if (notify) notify('deleted');
     }
   });
 
   recipeDeleteConfirmNoBtn.addEventListener('click', () => {
     pendingRecipeDelete = null;
+    pendingRecipeDeleteOnChange = null;
     recipeDeleteConfirmOverlay.classList.remove('show');
   });
 
   recipeDeleteConfirmOverlay.addEventListener('click', (e) => {
     if (e.target === recipeDeleteConfirmOverlay){
       pendingRecipeDelete = null;
+      pendingRecipeDeleteOnChange = null;
       recipeDeleteConfirmOverlay.classList.remove('show');
     }
   });
@@ -5649,6 +6000,7 @@
   const menuSettingsToggle = document.getElementById('menuSettingsToggle');
   const menuSettingsSubmenu = document.getElementById('menuSettingsSubmenu');
   const menuGoPantryBtn = document.getElementById('menuGoPantryBtn');
+  const menuGoBackupBtn = document.getElementById('menuGoBackupBtn');
 
   function openSideMenu(){
     sideMenuOverlay.classList.add('show');
@@ -5695,6 +6047,10 @@
     closeSideMenu();
     showPantryPage();
   });
+  menuGoBackupBtn.addEventListener('click', () => {
+    closeSideMenu();
+    showBackupPage();
+  });
 
   /* --- Pantry (常備品) settings --- */
   const PANTRY_STAPLES_KEY = 'menuGachaPantryStaples';
@@ -5734,16 +6090,70 @@
   // populate on load so the page reflects previously-saved settings right away
   fillPantryCheckboxes();
 
+  /* --- Data backup (export only; import planned for Ver.2.1) --- */
+  const createBackupBtn = document.getElementById('createBackupBtn');
+
+  createBackupBtn.addEventListener('click', () => {
+    const backup = {
+      exportedAt: new Date().toISOString(),
+      appVersion: APP_VERSION_HISTORY[0].version,
+      customDishes: loadCustomDishes(),
+      favorites: loadFavorites(),
+      todayMenu: loadTodayMenu(),
+      cookingRecords: loadCookingRecords(),
+      shoppingExtraItems: loadExtraShoppingItems(),
+      pantryStaples: loadPantryStaples(),
+      builtinOverrides: loadBuiltinOverrides()
+    };
+
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `ouchi-gohan-backup-${dateStr}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    showToast('バックアップを作成しました！');
+  });
+
   /* --- News / announcements --- */
   // Newest entry goes first. Adding a future update is just adding one more
   // object to the front of this array — the "🟢 最新" badge and the
   // "現在のバージョン" display both follow automatically from index 0.
   const APP_VERSION_HISTORY = [
     {
+      version: '1.9',
+      icon: '🎲',
+      date: '2026/08/05',
+      isNew: true,
+      sectionLabel: '✨ 新機能',
+      items: [
+        'おまかせ画面にカテゴリー「全て」を追加',
+        'おまかせにタグ・調理時間で絞り込む機能を追加（「この条件でおまかせ」ボタン）',
+        '条件に合う献立が見つからない場合の案内メッセージを追加'
+      ]
+    },
+    {
+      version: '1.8.5',
+      icon: '🧩',
+      date: '2026/08/04',
+      isNew: false,
+      sectionLabel: '🔧 改善',
+      items: [
+        'レシピ詳細画面を共通化し、どの画面からでも統一された情報・操作を利用できるよう改善',
+        'お気に入り操作をすべての画面でトグル式に統一',
+        '冷蔵庫検索・季節のおすすめからも「今日の献立にする」「編集」「削除（マイレシピ）」が利用可能に'
+      ]
+    },
+    {
       version: '1.8',
       icon: '🔍',
       date: '2026/08/03',
-      isNew: true,
+      isNew: false,
       sectionLabel: '✨ 新機能・改善',
       items: [
         'ごはん図鑑にタグフィルターを追加',
@@ -5981,16 +6391,19 @@
 
     const counts = {};
     records.forEach(r => {
-      counts[r.main.name] = (counts[r.main.name] || 0) + 1;
+      const key = r.main.id || r.main.name;
+      if (!counts[key]) counts[key] = { name: r.main.name, count: 0 };
+      counts[key].count += 1;
+      counts[key].name = r.main.name; // keep the most recently recorded name
     });
-    const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const ranked = Object.values(counts).sort((a, b) => b.count - a.count);
     const medals = ['🥇', '🥈', '🥉'];
 
-    cookingRanking.innerHTML = ranked.map(([name, count], i) => `
+    cookingRanking.innerHTML = ranked.map((entry, i) => `
       <div class="ranking-item">
         <span class="ranking-medal">${medals[i] || '・'}</span>
-        <span class="ranking-name">${name}</span>
-        <span class="ranking-count">${count}回</span>
+        <span class="ranking-name">${entry.name}</span>
+        <span class="ranking-count">${entry.count}回</span>
       </div>
     `).join('');
   }
@@ -6035,15 +6448,28 @@
     return null;
   }
 
+  // Resolves a record's saved course reference ({id, name}) back to the full
+  // current dish. Tries id first (renamed-proof); falls back to a name
+  // search within the given course for older records saved before ids were
+  // tracked.
+  function resolveRecordDish(ref, course){
+    if (!ref) return null;
+    if (ref.id){
+      const found = findDishById(ref.id);
+      if (found && found.course === course) return found;
+    }
+    return findDishByNameAndCourse(ref.name, course);
+  }
+
   cookingRecordsList.addEventListener('click', (e) => {
     const btn = e.target.closest('.record-again-btn');
     if (!btn) return;
     const record = loadCookingRecords().find(r => r.id === Number(btn.dataset.id));
     if (!record) return;
 
-    const mainFound = findDishByNameAndCourse(record.main.name, 'main');
-    const sideFound = findDishByNameAndCourse(record.side.name, 'side');
-    const soupFound = findDishByNameAndCourse(record.soup.name, 'soup');
+    const mainFound = resolveRecordDish(record.main, 'main');
+    const sideFound = resolveRecordDish(record.side, 'side');
+    const soupFound = resolveRecordDish(record.soup, 'soup');
     const category = (mainFound || sideFound || soupFound || {}).category || currentCategory;
 
     const menu = {
@@ -6152,12 +6578,19 @@
     if (!manualRecordTargetDate) return;
     const list = loadCookingRecords();
     const note = manualNoteInput.value.trim();
+    const category = manualCategorySelect.value;
+    const findId = (course, name) => {
+      const dish = DISH_DATA[category] && DISH_DATA[category][course]
+        ? DISH_DATA[category][course].find(d => d.name === name)
+        : null;
+      return dish ? dish.id : undefined;
+    };
     list.push({
       id: Date.now(),
       date: manualRecordTargetDate,
-      main: { name: manualMainSelect.value },
-      side: { name: manualSideSelect.value },
-      soup: { name: manualSoupSelect.value },
+      main: { id: findId('main', manualMainSelect.value), name: manualMainSelect.value },
+      side: { id: findId('side', manualSideSelect.value), name: manualSideSelect.value },
+      soup: { id: findId('soup', manualSoupSelect.value), name: manualSoupSelect.value },
       note: note || undefined
     });
     saveCookingRecords(list);
@@ -6248,6 +6681,7 @@
   let addDishTargetCourse = null; // 'main' | 'side' | 'soup'
   let addDishSource = null; // 'manualSelect' | 'addMenuPage' | 'recipeBookEdit'
   let editingDishRef = null; // { id, isCustom } when editing an existing recipe (standard or my-recipe)
+  let editOnChangeCallback = null; // caller-supplied notifier, set only when editing via the shared detail modal
   const dishSelectByCourse = { main: manualMainSelect, side: manualSideSelect, soup: manualSoupSelect };
   const COURSE_LABEL_JA = { main: '主菜', side: '副菜', soup: '汁物' };
 
@@ -6277,6 +6711,7 @@
     addDishTargetCourse = course;
     addDishSource = source;
     editingDishRef = null;
+    editOnChangeCallback = null;
     addDishModalTitle.textContent = '＋ 新しい料理を追加';
     addDishSaveBtn.textContent = 'レシピを追加';
     addDishCategorySelect.disabled = false;
@@ -6294,9 +6729,10 @@
     addDishOverlay.classList.add('show');
   }
 
-  function openEditDishModal(entry){
+  function openEditDishModal(entry, onChange){
     const { dish, category, course } = entry;
     addDishSource = 'recipeBookEdit';
+    editOnChangeCallback = onChange || null;
     editingDishRef = { id: dish.id, isCustom: !!dish.isCustom };
     addDishModalTitle.textContent = '✏️ レシピを編集';
     addDishSaveBtn.textContent = 'レシピを保存';
@@ -6333,6 +6769,7 @@
     addDishTargetCourse = null;
     addDishSource = null;
     editingDishRef = null;
+    editOnChangeCallback = null;
     addDishCategorySelect.disabled = false;
     addDishCourseSelect.disabled = false;
   }
@@ -6355,7 +6792,8 @@
 
   Object.entries(addMenuCardByCourse).forEach(([course, cardEl]) => {
     cardEl.addEventListener('click', () => {
-      openAddDishModal(course, currentCategory, 'addMenuPage');
+      const category = currentCategory === '全て' ? Object.keys(DISH_DATA)[0] : currentCategory;
+      openAddDishModal(course, category, 'addMenuPage');
     });
   });
 
@@ -6412,9 +6850,10 @@
         saveBuiltinOverrides(overrides);
       }
 
+      const notify = editOnChangeCallback;
       closeAddDishModal(false);
-      showRecipeBookPage();
       showToast('レシピを保存しました！');
+      if (notify) notify('edited');
       return;
     }
 
